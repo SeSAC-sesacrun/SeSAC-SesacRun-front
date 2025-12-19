@@ -4,9 +4,11 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 
 export default function MyPage() {
-    const [activeTab, setActiveTab] = useState<'courses' | 'community' | 'instructor'>('courses');
+    const [activeTab, setActiveTab] = useState<'courses' | 'posts' | 'meetings' | 'purchases' | 'instructor'>('courses');
+    const [postsSubTab, setPostsSubTab] = useState<'qna' | 'study' | 'project'>('qna');
+    const [meetingsFilter, setMeetingsFilter] = useState<'all' | 'organizer' | 'participant'>('all');
 
-    // 사용자 정보 (실제로는 API에서 가져올 데이터)
+    // 사용자 정보
     const user = {
         name: '김학습',
         email: 'student@example.com',
@@ -29,7 +31,17 @@ export default function MyPage() {
         },
     ];
 
-    const myPosts = [
+    const myQnA = [
+        {
+            id: '1',
+            courseTitle: 'React 완벽 가이드',
+            question: '컴포넌트 렌더링 최적화 방법이 궁금합니다',
+            answered: true,
+            createdAt: '2024-01-15',
+        },
+    ];
+
+    const myStudyPosts = [
         {
             id: '1',
             category: 'study',
@@ -39,6 +51,9 @@ export default function MyPage() {
             totalMembers: 10,
             views: 1234,
         },
+    ];
+
+    const myProjectPosts = [
         {
             id: '2',
             category: 'project',
@@ -50,6 +65,31 @@ export default function MyPage() {
         },
     ];
 
+    const myMeetings = [
+        {
+            id: '1',
+            title: '프론트엔드 실전 프로젝트 스터디원 모집',
+            status: 'recruiting',
+            role: 'organizer',
+        },
+        {
+            id: '2',
+            title: 'React 스터디',
+            status: 'approved',
+            role: 'participant',
+        },
+    ];
+
+    const myPurchases = [
+        {
+            id: '1',
+            courseTitle: 'React 완벽 가이드',
+            price: 129000,
+            purchasedAt: '2024-01-10',
+            thumbnail: 'https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=800',
+        },
+    ];
+
     const instructorCourses = [
         {
             id: '1',
@@ -57,13 +97,6 @@ export default function MyPage() {
             students: 1234,
             rating: 4.8,
             thumbnail: 'https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=800',
-        },
-        {
-            id: '2',
-            title: 'TypeScript 마스터하기',
-            students: 856,
-            rating: 4.9,
-            thumbnail: 'https://images.unsplash.com/photo-1516116216624-53e697fedbea?w=800',
         },
     ];
 
@@ -73,7 +106,7 @@ export default function MyPage() {
                 <div className="flex w-full flex-col gap-6 md:flex-row md:gap-8">
                     {/* Sidebar */}
                     <aside className="w-full shrink-0 md:w-64">
-                        <div className="flex h-full flex-col gap-6 rounded-lg bg-white p-6 dark:bg-gray-900/50">
+                        <div className="flex h-full flex-col gap-6 rounded-lg bg-white dark:bg-gray-900 p-6 border border-gray-200 dark:border-gray-800">
                             {/* User Profile */}
                             <div className="flex flex-col items-center gap-4 pb-6 border-b border-gray-200 dark:border-gray-700">
                                 <div
@@ -96,50 +129,55 @@ export default function MyPage() {
                                 <button
                                     onClick={() => setActiveTab('courses')}
                                     className={`flex items-center gap-3 rounded-lg px-3 py-2 ${activeTab === 'courses'
-                                            ? 'bg-primary/10 text-primary dark:bg-primary/20'
-                                            : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800'
+                                        ? 'bg-primary/10 text-primary dark:bg-primary/20'
+                                        : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800'
                                         }`}
                                 >
                                     <span className="material-symbols-outlined text-xl">school</span>
                                     <p className="text-sm font-medium">내 강의</p>
                                 </button>
                                 <button
-                                    onClick={() => setActiveTab('community')}
-                                    className={`flex items-center gap-3 rounded-lg px-3 py-2 ${activeTab === 'community'
-                                            ? 'bg-primary/10 text-primary dark:bg-primary/20'
-                                            : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800'
+                                    onClick={() => setActiveTab('purchases')}
+                                    className={`flex items-center gap-3 rounded-lg px-3 py-2 ${activeTab === 'purchases'
+                                        ? 'bg-primary/10 text-primary dark:bg-primary/20'
+                                        : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800'
+                                        }`}
+                                >
+                                    <span className="material-symbols-outlined text-xl">receipt_long</span>
+                                    <p className="text-sm font-medium">구매 내역</p>
+                                </button>
+                                <button
+                                    onClick={() => setActiveTab('posts')}
+                                    className={`flex items-center gap-3 rounded-lg px-3 py-2 ${activeTab === 'posts'
+                                        ? 'bg-primary/10 text-primary dark:bg-primary/20'
+                                        : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800'
+                                        }`}
+                                >
+                                    <span className="material-symbols-outlined text-xl">article</span>
+                                    <p className="text-sm font-medium">게시글</p>
+                                </button>
+                                <button
+                                    onClick={() => setActiveTab('meetings')}
+                                    className={`flex items-center gap-3 rounded-lg px-3 py-2 ${activeTab === 'meetings'
+                                        ? 'bg-primary/10 text-primary dark:bg-primary/20'
+                                        : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800'
                                         }`}
                                 >
                                     <span className="material-symbols-outlined text-xl">groups</span>
-                                    <p className="text-sm font-medium">내 모집 글</p>
+                                    <p className="text-sm font-medium">모임</p>
                                 </button>
                                 {user.role === 'instructor' && (
                                     <button
                                         onClick={() => setActiveTab('instructor')}
                                         className={`flex items-center gap-3 rounded-lg px-3 py-2 ${activeTab === 'instructor'
-                                                ? 'bg-primary/10 text-primary dark:bg-primary/20'
-                                                : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800'
+                                            ? 'bg-primary/10 text-primary dark:bg-primary/20'
+                                            : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800'
                                             }`}
                                     >
                                         <span className="material-symbols-outlined text-xl">workspace_premium</span>
                                         <p className="text-sm font-medium">운영 중인 강의</p>
                                     </button>
                                 )}
-                            </div>
-
-                            {/* Settings */}
-                            <div className="mt-auto pt-6 border-t border-gray-200 dark:border-gray-700">
-                                <Link
-                                    href="/settings"
-                                    className="flex items-center gap-3 rounded-lg px-3 py-2 text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
-                                >
-                                    <span className="material-symbols-outlined text-xl">settings</span>
-                                    <p className="text-sm font-medium">설정</p>
-                                </Link>
-                                <button className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800">
-                                    <span className="material-symbols-outlined text-xl">logout</span>
-                                    <p className="text-sm font-medium">로그아웃</p>
-                                </button>
                             </div>
                         </div>
                     </aside>
@@ -160,14 +198,25 @@ export default function MyPage() {
                                 </div>
                                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                                     {myCourses.map((course) => (
-                                        <div
+                                        <Link
                                             key={course.id}
-                                            className="flex flex-col gap-4 rounded-xl bg-white p-4 shadow-sm dark:bg-gray-900/50"
+                                            href={`/watch/${course.id}`}
+                                            className="group flex flex-col gap-4 rounded-xl bg-white dark:bg-gray-900 p-4 shadow-sm border border-gray-200 dark:border-gray-800 hover:shadow-md transition-shadow"
                                         >
-                                            <div
-                                                className="w-full bg-center bg-no-repeat aspect-video bg-cover rounded-lg"
-                                                style={{ backgroundImage: `url('${course.thumbnail}')` }}
-                                            />
+                                            <div className="relative">
+                                                <div
+                                                    className="w-full bg-center bg-no-repeat aspect-video bg-cover rounded-lg"
+                                                    style={{ backgroundImage: `url('${course.thumbnail}')` }}
+                                                />
+                                                {/* Play Button Overlay */}
+                                                <div className="absolute inset-0 flex items-center justify-center bg-black/20 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity">
+                                                    <div className="flex items-center justify-center size-16 bg-primary rounded-full">
+                                                        <span className="material-symbols-outlined text-white text-3xl" style={{ fontVariationSettings: "'FILL' 1" }}>
+                                                            play_arrow
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
                                             <div className="flex flex-col gap-3">
                                                 <p className="text-base font-bold text-gray-900 dark:text-white">
                                                     {course.title}
@@ -184,12 +233,37 @@ export default function MyPage() {
                                                         />
                                                     </div>
                                                 </div>
-                                                <Link
-                                                    href={`/watch/${course.id}`}
-                                                    className="flex w-full items-center justify-center rounded-lg h-9 px-4 bg-primary text-white text-sm font-medium hover:bg-primary/90"
-                                                >
-                                                    이어보기
-                                                </Link>
+                                            </div>
+                                        </Link>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Purchases Tab */}
+                        {activeTab === 'purchases' && (
+                            <div className="flex flex-col gap-6">
+                                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">구매 내역</h2>
+                                <div className="space-y-4">
+                                    {myPurchases.map((purchase) => (
+                                        <div
+                                            key={purchase.id}
+                                            className="flex gap-4 bg-white dark:bg-gray-900 rounded-lg p-4 border border-gray-200 dark:border-gray-800"
+                                        >
+                                            <div
+                                                className="w-32 h-20 bg-center bg-cover rounded-lg flex-shrink-0"
+                                                style={{ backgroundImage: `url('${purchase.thumbnail}')` }}
+                                            />
+                                            <div className="flex-1">
+                                                <h3 className="font-bold text-gray-900 dark:text-white mb-1">
+                                                    {purchase.courseTitle}
+                                                </h3>
+                                                <p className="text-sm text-gray-600 dark:text-gray-400">
+                                                    구매일: {purchase.purchasedAt}
+                                                </p>
+                                                <p className="text-sm font-bold text-primary mt-2">
+                                                    {purchase.price.toLocaleString()}원
+                                                </p>
                                             </div>
                                         </div>
                                     ))}
@@ -197,66 +271,212 @@ export default function MyPage() {
                             </div>
                         )}
 
-                        {/* My Community Posts Tab */}
-                        {activeTab === 'community' && (
+                        {/* Posts Tab */}
+                        {activeTab === 'posts' && (
                             <div className="flex flex-col gap-6">
-                                <div className="flex items-center justify-between">
-                                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white">내 모집 글</h2>
-                                    <Link
-                                        href="/community/create"
-                                        className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg font-bold hover:bg-primary/90"
+                                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">게시글</h2>
+
+                                {/* Sub Tabs */}
+                                <div className="flex gap-2 border-b border-gray-200 dark:border-gray-700">
+                                    <button
+                                        onClick={() => setPostsSubTab('qna')}
+                                        className={`px-4 py-2 text-sm font-medium border-b-2 ${postsSubTab === 'qna'
+                                            ? 'border-primary text-primary'
+                                            : 'border-transparent text-gray-600 dark:text-gray-400'
+                                            }`}
                                     >
-                                        <span className="material-symbols-outlined text-lg">add</span>
-                                        <span>새 글 작성</span>
-                                    </Link>
+                                        Q&A
+                                    </button>
+                                    <button
+                                        onClick={() => setPostsSubTab('study')}
+                                        className={`px-4 py-2 text-sm font-medium border-b-2 ${postsSubTab === 'study'
+                                            ? 'border-primary text-primary'
+                                            : 'border-transparent text-gray-600 dark:text-gray-400'
+                                            }`}
+                                    >
+                                        스터디
+                                    </button>
+                                    <button
+                                        onClick={() => setPostsSubTab('project')}
+                                        className={`px-4 py-2 text-sm font-medium border-b-2 ${postsSubTab === 'project'
+                                            ? 'border-primary text-primary'
+                                            : 'border-transparent text-gray-600 dark:text-gray-400'
+                                            }`}
+                                    >
+                                        팀 프로젝트
+                                    </button>
                                 </div>
-                                <div className="space-y-4">
-                                    {myPosts.map((post) => (
-                                        <Link
-                                            key={post.id}
-                                            href={`/community/${post.id}`}
-                                            className="block bg-white dark:bg-gray-900 rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow border border-gray-200 dark:border-gray-800"
-                                        >
-                                            <div className="flex items-start justify-between gap-4">
-                                                <div className="flex-1">
-                                                    <div className="flex items-center gap-2 mb-2">
-                                                        <span
-                                                            className={`inline-block px-3 py-1 rounded-full text-xs font-bold ${post.status === 'recruiting'
-                                                                    ? 'bg-green-100 dark:bg-green-500/20 text-green-600 dark:text-green-400'
-                                                                    : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400'
-                                                                }`}
-                                                        >
-                                                            {post.status === 'recruiting' ? '모집중' : '모집완료'}
-                                                        </span>
-                                                        <span className="text-xs text-gray-500 dark:text-gray-400">
-                                                            {post.category === 'study' ? '스터디' : '팀 프로젝트'}
-                                                        </span>
-                                                        <span className="text-xs text-gray-500 dark:text-gray-400">
-                                                            {post.currentMembers}/{post.totalMembers}명
-                                                        </span>
-                                                    </div>
-                                                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
-                                                        {post.title}
-                                                    </h3>
-                                                    <div className="flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400">
-                                                        <span className="flex items-center gap-1">
-                                                            <span className="material-symbols-outlined text-sm">visibility</span>
-                                                            {post.views.toLocaleString()}
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                                <div className="flex gap-2">
-                                                    <Link
-                                                        href={`/community/${post.id}/edit`}
-                                                        className="px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700"
-                                                        onClick={(e) => e.stopPropagation()}
+
+                                {/* Q&A List */}
+                                {postsSubTab === 'qna' && (
+                                    <div className="space-y-4">
+                                        {myQnA.map((qna) => (
+                                            <div
+                                                key={qna.id}
+                                                className="bg-white dark:bg-gray-900 rounded-lg p-4 border border-gray-200 dark:border-gray-800"
+                                            >
+                                                <div className="flex items-start justify-between mb-2">
+                                                    <span className="text-xs text-gray-500 dark:text-gray-400">
+                                                        {qna.courseTitle}
+                                                    </span>
+                                                    <span
+                                                        className={`text-xs px-2 py-1 rounded ${qna.answered
+                                                            ? 'bg-green-100 dark:bg-green-500/20 text-green-600 dark:text-green-400'
+                                                            : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400'
+                                                            }`}
                                                     >
-                                                        수정
-                                                    </Link>
+                                                        {qna.answered ? '답변 완료' : '대기 중'}
+                                                    </span>
                                                 </div>
+                                                <h3 className="font-bold text-gray-900 dark:text-white mb-1">
+                                                    {qna.question}
+                                                </h3>
+                                                <p className="text-xs text-gray-500 dark:text-gray-400">
+                                                    {qna.createdAt}
+                                                </p>
                                             </div>
-                                        </Link>
-                                    ))}
+                                        ))}
+                                    </div>
+                                )}
+
+                                {/* Study Posts List */}
+                                {postsSubTab === 'study' && (
+                                    <div className="space-y-4">
+                                        {myStudyPosts.map((post) => (
+                                            <Link
+                                                key={post.id}
+                                                href={`/community/${post.id}`}
+                                                className="block bg-white dark:bg-gray-900 rounded-lg p-4 border border-gray-200 dark:border-gray-800 hover:shadow-md transition-shadow"
+                                            >
+                                                <div className="flex items-center gap-2 mb-2">
+                                                    <span
+                                                        className={`text-xs px-2 py-1 rounded font-bold ${post.status === 'recruiting'
+                                                            ? 'bg-green-100 dark:bg-green-500/20 text-green-600 dark:text-green-400'
+                                                            : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400'
+                                                            }`}
+                                                    >
+                                                        {post.status === 'recruiting' ? '모집중' : '모집완료'}
+                                                    </span>
+                                                    <span className="text-xs text-gray-500 dark:text-gray-400">
+                                                        {post.currentMembers}/{post.totalMembers}명
+                                                    </span>
+                                                </div>
+                                                <h3 className="font-bold text-gray-900 dark:text-white mb-2">
+                                                    {post.title}
+                                                </h3>
+                                                <p className="text-xs text-gray-500 dark:text-gray-400">
+                                                    조회수 {post.views.toLocaleString()}
+                                                </p>
+                                            </Link>
+                                        ))}
+                                    </div>
+                                )}
+
+                                {/* Project Posts List */}
+                                {postsSubTab === 'project' && (
+                                    <div className="space-y-4">
+                                        {myProjectPosts.map((post) => (
+                                            <Link
+                                                key={post.id}
+                                                href={`/community/${post.id}`}
+                                                className="block bg-white dark:bg-gray-900 rounded-lg p-4 border border-gray-200 dark:border-gray-800 hover:shadow-md transition-shadow"
+                                            >
+                                                <div className="flex items-center gap-2 mb-2">
+                                                    <span
+                                                        className={`text-xs px-2 py-1 rounded font-bold ${post.status === 'recruiting'
+                                                            ? 'bg-green-100 dark:bg-green-500/20 text-green-600 dark:text-green-400'
+                                                            : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400'
+                                                            }`}
+                                                    >
+                                                        {post.status === 'recruiting' ? '모집중' : '모집완료'}
+                                                    </span>
+                                                    <span className="text-xs text-gray-500 dark:text-gray-400">
+                                                        {post.currentMembers}/{post.totalMembers}명
+                                                    </span>
+                                                </div>
+                                                <h3 className="font-bold text-gray-900 dark:text-white mb-2">
+                                                    {post.title}
+                                                </h3>
+                                                <p className="text-xs text-gray-500 dark:text-gray-400">
+                                                    조회수 {post.views.toLocaleString()}
+                                                </p>
+                                            </Link>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        )}
+
+                        {/* Meetings Tab */}
+                        {activeTab === 'meetings' && (
+                            <div className="flex flex-col gap-6">
+                                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">모임</h2>
+
+                                {/* Filter Buttons */}
+                                <div className="flex gap-2 border-b border-gray-200 dark:border-gray-700">
+                                    <button
+                                        onClick={() => setMeetingsFilter('all')}
+                                        className={`px-4 py-2 text-sm font-medium border-b-2 ${meetingsFilter === 'all'
+                                                ? 'border-primary text-primary'
+                                                : 'border-transparent text-gray-600 dark:text-gray-400'
+                                            }`}
+                                    >
+                                        전체
+                                    </button>
+                                    <button
+                                        onClick={() => setMeetingsFilter('organizer')}
+                                        className={`px-4 py-2 text-sm font-medium border-b-2 ${meetingsFilter === 'organizer'
+                                                ? 'border-primary text-primary'
+                                                : 'border-transparent text-gray-600 dark:text-gray-400'
+                                            }`}
+                                    >
+                                        모집자
+                                    </button>
+                                    <button
+                                        onClick={() => setMeetingsFilter('participant')}
+                                        className={`px-4 py-2 text-sm font-medium border-b-2 ${meetingsFilter === 'participant'
+                                                ? 'border-primary text-primary'
+                                                : 'border-transparent text-gray-600 dark:text-gray-400'
+                                            }`}
+                                    >
+                                        참여자
+                                    </button>
+                                </div>
+
+                                <div className="space-y-4">
+                                    {myMeetings
+                                        .filter(meeting =>
+                                            meetingsFilter === 'all' || meeting.role === meetingsFilter
+                                        )
+                                        .map((meeting) => (
+                                            <div
+                                                key={meeting.id}
+                                                className="bg-white dark:bg-gray-900 rounded-lg p-4 border border-gray-200 dark:border-gray-800"
+                                            >
+                                                <div className="flex items-center gap-2 mb-2">
+                                                    <span
+                                                        className={`text-xs px-2 py-1 rounded font-bold ${meeting.status === 'recruiting'
+                                                            ? 'bg-green-100 dark:bg-green-500/20 text-green-600 dark:text-green-400'
+                                                            : meeting.status === 'approved'
+                                                                ? 'bg-blue-100 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400'
+                                                                : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400'
+                                                            }`}
+                                                    >
+                                                        {meeting.status === 'recruiting'
+                                                            ? '모집중'
+                                                            : meeting.status === 'approved'
+                                                                ? '참여 중'
+                                                                : '완료'}
+                                                    </span>
+                                                    <span className="text-xs text-gray-500 dark:text-gray-400">
+                                                        {meeting.role === 'organizer' ? '모집자' : '참여자'}
+                                                    </span>
+                                                </div>
+                                                <h3 className="font-bold text-gray-900 dark:text-white">
+                                                    {meeting.title}
+                                                </h3>
+                                            </div>
+                                        ))}
                                 </div>
                             </div>
                         )}
@@ -278,7 +498,7 @@ export default function MyPage() {
                                     {instructorCourses.map((course) => (
                                         <div
                                             key={course.id}
-                                            className="flex flex-col gap-4 rounded-xl bg-white p-4 shadow-sm dark:bg-gray-900/50"
+                                            className="flex flex-col gap-4 rounded-xl bg-white dark:bg-gray-900 p-4 shadow-sm border border-gray-200 dark:border-gray-800"
                                         >
                                             <div
                                                 className="w-full bg-center bg-no-repeat aspect-video bg-cover rounded-lg"

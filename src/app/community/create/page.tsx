@@ -60,8 +60,8 @@ JavaScript에 익숙하고 React 기본 개념을 이해하고 계신 분, 적�
                                 type="button"
                                 onClick={() => setCategory('study')}
                                 className={`flex-1 py-3 px-4 rounded-lg border-2 font-medium transition-colors ${category === 'study'
-                                        ? 'border-primary bg-primary/10 text-primary'
-                                        : 'border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:border-gray-400'
+                                    ? 'border-primary bg-primary/10 text-primary'
+                                    : 'border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:border-gray-400'
                                     }`}
                             >
                                 스터디
@@ -70,8 +70,8 @@ JavaScript에 익숙하고 React 기본 개념을 이해하고 계신 분, 적�
                                 type="button"
                                 onClick={() => setCategory('project')}
                                 className={`flex-1 py-3 px-4 rounded-lg border-2 font-medium transition-colors ${category === 'project'
-                                        ? 'border-primary bg-primary/10 text-primary'
-                                        : 'border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:border-gray-400'
+                                    ? 'border-primary bg-primary/10 text-primary'
+                                    : 'border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:border-gray-400'
                                     }`}
                             >
                                 팀 프로젝트
@@ -89,8 +89,8 @@ JavaScript에 익숙하고 React 기본 개념을 이해하고 계신 분, 적�
                                 type="button"
                                 onClick={() => setStatus('recruiting')}
                                 className={`flex-1 py-3 px-4 rounded-lg border-2 font-medium transition-colors ${status === 'recruiting'
-                                        ? 'border-green-500 bg-green-50 dark:bg-green-500/10 text-green-600 dark:text-green-400'
-                                        : 'border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:border-gray-400'
+                                    ? 'border-green-500 bg-green-50 dark:bg-green-500/10 text-green-600 dark:text-green-400'
+                                    : 'border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:border-gray-400'
                                     }`}
                             >
                                 모집중
@@ -99,8 +99,8 @@ JavaScript에 익숙하고 React 기본 개념을 이해하고 계신 분, 적�
                                 type="button"
                                 onClick={() => setStatus('completed')}
                                 className={`flex-1 py-3 px-4 rounded-lg border-2 font-medium transition-colors ${status === 'completed'
-                                        ? 'border-gray-500 bg-gray-50 dark:bg-gray-500/10 text-gray-600 dark:text-gray-400'
-                                        : 'border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:border-gray-400'
+                                    ? 'border-gray-500 bg-gray-50 dark:bg-gray-500/10 text-gray-600 dark:text-gray-400'
+                                    : 'border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:border-gray-400'
                                     }`}
                             >
                                 모집완료
@@ -164,7 +164,7 @@ JavaScript에 익숙하고 React 기본 개념을 이해하고 계신 분, 적�
                     <div className="flex gap-4 justify-end">
                         <Link
                             href="/community"
-                            className="px-6 py-3 border-2 border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 rounded-lg font-bold hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                            className="px-6 py-3 border-2 border-primary bg-white dark:bg-gray-900 text-primary rounded-lg font-bold hover:bg-primary/10 dark:hover:bg-primary/20 transition-colors"
                         >
                             취소
                         </Link>

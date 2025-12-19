@@ -16,7 +16,7 @@ export interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ isAuthenticated = false, user }) => {
   return (
-    <header className="sticky top-0 z-50 w-full bg-white/80 dark:bg-background-dark/80 backdrop-blur-sm border-b border-gray-200/50 dark:border-gray-700/50">
+    <header className="sticky top-0 z-50 w-full bg-white dark:bg-gray-900 backdrop-blur-sm border-b border-gray-200 dark:border-gray-700">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between whitespace-nowrap py-3">
           {/* Logo */}
@@ -57,33 +57,27 @@ const Header: React.FC<HeaderProps> = ({ isAuthenticated = false, user }) => {
           </div>
 
           {/* Right Section */}
-          <div className="flex items-center gap-4">{isAuthenticated && user ? (
-            <div className="flex items-center gap-3">
-              <button className="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-10 w-10 bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700">
-                <span className="material-symbols-outlined">notifications</span>
-              </button>
-              <Link href="/profile" className="flex items-center gap-3">
-                <Avatar src={user.avatar} alt={user.name} size="md" />
-                <div className="hidden lg:flex flex-col text-sm">
-                  <h1 className="text-gray-900 dark:text-white font-medium leading-normal">
-                    {user.name}
-                  </h1>
-                  <p className="text-gray-500 dark:text-gray-400 font-normal leading-normal">
-                    {user.email}
-                  </p>
-                </div>
-              </Link>
-            </div>
-          ) : (
-            <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
+            {isAuthenticated && user ? (
+              <>
+                {/* 채팅 아이콘 */}
+                <Link
+                  href="/chat/1"
+                  className="flex items-center justify-center rounded-full h-10 w-10 bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700"
+                >
+                  <span className="material-symbols-outlined">chat</span>
+                </Link>
+
+                {/* 프로필 아이콘 */}
+                <Link href="/profile" className="flex items-center gap-3">
+                  <Avatar src={user.avatar} alt={user.name} size="md" />
+                </Link>
+              </>
+            ) : (
               <Link href="/login">
-                <Button variant="secondary">로그인</Button>
+                <Button variant="primary">로그인</Button>
               </Link>
-              <Link href="/signup">
-                <Button variant="primary">회원가입</Button>
-              </Link>
-            </div>
-          )}
+            )}
           </div>
         </div>
       </div>

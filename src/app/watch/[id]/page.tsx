@@ -8,6 +8,8 @@ export default function WatchPage() {
     const params = useParams();
     const courseId = params.id;
     const [activeTab, setActiveTab] = useState<'curriculum' | 'qa'>('curriculum');
+    const [showQnAEditor, setShowQnAEditor] = useState(false);
+    const [newQuestion, setNewQuestion] = useState('');
 
     const course = {
         id: courseId,
@@ -24,9 +26,9 @@ export default function WatchPage() {
             section: '섹션 1: 디자인 기초',
             expanded: true,
             lectures: [
-                { id: '1', title: '1. 디자인 입문하기', duration: '12:10', locked: false, active: true },
-                { id: '2', title: '2. 디자인 툴 소개', duration: '08:32', locked: false, active: false },
-                { id: '3', title: '3. 타이포그래피 기본', duration: '15:00', locked: true, active: false },
+                { id: '1', title: '1. 디자인 입문하기', duration: '12:10', active: true },
+                { id: '2', title: '2. 디자인 툴 소개', duration: '08:32', active: false },
+                { id: '3', title: '3. 타이포그래피 기본', duration: '15:00', active: false },
             ],
         },
         {
@@ -41,8 +43,35 @@ export default function WatchPage() {
         },
     ];
 
+    const qnaList = [
+        {
+            id: '1',
+            user: { name: '김학생', avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400' },
+            question: '디자인 툴은 어떤 것을 사용하나요?',
+            answer: {
+                content: 'Figma를 주로 사용합니다. 무료로 사용할 수 있고 협업에도 좋습니다.',
+                answeredAt: '2일 전',
+            },
+            createdAt: '3일 전',
+        },
+        {
+            id: '2',
+            user: { name: '이학생', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400' },
+            question: '강의 자료는 어디서 다운로드 받나요?',
+            createdAt: '1일 전',
+        },
+    ];
+
+    const handleSubmitQuestion = () => {
+        if (newQuestion.trim()) {
+            alert('질문이 등록되었습니다!');
+            setNewQuestion('');
+            setShowQnAEditor(false);
+        }
+    };
+
     return (
-        <div className="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden">
+        <div className="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden bg-background-light dark:bg-background-dark">
             <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-gray-200 dark:border-b-gray-700 px-6 lg:px-10 py-3 bg-white dark:bg-gray-900 w-full z-10">
                 <div className="flex items-center gap-4 text-gray-900 dark:text-white">
                     <Link className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-primary" href="/my-courses">
@@ -52,22 +81,11 @@ export default function WatchPage() {
                     <span className="text-gray-300 dark:text-gray-600">|</span>
                     <h2 className="text-lg font-bold leading-tight tracking-[-0.015em]">{course.title}</h2>
                 </div>
-                <div className="flex items-center gap-2">
-                    <button className="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white gap-2 text-sm font-bold leading-normal tracking-[0.015em] min-w-0 px-2.5 hover:bg-gray-200 dark:hover:bg-gray-700">
-                        <span className="material-symbols-outlined text-xl">notifications</span>
-                    </button>
-                    <div
-                        className="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10"
-                        style={{
-                            backgroundImage: "url('https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400')",
-                        }}
-                    />
-                </div>
             </header>
 
             <div className="flex flex-1 w-full max-w-[1920px] mx-auto">
-                <main className="flex-1 p-6 lg:p-8">
-                    <h1 className="text-2xl lg:text-3xl font-bold leading-tight tracking-[-0.015em] mb-4">
+                <main className="flex-1 p-6 lg:p-8 bg-white dark:bg-gray-900">
+                    <h1 className="text-2xl lg:text-3xl font-bold leading-tight tracking-[-0.015em] mb-4 text-gray-900 dark:text-white">
                         {course.currentLesson}
                     </h1>
                     <div className="mb-6">
@@ -175,7 +193,7 @@ export default function WatchPage() {
                             <>
                                 <div className="flex flex-col gap-2 mb-6">
                                     <div className="flex gap-6 justify-between items-center">
-                                        <p className="text-sm font-medium leading-normal">학습 진행률</p>
+                                        <p className="text-sm font-medium leading-normal text-gray-900 dark:text-white">학습 진행률</p>
                                         <p className="text-sm font-bold leading-normal text-primary">{course.progress}% 완료</p>
                                     </div>
                                     <div className="rounded-full bg-gray-200 dark:bg-gray-700 h-2">
@@ -199,29 +217,21 @@ export default function WatchPage() {
                                                             key={lecture.id}
                                                             className={`flex items-start gap-3 p-3 rounded-lg cursor-pointer ${lecture.active
                                                                     ? 'bg-primary/10 dark:bg-primary/20'
-                                                                    : lecture.locked
-                                                                        ? 'opacity-60'
-                                                                        : 'hover:bg-gray-100 dark:hover:bg-gray-700/50'
+                                                                    : 'hover:bg-gray-100 dark:hover:bg-gray-700/50'
                                                                 }`}
                                                         >
                                                             <span
-                                                                className={`material-symbols-outlined text-lg mt-0.5 ${lecture.active
-                                                                        ? 'text-primary'
-                                                                        : lecture.locked
-                                                                            ? 'text-gray-400'
-                                                                            : 'text-gray-400'
+                                                                className={`material-symbols-outlined text-lg mt-0.5 ${lecture.active ? 'text-primary' : 'text-gray-400 dark:text-gray-500'
                                                                     }`}
                                                                 style={lecture.active ? { fontVariationSettings: "'FILL' 1" } : {}}
                                                             >
-                                                                {lecture.locked ? 'lock' : 'play_circle'}
+                                                                play_circle
                                                             </span>
                                                             <div className="flex flex-col flex-1">
                                                                 <p
                                                                     className={`text-sm ${lecture.active
                                                                             ? 'font-bold text-primary dark:text-white'
-                                                                            : lecture.locked
-                                                                                ? 'font-medium text-gray-400 dark:text-gray-500'
-                                                                                : 'font-medium text-gray-700 dark:text-gray-200'
+                                                                            : 'font-medium text-gray-700 dark:text-gray-200'
                                                                         }`}
                                                                 >
                                                                     {lecture.title}
@@ -239,29 +249,71 @@ export default function WatchPage() {
                         )}
 
                         {activeTab === 'qa' && (
-                            <div className="flex flex-col gap-4">
-                                <p className="text-sm font-semibold text-gray-900 dark:text-white">
-                                    이 강의에 대한 질문을 남겨주세요
-                                </p>
-                                <textarea
-                                    className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:ring-primary focus:border-primary resize-none"
-                                    placeholder="질문을 입력하세요..."
-                                    rows={4}
-                                />
-                                <button className="w-full bg-primary text-white font-bold py-2 px-4 rounded-lg hover:bg-primary/90 transition-colors">
-                                    질문하기
-                                </button>
+                            <div className="flex flex-col gap-4 flex-1">
+                                <div className="flex items-center justify-between">
+                                    <p className="text-sm font-semibold text-gray-900 dark:text-white">
+                                        이 강의에 대한 질문
+                                    </p>
+                                    <button
+                                        onClick={() => setShowQnAEditor(!showQnAEditor)}
+                                        className="text-sm font-bold text-primary hover:underline"
+                                    >
+                                        {showQnAEditor ? '취소' : '질문하기'}
+                                    </button>
+                                </div>
 
-                                <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
-                                    <p className="text-sm font-semibold text-gray-900 dark:text-white mb-3">최근 질문</p>
-                                    <div className="space-y-3">
-                                        <div className="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                                            <p className="text-sm font-medium text-gray-900 dark:text-white mb-1">
-                                                디자인 툴은 어떤 것을 사용하나요?
-                                            </p>
-                                            <p className="text-xs text-gray-500 dark:text-gray-400">김학생 · 2일 전</p>
-                                        </div>
+                                {showQnAEditor && (
+                                    <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg">
+                                        <textarea
+                                            value={newQuestion}
+                                            onChange={(e) => setNewQuestion(e.target.value)}
+                                            className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:ring-primary focus:border-primary resize-none"
+                                            placeholder="질문을 입력하세요..."
+                                            rows={4}
+                                        />
+                                        <button
+                                            onClick={handleSubmitQuestion}
+                                            className="mt-3 w-full bg-primary text-white font-bold py-2 px-4 rounded-lg hover:bg-primary/90 transition-colors"
+                                        >
+                                            질문 등록
+                                        </button>
                                     </div>
+                                )}
+
+                                <div className="flex-1 overflow-y-auto space-y-4">
+                                    {qnaList.map((qna) => (
+                                        <div key={qna.id} className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg">
+                                            <div className="flex items-start gap-3 mb-3">
+                                                <img
+                                                    src={qna.user.avatar}
+                                                    alt={qna.user.name}
+                                                    className="w-8 h-8 rounded-full"
+                                                />
+                                                <div className="flex-1">
+                                                    <div className="flex items-center gap-2 mb-1">
+                                                        <span className="text-sm font-bold text-gray-900 dark:text-white">
+                                                            {qna.user.name}
+                                                        </span>
+                                                        <span className="text-xs text-gray-500 dark:text-gray-400">
+                                                            {qna.createdAt}
+                                                        </span>
+                                                    </div>
+                                                    <p className="text-sm text-gray-900 dark:text-white">{qna.question}</p>
+                                                </div>
+                                            </div>
+                                            {qna.answer && (
+                                                <div className="ml-11 pl-3 border-l-2 border-primary">
+                                                    <div className="flex items-center gap-2 mb-1">
+                                                        <span className="text-xs font-bold text-primary">강사 답변</span>
+                                                        <span className="text-xs text-gray-500 dark:text-gray-400">
+                                                            {qna.answer.answeredAt}
+                                                        </span>
+                                                    </div>
+                                                    <p className="text-sm text-gray-700 dark:text-gray-300">{qna.answer.content}</p>
+                                                </div>
+                                            )}
+                                        </div>
+                                    ))}
                                 </div>
                             </div>
                         )}

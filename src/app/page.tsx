@@ -1,9 +1,13 @@
-import React from 'react';
+'use client';
+
+import React, { useState } from 'react';
 import CourseCard from '@/components/course/CourseCard';
-import Button from '@/components/common/Button';
+import { useRouter } from 'next/navigation';
 
 export default function Home() {
-  // 임시 데이터 - 실제로는 API에서 가져올 데이터
+  const router = useRouter();
+  const [searchQuery, setSearchQuery] = useState('');
+
   const popularCourses = [
     {
       id: '1',
@@ -13,7 +17,6 @@ export default function Home() {
       rating: 4.8,
       reviewCount: 1204,
       price: 120000,
-      originalPrice: 240000,
     },
     {
       id: '2',
@@ -23,7 +26,6 @@ export default function Home() {
       rating: 4.9,
       reviewCount: 2531,
       price: 150000,
-      originalPrice: 300000,
     },
     {
       id: '3',
@@ -33,7 +35,6 @@ export default function Home() {
       rating: 4.7,
       reviewCount: 3012,
       price: 180000,
-      originalPrice: 360000,
     },
   ];
 
@@ -78,12 +79,19 @@ export default function Home() {
 
   const categories = ['전체', '프로그래밍', '데이터 사이언스', '디자인', '마케팅', '비즈니스'];
 
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      router.push(`/search?q=${encodeURIComponent(searchQuery)}`);
+    }
+  };
+
   return (
-    <div className="w-full">
-      {/* Hero Section */}
+    <main className="flex-1">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-16">
+        {/* Hero Section */}
         <div
-          className="flex min-h-[400px] flex-col gap-6 bg-cover bg-center bg-no-repeat rounded-xl items-center justify-center p-8 text-center"
+          className="flex min-h-[400px] flex-col gap-6 bg-cover bg-center bg-no-repeat rounded-xl items-center justify-center p-8 text-center mb-12"
           style={{
             backgroundImage:
               "linear-gradient(rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.5) 100%), url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=1200')",
@@ -97,23 +105,25 @@ export default function Home() {
               최고의 전문가들이 만든 다양한 강의를 통해 새로운 기술을 배우고 커리어를 발전시켜 보세요.
             </h2>
           </div>
-          <div className="w-full max-w-lg mt-4">
+          <form onSubmit={handleSearch} className="w-full max-w-lg mt-4">
             <label className="flex flex-col min-w-40 h-14 w-full">
               <div className="flex w-full flex-1 items-stretch rounded-lg h-full shadow-lg">
-                <div className="text-gray-500 flex bg-white dark:bg-gray-800 items-center justify-center pl-4 rounded-l-lg">
+                <div className="text-gray-500 dark:text-gray-400 flex bg-white dark:bg-gray-800 items-center justify-center pl-4 rounded-l-lg">
                   <span className="material-symbols-outlined">search</span>
                 </div>
                 <input
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
                   className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-r-lg text-gray-900 dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/50 border-none bg-white dark:bg-gray-800 h-full placeholder:text-gray-500 dark:placeholder:text-gray-400 px-4 text-base font-normal"
                   placeholder="배우고 싶은 지식을 검색해보세요."
                 />
               </div>
             </label>
-          </div>
+          </form>
         </div>
 
         {/* Popular Courses Section */}
-        <section className="py-12 md:py-20">
+        <section className="mb-12 md:mb-20">
           <h2 className="text-gray-900 dark:text-white text-2xl md:text-3xl font-bold tracking-tight mb-6">
             지금 가장 인기 있는 강의 🔥
           </h2>
@@ -133,11 +143,10 @@ export default function Home() {
             {categories.map((category, index) => (
               <div
                 key={index}
-                className={`flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full pl-4 pr-4 cursor-pointer ${
-                  index === 0
+                className={`flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full pl-4 pr-4 cursor-pointer ${index === 0
                     ? 'bg-primary text-white'
                     : 'bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700'
-                }`}
+                  }`}
               >
                 <p className={`text-sm ${index === 0 ? 'font-bold' : 'font-medium'}`}>
                   {category}
@@ -152,6 +161,6 @@ export default function Home() {
           </div>
         </section>
       </div>
-    </div>
+    </main>
   );
 }

@@ -12,14 +12,18 @@ export default function CreateCoursePage() {
     const [price, setPrice] = useState('');
     const [originalPrice, setOriginalPrice] = useState('');
     const [thumbnail, setThumbnail] = useState('');
-    const [sections, setSections] = useState([
-        { id: 1, title: '섹션 1', lectures: [{ id: 1, title: '', duration: '' }] },
+    const [sections, setSections] = useState<Array<{
+        id: number;
+        title: string;
+        lectures: Array<{ id: number; title: string; youtubeUrl?: string; duration: string }>;
+    }>>([
+        { id: 1, title: '섹션 1', lectures: [{ id: 1, title: '', youtubeUrl: '', duration: '' }] },
     ]);
 
     const handleAddSection = () => {
         setSections([
             ...sections,
-            { id: sections.length + 1, title: `섹션 ${sections.length + 1}`, lectures: [{ id: 1, title: '', duration: '' }] },
+            { id: sections.length + 1, title: `섹션 ${sections.length + 1}`, lectures: [{ id: 1, title: '', youtubeUrl: '', duration: '' }] },
         ]);
     };
 
@@ -28,6 +32,7 @@ export default function CreateCoursePage() {
         newSections[sectionIndex].lectures.push({
             id: newSections[sectionIndex].lectures.length + 1,
             title: '',
+            youtubeUrl: '',
             duration: '',
         });
         setSections(newSections);
@@ -207,6 +212,17 @@ export default function CreateCoursePage() {
                                                 />
                                                 <input
                                                     type="text"
+                                                    value={lecture.youtubeUrl || ''}
+                                                    onChange={(e) => {
+                                                        const newSections = [...sections];
+                                                        newSections[sectionIndex].lectures[lectureIndex].youtubeUrl = e.target.value;
+                                                        setSections(newSections);
+                                                    }}
+                                                    placeholder="유튜브 링크"
+                                                    className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:ring-2 focus:ring-primary focus:border-transparent"
+                                                />
+                                                <input
+                                                    type="text"
                                                     value={lecture.duration}
                                                     onChange={(e) => {
                                                         const newSections = [...sections];
@@ -236,7 +252,7 @@ export default function CreateCoursePage() {
                     <div className="flex gap-4 justify-end">
                         <Link
                             href="/profile"
-                            className="px-6 py-3 border-2 border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 rounded-lg font-bold hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                            className="px-6 py-3 border-2 border-primary bg-white dark:bg-gray-900 text-primary rounded-lg font-bold hover:bg-primary/10 dark:hover:bg-primary/20 transition-colors"
                         >
                             취소
                         </Link>
