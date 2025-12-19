@@ -3,7 +3,6 @@
 import React from 'react';
 import Link from 'next/link';
 import Button from '../common/Button';
-import SearchBar from '../common/SearchBar';
 import Avatar from '../common/Avatar';
 
 export interface HeaderProps {
@@ -58,38 +57,33 @@ const Header: React.FC<HeaderProps> = ({ isAuthenticated = false, user }) => {
           </div>
 
           {/* Right Section */}
-          <div className="flex items-center gap-4">
-            <div className="hidden sm:block">
-              <SearchBar placeholder="강의 검색하기" />
+          <div className="flex items-center gap-4">{isAuthenticated && user ? (
+            <div className="flex items-center gap-3">
+              <button className="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-10 w-10 bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700">
+                <span className="material-symbols-outlined">notifications</span>
+              </button>
+              <Link href="/profile" className="flex items-center gap-3">
+                <Avatar src={user.avatar} alt={user.name} size="md" />
+                <div className="hidden lg:flex flex-col text-sm">
+                  <h1 className="text-gray-900 dark:text-white font-medium leading-normal">
+                    {user.name}
+                  </h1>
+                  <p className="text-gray-500 dark:text-gray-400 font-normal leading-normal">
+                    {user.email}
+                  </p>
+                </div>
+              </Link>
             </div>
-
-            {isAuthenticated && user ? (
-              <div className="flex items-center gap-3">
-                <button className="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-10 w-10 bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700">
-                  <span className="material-symbols-outlined">notifications</span>
-                </button>
-                <Link href="/profile" className="flex items-center gap-3">
-                  <Avatar src={user.avatar} alt={user.name} size="md" />
-                  <div className="hidden lg:flex flex-col text-sm">
-                    <h1 className="text-gray-900 dark:text-white font-medium leading-normal">
-                      {user.name}
-                    </h1>
-                    <p className="text-gray-500 dark:text-gray-400 font-normal leading-normal">
-                      {user.email}
-                    </p>
-                  </div>
-                </Link>
-              </div>
-            ) : (
-              <div className="flex items-center gap-2">
-                <Link href="/login">
-                  <Button variant="secondary">로그인</Button>
-                </Link>
-                <Link href="/signup">
-                  <Button variant="primary">회원가입</Button>
-                </Link>
-              </div>
-            )}
+          ) : (
+            <div className="flex items-center gap-2">
+              <Link href="/login">
+                <Button variant="secondary">로그인</Button>
+              </Link>
+              <Link href="/signup">
+                <Button variant="primary">회원가입</Button>
+              </Link>
+            </div>
+          )}
           </div>
         </div>
       </div>

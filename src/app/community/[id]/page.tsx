@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { useParams } from 'next/navigation';
+import Link from 'next/link';
 
 export default function CommunityDetailPage() {
     const params = useParams();
@@ -67,12 +68,12 @@ export default function CommunityDetailPage() {
                                     </p>
                                 </div>
                             </div>
-                            <button className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-full h-11 px-6 bg-primary text-white text-sm font-bold leading-normal tracking-[0.015em] shadow-lg shadow-primary/30 hover:bg-primary/90 transition-all duration-300 ease-in-out">
+                            <Link href="/chat/1" className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-full h-11 px-6 bg-primary text-white text-sm font-bold leading-normal tracking-[0.015em] shadow-lg shadow-primary/30 hover:bg-primary/90 transition-all duration-300 ease-in-out">
                                 <span className="material-symbols-outlined text-xl" style={{ fontVariationSettings: "'FILL' 1" }}>
                                     chat_bubble
                                 </span>
                                 <span className="truncate">채팅하기</span>
-                            </button>
+                            </Link>
                         </div>
 
                         <div className="prose prose-lg dark:prose-invert max-w-none text-gray-900 dark:text-gray-300 text-base font-normal leading-relaxed pt-2 space-y-4">

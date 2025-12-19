@@ -1,222 +1,179 @@
-import React from 'react';
-import CommunityCard from '@/components/community/CommunityCard';
-import Button from '@/components/common/Button';
+'use client';
+
+import React, { useState } from 'react';
+import Link from 'next/link';
 
 export default function CommunityPage() {
+  const [category, setCategory] = useState<'study' | 'project'>('study');
+  const [filter, setFilter] = useState<'all' | 'recruiting' | 'completed'>('all');
+
   const posts = [
     {
       id: '1',
-      type: 'project' as const,
-      title: "사이드 프로젝트: '오늘의 회고' 웹 서비스",
-      thumbnail: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800',
-      tags: ['React', 'Node.js'],
-      author: {
-        name: '김코딩',
-        avatar: 'https://i.pravatar.cc/150?img=1',
-      },
-      views: 128,
-      comments: 12,
-      likes: 25,
-      status: 'recruiting' as const,
+      category: 'study',
+      status: 'recruiting',
+      title: '프론트엔드 실전 프로젝트 스터디원 모집',
+      description: 'React와 TypeScript를 사용한 실전 프론트엔드 프로젝트를 함께 진행할 스터디원을 모집합니다.',
+      author: '강민준',
+      views: 1234,
+      currentMembers: 8,
+      totalMembers: 10,
     },
     {
       id: '2',
-      type: 'study' as const,
-      title: '알고리즘 스터디 주 2회 진행합니다',
-      thumbnail: 'https://images.unsplash.com/photo-1516116216624-53e697fedbea?w=800',
-      tags: ['Python', '코딩테스트'],
-      author: {
-        name: '이학습',
-        avatar: 'https://i.pravatar.cc/150?img=2',
-      },
-      views: 99,
-      comments: 8,
-      likes: 15,
-      status: 'recruiting' as const,
+      category: 'project',
+      status: 'recruiting',
+      title: 'AI 챗봇 서비스 개발 팀원 모집',
+      description: 'GPT API를 활용한 AI 챗봇 서비스를 함께 개발할 팀원을 모집합니다. 백엔드/프론트엔드 모두 환영!',
+      author: '김개발',
+      views: 856,
+      currentMembers: 3,
+      totalMembers: 5,
     },
     {
       id: '3',
-      type: 'study' as const,
-      title: 'UI/UX 포트폴리오 스터디 모집',
-      thumbnail: 'https://images.unsplash.com/photo-1561070791-2526d30994b5?w=800',
-      tags: ['UIUX', 'Figma'],
-      author: {
-        name: '박디자인',
-        avatar: 'https://i.pravatar.cc/150?img=3',
-      },
-      views: 250,
-      comments: 22,
-      likes: 40,
-      status: 'completed' as const,
-    },
-    {
-      id: '4',
-      type: 'project' as const,
-      title: 'Node.js 백엔드 개발 프로젝트 팀원 구해요',
-      thumbnail: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800',
-      tags: ['Node.js', 'Backend'],
-      author: {
-        name: '최백엔',
-        avatar: 'https://i.pravatar.cc/150?img=4',
-      },
-      views: 88,
-      comments: 5,
-      likes: 18,
-      status: 'recruiting' as const,
-    },
-    {
-      id: '5',
-      type: 'study' as const,
-      title: '데이터 분석 공모전 준비 스터디',
-      thumbnail: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800',
-      tags: ['Data', 'Pandas'],
-      author: {
-        name: '정데이터',
-        avatar: 'https://i.pravatar.cc/150?img=5',
-      },
-      views: 150,
-      comments: 14,
-      likes: 30,
-      status: 'completed' as const,
-    },
-    {
-      id: '6',
-      type: 'project' as const,
-      title: 'React Native 앱 개발 프로젝트',
-      thumbnail: 'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=800',
-      tags: ['ReactNative', 'Mobile'],
-      author: {
-        name: '앱개발러',
-        avatar: 'https://i.pravatar.cc/150?img=6',
-      },
-      views: 75,
-      comments: 10,
-      likes: 20,
-      status: 'recruiting' as const,
-    },
-    {
-      id: '7',
-      type: 'study' as const,
-      title: '클라우드 자격증 취득 스터디',
-      thumbnail: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800',
-      tags: ['AWS', 'DevOps'],
-      author: {
-        name: '강인프라',
-        avatar: 'https://i.pravatar.cc/150?img=7',
-      },
-      views: 110,
-      comments: 9,
-      likes: 22,
-      status: 'recruiting' as const,
-    },
-    {
-      id: '8',
-      type: 'project' as const,
-      title: '블록체인 기반 보안 솔루션 개발',
-      thumbnail: 'https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=800',
-      tags: ['Blockchain', 'Security'],
-      author: {
-        name: '나보안',
-        avatar: 'https://i.pravatar.cc/150?img=8',
-      },
-      views: 180,
-      comments: 18,
-      likes: 35,
-      status: 'completed' as const,
+      category: 'study',
+      status: 'completed',
+      title: 'Node.js 백엔드 스터디 (모집완료)',
+      description: 'Node.js와 Express를 활용한 백엔드 개발 스터디입니다.',
+      author: '박서버',
+      views: 2341,
+      currentMembers: 10,
+      totalMembers: 10,
     },
   ];
 
-  const categories = ['전체', '스터디', '프로젝트', 'Python', 'React', 'UI/UX', '모집중'];
+  const filteredPosts = posts.filter((post) => {
+    const categoryMatch = post.category === category;
+    const filterMatch =
+      filter === 'all' ||
+      (filter === 'recruiting' && post.status === 'recruiting') ||
+      (filter === 'completed' && post.status === 'completed');
+    return categoryMatch && filterMatch;
+  });
 
   return (
-    <div className="flex flex-1 justify-center py-10 px-4 sm:px-6 lg:px-8">
-      <div className="layout-content-container flex flex-col max-w-[1280px] flex-1">
-        <div className="flex flex-wrap justify-between items-center gap-4 p-4">
-          <div className="flex flex-col gap-2">
-            <p className="text-gray-900 dark:text-white text-4xl font-black tracking-[-0.033em]">
-              커뮤니티 허브
-            </p>
-            <p className="text-gray-600 dark:text-gray-400 text-base font-normal">
-              함께 성장할 동료를 찾아보세요! 스터디와 프로젝트에 참여하고 실력을 키워나가세요.
-            </p>
-          </div>
-          <Button variant="primary">
-            <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>
-              edit
-            </span>
-            <span>새 글 작성</span>
-          </Button>
+    <main className="flex-1">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-16">
+        {/* Page Header */}
+        <div className="mb-8">
+          <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-2">커뮤니티</h1>
+          <p className="text-base text-gray-600 dark:text-gray-400">
+            함께 성장할 스터디원과 프로젝트 팀원을 찾아보세요
+          </p>
         </div>
 
-        <div className="flex flex-wrap gap-2 p-4 border-b border-gray-200 dark:border-gray-800">
-          {categories.map((category, index) => (
-            <div
-              key={index}
-              className={`flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full pl-4 pr-4 cursor-pointer ${
-                index === 0
-                  ? 'bg-primary/20 text-primary'
-                  : 'bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700'
+        {/* Category Tabs */}
+        <div className="flex gap-2 mb-6 border-b border-gray-200 dark:border-gray-700">
+          <button
+            onClick={() => setCategory('study')}
+            className={`px-6 py-3 text-sm font-bold border-b-2 transition-colors ${category === 'study'
+                ? 'border-primary text-primary'
+                : 'border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
               }`}
+          >
+            스터디
+          </button>
+          <button
+            onClick={() => setCategory('project')}
+            className={`px-6 py-3 text-sm font-bold border-b-2 transition-colors ${category === 'project'
+                ? 'border-primary text-primary'
+                : 'border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
+              }`}
+          >
+            팀 프로젝트
+          </button>
+        </div>
+
+        {/* Filter Chips */}
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex gap-2">
+            <button
+              onClick={() => setFilter('all')}
+              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${filter === 'all'
+                  ? 'bg-primary text-white'
+                  : 'bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-700'
+                }`}
             >
-              <p className={`text-sm ${index === 0 ? 'font-bold' : 'font-medium'}`}>
-                {category}
-              </p>
+              전체
+            </button>
+            <button
+              onClick={() => setFilter('recruiting')}
+              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${filter === 'recruiting'
+                  ? 'bg-primary text-white'
+                  : 'bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-700'
+                }`}
+            >
+              모집중
+            </button>
+            <button
+              onClick={() => setFilter('completed')}
+              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${filter === 'completed'
+                  ? 'bg-primary text-white'
+                  : 'bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-700'
+                }`}
+            >
+              모집완료
+            </button>
+          </div>
+          <Link
+            href="/community/create"
+            className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg font-bold hover:bg-primary/90 transition-colors"
+          >
+            <span className="material-symbols-outlined text-lg">add</span>
+            <span>모집 글 작성</span>
+          </Link>
+        </div>
+
+        {/* Posts List */}
+        <div className="space-y-4">
+          {filteredPosts.length > 0 ? (
+            filteredPosts.map((post) => (
+              <Link
+                key={post.id}
+                href={`/community/${post.id}`}
+                className="block bg-white dark:bg-gray-900 rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow border border-gray-200 dark:border-gray-800"
+              >
+                <div className="flex items-start justify-between gap-4">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-2">
+                      <span
+                        className={`inline-block px-3 py-1 rounded-full text-xs font-bold ${post.status === 'recruiting'
+                            ? 'bg-green-100 dark:bg-green-500/20 text-green-600 dark:text-green-400'
+                            : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400'
+                          }`}
+                      >
+                        {post.status === 'recruiting' ? '모집중' : '모집완료'}
+                      </span>
+                      <span className="text-xs text-gray-500 dark:text-gray-400">
+                        {post.currentMembers}/{post.totalMembers}명
+                      </span>
+                    </div>
+                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">{post.title}</h3>
+                    <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2 mb-3">
+                      {post.description}
+                    </p>
+                    <div className="flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400">
+                      <span className="flex items-center gap-1">
+                        <span className="material-symbols-outlined text-sm">person</span>
+                        {post.author}
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <span className="material-symbols-outlined text-sm">visibility</span>
+                        {post.views.toLocaleString()}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </Link>
+            ))
+          ) : (
+            <div className="text-center py-12">
+              <p className="text-gray-500 dark:text-gray-400">해당하는 모집 글이 없습니다.</p>
             </div>
-          ))}
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-4">
-          {posts.map((post) => (
-            <CommunityCard key={post.id} {...post} />
-          ))}
-        </div>
-
-        {/* Pagination */}
-        <div className="flex items-center justify-center p-4 mt-6">
-          <a
-            className="flex size-10 items-center justify-center text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-white"
-            href="#"
-          >
-            <span className="material-symbols-outlined">chevron_left</span>
-          </a>
-          <a
-            className="text-sm font-bold flex size-10 items-center justify-center text-white rounded-full bg-primary"
-            href="#"
-          >
-            1
-          </a>
-          <a
-            className="text-sm font-normal flex size-10 items-center justify-center text-gray-900 dark:text-gray-200 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"
-            href="#"
-          >
-            2
-          </a>
-          <a
-            className="text-sm font-normal flex size-10 items-center justify-center text-gray-900 dark:text-gray-200 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"
-            href="#"
-          >
-            3
-          </a>
-          <a
-            className="text-sm font-normal flex size-10 items-center justify-center text-gray-900 dark:text-gray-200 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"
-            href="#"
-          >
-            4
-          </a>
-          <a
-            className="text-sm font-normal flex size-10 items-center justify-center text-gray-900 dark:text-gray-200 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"
-            href="#"
-          >
-            5
-          </a>
-          <a
-            className="flex size-10 items-center justify-center text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-white"
-            href="#"
-          >
-            <span className="material-symbols-outlined">chevron_right</span>
-          </a>
+          )}
         </div>
       </div>
-    </div>
+    </main>
   );
 }

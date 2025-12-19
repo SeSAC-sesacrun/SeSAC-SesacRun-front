@@ -125,8 +125,8 @@ export default function MyCoursesPage() {
                                             key={filter}
                                             onClick={() => setSelectedFilter(filter)}
                                             className={`flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-lg px-3 text-sm font-medium ${selectedFilter === filter
-                                                    ? 'bg-primary/10 text-primary dark:bg-primary/20'
-                                                    : 'bg-white text-gray-700 hover:bg-gray-100 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700'
+                                                ? 'bg-primary/10 text-primary dark:bg-primary/20'
+                                                : 'bg-white text-gray-700 hover:bg-gray-100 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700'
                                                 }`}
                                         >
                                             {filter}
@@ -176,16 +176,17 @@ export default function MyCoursesPage() {
                                                     />
                                                 </div>
                                             </div>
-                                            <button
+                                            <Link
+                                                href={`/watch/${course.id}`}
                                                 className={`flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-lg h-9 px-4 text-sm font-medium leading-normal ${course.progress === 100
-                                                        ? 'bg-gray-200 text-gray-800 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600'
-                                                        : 'bg-primary text-white hover:bg-primary/90'
+                                                    ? 'bg-gray-200 text-gray-800 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600'
+                                                    : 'bg-primary text-white hover:bg-primary/90'
                                                     }`}
                                             >
                                                 <span className="truncate">
                                                     {course.progress === 100 ? '다시보기' : '이어보기'}
                                                 </span>
-                                            </button>
+                                            </Link>
                                         </div>
                                     </div>
                                 ))}
