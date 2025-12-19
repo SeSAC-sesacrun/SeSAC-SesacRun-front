@@ -75,7 +75,7 @@ const Header: React.FC<HeaderProps> = ({ isAuthenticated = false, user }) => {
               </>
             ) : (
               <Link href="/login">
-                <Button variant="primary">로그인</Button>
+                <Button variant="secondary">로그인</Button>
               </Link>
             )}
           </div>

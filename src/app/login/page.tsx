@@ -104,7 +104,7 @@ export default function LoginPage() {
 
           {/* Login Button */}
           <div className="mt-6">
-            <Button variant="primary" fullWidth size="lg">
+            <Button variant="secondary" fullWidth size="lg">
               로그인하기
             </Button>
           </div>

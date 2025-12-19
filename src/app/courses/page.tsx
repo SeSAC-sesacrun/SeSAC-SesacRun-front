@@ -125,9 +125,9 @@ export default function CoursesPage() {
             {categories.map((category, index) => (
               <div
                 key={index}
-                className={`flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full pl-4 pr-4 cursor-pointer ${
+                className={`flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full px-4 cursor-pointer ${
                   index === 0
-                    ? 'bg-primary text-white'
+                    ? 'bg-primary text-black dark:text-white'
                     : 'bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700'
                 }`}
               >

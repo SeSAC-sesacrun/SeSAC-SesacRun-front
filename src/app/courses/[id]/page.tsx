@@ -232,17 +232,16 @@ export default function CourseDetailPage() {
                                             ) : (
                                                 <button
                                                     onClick={handleAddToCart}
-                                                    className="w-full bg-white dark:bg-gray-700 border-2 border-primary text-primary dark:text-white font-bold py-3 px-6 rounded-lg hover:bg-primary/10 dark:hover:bg-primary/20 transition-colors mb-3"
+                                                    className="w-full bg-gray-900 dark:bg-gray-700 text-white font-bold py-3 px-6 rounded-lg hover:bg-gray-800 dark:hover:bg-gray-600 transition-colors mb-3"
                                                 >
                                                     장바구니 담기
                                                 </button>
                                             )}
                                             <button
-                                                onClick={handleEnroll}
-                                                className="w-full bg-primary text-white font-bold py-3 px-6 rounded-lg hover:bg-primary/90 transition-colors"
-                                            >
-                                                지금 구매하기
-                                            </button>
+    onClick={handleEnroll}
+className="w-full bg-gray-900 dark:bg-gray-700 text-white font-bold py-3 px-6 rounded-lg hover:bg-gray-800 dark:hover:bg-gray-600 transition-colors mb-3">
+    지금 구매하기
+</button>
                                         </>
                                     )}
                                     <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">

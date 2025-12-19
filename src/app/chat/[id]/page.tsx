@@ -233,7 +233,7 @@ export default function ChatPage() {
                                                 : 'bg-white dark:bg-gray-700 rounded-bl-none'
                                             }`}
                                     >
-                                        <p className={`text-sm ${msg.type === 'sent' ? 'text-white' : 'text-gray-800 dark:text-gray-200'}`}>
+                                        <p className="text-sm text-black dark:text-white">
                                             {msg.content}
                                         </p>
                                     </div>
@@ -258,11 +258,11 @@ export default function ChatPage() {
                                     }
                                 }}
                             />
-                            <button className="flex-shrink-0 size-11 flex items-center justify-center bg-primary text-white rounded-lg hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary dark:focus:ring-offset-background-dark">
-                                <span className="material-symbols-outlined" style={{ fontSize: '24px' }}>
-                                    send
-                                </span>
-                            </button>
+                            <button className="flex-shrink-0 size-11 flex items-center justify-center bg-black dark:bg-primary text-white rounded-lg hover:bg-black/90 dark:hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black dark:focus:ring-primary dark:focus:ring-offset-background-dark">
+    <span className="material-symbols-outlined" style={{ fontSize: '24px' }}>
+        send
+    </span>
+</button>
                         </div>
                     </div>
                 </main>

@@ -170,7 +170,7 @@ JavaScript에 익숙하고 React 기본 개념을 이해하고 계신 분, 적�
                         </Link>
                         <button
                             type="submit"
-                            className="px-6 py-3 bg-primary text-white rounded-lg font-bold hover:bg-primary/90 transition-colors"
+                            className="px-6 py-3 bg-gray-900 dark:bg-primary border-2 border-gray-900 dark:border-primary text-white rounded-lg font-bold hover:bg-gray-800 dark:hover:bg-primary/90 transition-colors"
                         >
                             작성 완료
                         </button>
