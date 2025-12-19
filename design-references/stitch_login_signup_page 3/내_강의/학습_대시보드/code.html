@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+
+<html class="light" lang="ko"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>내 강의/학습 대시보드</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+  </style>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#135bec",
+            "background-light": "#f6f6f8",
+            "background-dark": "#101622",
+          },
+          fontFamily: {
+            "display": ["Lexend", "Noto Sans KR", "sans-serif"]
+          },
+          borderRadius: {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+        },
+      },
+    }
+  </script>
+</head>
+<body class="font-display bg-background-light dark:bg-background-dark">
+<div class="relative flex min-h-screen w-full flex-col">
+<!-- TopNavBar -->
+<header class="sticky top-0 z-10 w-full border-b border-gray-200/80 bg-white/80 dark:border-gray-800/80 dark:bg-background-dark/80 backdrop-blur-sm">
+<div class="mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8 h-16">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-2 text-gray-900 dark:text-white">
+<span class="material-symbols-outlined text-primary text-3xl"> school </span>
+<h2 class="text-xl font-bold tracking-tight">MyCourse</h2>
+</div>
+</div>
+<div class="flex flex-1 items-center justify-end gap-4">
+<nav class="hidden md:flex items-center gap-6">
+<a class="text-sm font-medium text-gray-700 hover:text-primary dark:text-gray-300 dark:hover:text-primary" href="#">강의 둘러보기</a>
+<a class="text-sm font-medium text-gray-700 hover:text-primary dark:text-gray-300 dark:hover:text-primary" href="#">학습 로드맵</a>
+<a class="text-sm font-medium text-gray-700 hover:text-primary dark:text-gray-300 dark:hover:text-primary" href="#">이벤트</a>
+</nav>
+<div class="hidden sm:flex items-center gap-2">
+<button class="flex h-9 w-9 cursor-pointer items-center justify-center overflow-hidden rounded-full bg-transparent text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800">
+<span class="material-symbols-outlined text-xl"> notifications </span>
+</button>
+<button class="flex h-9 w-9 cursor-pointer items-center justify-center overflow-hidden rounded-full bg-transparent text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800">
+<span class="material-symbols-outlined text-xl"> shopping_cart </span>
+</button>
+</div>
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-9" data-alt="User profile avatar image" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDtACuJ8LS1hWbDy9VT_WrkRgDbOiJ1rZoC3P5Lj_vCpfrV91nBZALpBLLxWsqtdxpFTwjAKEKhNQT4bMeevhGfzsUmxaYHkr2b0NoArne0Atl8NGtRJTUZSevuEeHpTGeZGFq-k0Hf0EQP5mfxh3e0btDj5m00p22Lu6KqBb2NaKrPh2f8Uqrr0hzt02GJ1bnEUbveU4gqDUP89v-fmJyjfWyktfkQ7pBWnNlo1YRX1VAM7LmFwvefeVllhg9_yFF8fH7dQi8zhTc");'></div>
+</div>
+</div>
+</header>
+<div class="flex h-full grow flex-col">
+<div class="mx-auto flex w-full max-w-7xl flex-1 justify-center p-4 sm:p-6 lg:p-8">
+<div class="flex w-full flex-col gap-6 md:flex-row md:gap-8">
+<!-- SideNavBar -->
+<aside class="w-full shrink-0 md:w-56">
+<div class="flex h-full flex-col justify-between rounded-lg bg-white p-4 dark:bg-gray-900/50">
+<div class="flex flex-col gap-4">
+<div class="flex gap-3">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="User profile avatar image" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDLB2JzLwV6jnZCRZmvg2HOZjEsZvbtmyJDOKT0xuP1vcYNKLUDUXvCoKiKpYXTATRww3Tc1yUaR0iT2UT1yABQ-5h2X42XvEgXTnjNg0-BqRCdgBAYae553Z_t57kD_lkCnq9O--N6XqwiYJNtoLJ0exPxPgXG2f4krkgC4p1aQNWVggTkdDu83mi7I-Lq9y1UhwLj5icLPYoO7LudYrGhC-K0bqkqMTXSZ3G4_CIbRf7aF6mKxCw_kUEQIhWBdwpC-XCsm0GGiY0");'></div>
+<div class="flex flex-col">
+<h1 class="text-base font-medium text-gray-900 dark:text-white">김학습</h1>
+<p class="text-sm font-normal text-gray-500 dark:text-gray-400">환영합니다!</p>
+</div>
+</div>
+<div class="flex flex-col gap-1">
+<a class="flex items-center gap-3 rounded-lg bg-primary/10 px-3 py-2 text-primary dark:bg-primary/20" href="#">
+<span class="material-symbols-outlined !fill-1 text-xl"> personal_video </span>
+<p class="text-sm font-medium">내 강의</p>
+</a>
+<a class="flex items-center gap-3 rounded-lg px-3 py-2 text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800" href="#">
+<span class="material-symbols-outlined text-xl"> map </span>
+<p class="text-sm font-medium">학습 로드맵</p>
+</a>
+<a class="flex items-center gap-3 rounded-lg px-3 py-2 text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800" href="#">
+<span class="material-symbols-outlined text-xl"> workspace_premium </span>
+<p class="text-sm font-medium">수료증</p>
+</a>
+</div>
+</div>
+<div class="mt-8 flex flex-col gap-1">
+<a class="flex items-center gap-3 rounded-lg px-3 py-2 text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800" href="#">
+<span class="material-symbols-outlined text-xl"> settings </span>
+<p class="text-sm font-medium">설정</p>
+</a>
+<a class="flex items-center gap-3 rounded-lg px-3 py-2 text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800" href="#">
+<span class="material-symbols-outlined text-xl"> logout </span>
+<p class="text-sm font-medium">로그아웃</p>
+</a>
+</div>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="flex-1">
+<div class="flex flex-col gap-6">
+<!-- PageHeading -->
+<div class="flex flex-wrap justify-between gap-4">
+<div class="flex min-w-72 flex-col gap-1">
+<p class="text-3xl font-black text-gray-900 dark:text-white">내 강의/학습 대시보드</p>
+<p class="text-base font-normal text-gray-500 dark:text-gray-400">학습 진행 상황을 확인하고 강의를 이어보세요.</p>
+</div>
+</div>
+<!-- Chips -->
+<div class="flex items-center justify-between gap-4">
+<div class="flex flex-wrap gap-2">
+<button class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-primary/10 px-3 text-sm font-medium text-primary dark:bg-primary/20">전체</button>
+<button class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-white px-3 text-sm font-medium text-gray-700 hover:bg-gray-100 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700">수강 중</button>
+<button class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-white px-3 text-sm font-medium text-gray-700 hover:bg-gray-100 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700">완강</button>
+</div>
+<div class="relative">
+<button class="flex h-9 items-center justify-center gap-x-2 rounded-lg bg-white pl-3 pr-2 text-sm font-medium text-gray-700 dark:bg-gray-800 dark:text-gray-300">
+                    최근 학습 순
+                    <span class="material-symbols-outlined text-lg"> expand_more </span>
+</button>
+</div>
+</div>
+<!-- Course Cards Grid -->
+<div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+<!-- Card 1 -->
+<div class="flex flex-col gap-4 rounded-xl bg-white p-4 shadow-sm dark:bg-gray-900/50">
+<div class="w-full bg-center bg-no-repeat aspect-video bg-cover rounded-lg" data-alt="Abstract gradient for UI/UX design course" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAwUEenl3h5oORGMFa7vbcEQXRM34lnTSBMUOdUBc3fDw4WOs8B_GPouNMufp3DvDVHaZ8fXn-J1_Wg10CQRSl6JP3VuCY17PflfQ1vOMvowJnjnyAK6dm3OWMptT_hxIUPZTRPSB12QiE75M2xk7iM0z9pOHunUpg_8In8bwR1LrnEW-CyZLZSiS0n5sKVqQ7zYtp9K8BbT2ywJ-eWg2JuH4sQX1GcNZUxjPMoE_rSSO6JwXXfI1vg7aPYQo2nJpc2_iMTluMn0Zo");'></div>
+<div class="flex h-full flex-col justify-between gap-3">
+<div class="flex flex-col gap-1">
+<p class="text-sm font-normal text-gray-500 dark:text-gray-400">디자인 기초</p>
+<p class="text-base font-bold text-gray-900 dark:text-white">초보자를 위한 UI/UX 디자인 시작하기</p>
+<p class="text-sm font-normal text-gray-500 dark:text-gray-400">김디자인</p>
+</div>
+<div class="flex flex-col gap-2">
+<div class="flex justify-between text-xs font-medium text-gray-500 dark:text-gray-400">
+<span>진행률</span>
+<span>75%</span>
+</div>
+<div class="w-full bg-gray-200 rounded-full h-1.5 dark:bg-gray-700">
+<div class="bg-primary h-1.5 rounded-full" style="width: 75%"></div>
+</div>
+</div>
+<button class="flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-lg h-9 px-4 bg-primary text-white text-sm font-medium leading-normal hover:bg-primary/90">
+<span class="truncate">이어보기</span>
+</button>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="flex flex-col gap-4 rounded-xl bg-white p-4 shadow-sm dark:bg-gray-900/50">
+<div class="w-full bg-center bg-no-repeat aspect-video bg-cover rounded-lg" data-alt="Abstract colorful lines for marketing course" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuC9RkezP5XwIlhmwq3qTHF17Xs85hc3-wX2IuqRdfqoBv4nOvuc0_s9e34yMxzp4MlEixLnErqHTal4vUedBfF830fbNaQ2FFRnUD-NzVhvWoU0oBGNe3--GFe1OKbKLQ7VlJThpMTU6pfXE6ZVD0I5SMEQYzPbCEw1xGqtsKqx7M7xUyywDps_kjUdHtnQ9YxqTUCsFcKyVszxrV2YMO3d0a2X_Nw7Pr-mDAMDWz0NZVc4RIU7vuwNdTqFrJJkV_FpyF-gEk5TjLM");'></div>
+<div class="flex h-full flex-col justify-between gap-3">
+<div class="flex flex-col gap-1">
+<p class="text-sm font-normal text-gray-500 dark:text-gray-400">마케팅</p>
+<p class="text-base font-bold text-gray-900 dark:text-white">데이터 기반 그로스 마케팅 실전</p>
+<p class="text-sm font-normal text-gray-500 dark:text-gray-400">박마케터</p>
+</div>
+<div class="flex flex-col gap-2">
+<div class="flex justify-between text-xs font-medium text-gray-500 dark:text-gray-400">
+<span>진행률</span>
+<span>30%</span>
+</div>
+<div class="w-full bg-gray-200 rounded-full h-1.5 dark:bg-gray-700">
+<div class="bg-primary h-1.5 rounded-full" style="width: 30%"></div>
+</div>
+</div>
+<button class="flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-lg h-9 px-4 bg-primary text-white text-sm font-medium leading-normal hover:bg-primary/90">
+<span class="truncate">이어보기</span>
+</button>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="flex flex-col gap-4 rounded-xl bg-white p-4 shadow-sm dark:bg-gray-900/50">
+<div class="w-full bg-center bg-no-repeat aspect-video bg-cover rounded-lg" data-alt="Code on a screen for a development course" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDbcXMNN1YUFPmFvep20G3qPaJi8U0A-7hIz9jwScd7VcHfoeKceKb1VmbwOxO6gsQi0nmKiIAvWYEyU6ZhNBrNj42RSgj_J5xC_MMcDgporglz8jMihMdywp21sMrL5tyVKY15bRwIPiS4sbzfU53-_ZTx2jzurLfUDuNv4MYQQmk3TV5IyAoHnWkTWhFP0BdAUcNHIKW0Vwhnx4iCGud6xcITAkT3jGFRBKSiAe5SZ9te14--bUDIysaWxR36vRwAQu9uX6EBan0");'></div>
+<div class="flex h-full flex-col justify-between gap-3">
+<div class="flex flex-col gap-1">
+<p class="text-sm font-normal text-gray-500 dark:text-gray-400">개발</p>
+<p class="text-base font-bold text-gray-900 dark:text-white">React와 TypeScript로 웹 앱 만들기</p>
+<p class="text-sm font-normal text-gray-500 dark:text-gray-400">이개발</p>
+</div>
+<div class="flex flex-col gap-2">
+<div class="flex justify-between text-xs font-medium text-gray-500 dark:text-gray-400">
+<span>진행률</span>
+<span>100%</span>
+</div>
+<div class="w-full bg-gray-200 rounded-full h-1.5 dark:bg-gray-700">
+<div class="bg-primary h-1.5 rounded-full" style="width: 100%"></div>
+</div>
+</div>
+<button class="flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-lg h-9 px-4 bg-gray-200 text-gray-800 text-sm font-medium leading-normal hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600">
+<span class="truncate">다시보기</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</div>
+</div>
+</div>
+</body></html>

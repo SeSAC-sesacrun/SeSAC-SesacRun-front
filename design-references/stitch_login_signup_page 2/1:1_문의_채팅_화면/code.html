@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+
+<html class="light" lang="ko"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>1:1 문의 채팅 화면</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<style type="text/tailwindcss">
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap');
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+  </style>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#135bec",
+            "background-light": "#f6f6f8",
+            "background-dark": "#101622",
+          },
+          fontFamily: {
+            "display": ["Plus Jakarta Sans", "Noto Sans KR", "sans-serif"]
+          },
+          borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+        },
+      },
+    }
+  </script>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display">
+<div class="relative flex h-screen w-full flex-col group/design-root overflow-hidden">
+<header class="flex-shrink-0 items-center justify-between whitespace-nowrap border-b border-solid border-gray-200 dark:border-gray-700 bg-white dark:bg-background-dark px-6 py-3 flex">
+<div class="flex items-center gap-4 text-gray-900 dark:text-white">
+<div class="size-6 text-primary">
+<svg fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_6_330)">
+<path clip-rule="evenodd" d="M24 0.757355L47.2426 24L24 47.2426L0.757355 24L24 0.757355ZM21 35.7574V12.2426L9.24264 24L21 35.7574Z" fill="currentColor" fill-rule="evenodd"></path>
+</g>
+<defs>
+<clippath id="clip0_6_330">
+<rect fill="white" height="48" width="48"></rect>
+</clippath>
+</defs>
+</svg>
+</div>
+<h2 class="text-lg font-bold leading-tight tracking-[-0.015em]">Course Platform</h2>
+</div>
+<div class="flex flex-1 justify-end gap-6 items-center">
+<nav class="hidden md:flex items-center gap-8">
+<a class="text-gray-800 dark:text-gray-200 text-sm font-medium leading-normal" href="#">My Courses</a>
+<a class="text-gray-800 dark:text-gray-200 text-sm font-medium leading-normal" href="#">Browse</a>
+<a class="text-gray-800 dark:text-gray-200 text-sm font-medium leading-normal" href="#">Help Center</a>
+</nav>
+<button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary text-white text-sm font-bold leading-normal tracking-[0.015em]">
+<span class="truncate">My Page</span>
+</button>
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="User profile avatar image" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuD12qO8hymBSj6YIwQ2NBtOcuE1q5143yhiCu9QotuiWaBCLvdRAw87kOct3eQVx0Vw1IRc791vUiqpdDgYAkbHh6OFmJ2k2m4UhB6XunUqTCLvqLXeoShv6AjZi42stn7iEk28l9AIKdZNqkxG6GoNx9Zezp46UCTYrSqqspgU-pnw64UmYkK_NSlM66eE6zvKJaWV5QM0DFsFUSohjhNP5zjnl3katJ2HDrlpPZW9H_cbZpw44J_msxZCUksFZpKZWPi-jOEx068");'></div>
+</div>
+</header>
+<div class="flex flex-1 overflow-hidden">
+<!-- Sidebar - Chat List -->
+<aside class="w-[360px] flex-shrink-0 border-r border-gray-200 dark:border-gray-700 bg-white dark:bg-background-dark flex flex-col">
+<div class="p-4 border-b border-gray-200 dark:border-gray-700">
+<h1 class="text-xl font-bold text-gray-900 dark:text-white">1:1 문의</h1>
+</div>
+<div class="flex-1 overflow-y-auto">
+<div class="flex flex-col">
+<!-- Active Chat Item -->
+<div class="flex items-center gap-4 px-4 min-h-[80px] py-3 justify-between bg-primary/10 dark:bg-primary/20 border-r-4 border-primary">
+<div class="flex items-center gap-4 overflow-hidden">
+<div class="relative shrink-0">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-14" data-alt="Avatar of General Manager" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuC6ORLUbI_09rU4NGDhhHTH42YKeQnF2WYM3VDr8BUeytnZ4TvxgodAc016XgSqvPNaMqHtTwTouF5H1IEd4OFHiBe3op91Kmvgz7tCIlYRsxflwAIZ67Pirz6SHAKATKX-lp4YxQtmDxxjSvz-ibAZjbjxkabz96QBbzS4DVAYYHypANpq3JZpBdrLhR8WEM20Fu5TNIyqy9e2PJX50ZoL_cBjCDAN4r5ri8Hjy8ZAgLR7o9PnqFSXGpj077OZ2VVC968EfwsVKnQ");'></div>
+<div class="absolute bottom-0 right-0 size-3 bg-green-500 rounded-full border-2 border-white dark:border-gray-800"></div>
+</div>
+<div class="flex flex-col justify-center overflow-hidden">
+<p class="text-gray-900 dark:text-white text-base font-bold leading-normal truncate">총괄 매니저</p>
+<p class="text-primary dark:text-primary/90 text-sm font-medium leading-normal truncate">네, 확인 후 바로 답변...</p>
+</div>
+</div>
+<div class="shrink-0 flex flex-col items-end gap-1">
+<p class="text-gray-500 dark:text-gray-400 text-xs font-normal leading-normal">오후 2:45</p>
+<div class="size-5 bg-primary text-white text-xs flex items-center justify-center rounded-full font-bold">1</div>
+</div>
+</div>
+<!-- Other Chat Items -->
+<div class="flex items-center gap-4 px-4 min-h-[80px] py-3 justify-between border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800/50 cursor-pointer">
+<div class="flex items-center gap-4 overflow-hidden">
+<div class="relative shrink-0">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-14" data-alt="Avatar of React Instructor" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDQAJlfcrDyUcxgmYzi9P9IHF8VHiViPtmUM6gUcP93-F4sj39erE5KQI3I1KAdGyidxeWRFT5otrwgs7f7cGiaE5TI4isSptoh6Uypk73c4GQySSalLo8Gj5yXVEV3ML8Mkza04F4vxJ24PMhMbO_wKlbPpv3h4uo4Fllyu0udYDFhelH0XHNiqnE3SYgHA2R7LMYYFcf7iuMwol8cZZDkm9WSB4rP48wUVBulok0D4oZqCl9oEZ30bYlo2mSwNhER9mWxAm0NF3k");'></div>
+</div>
+<div class="flex flex-col justify-center overflow-hidden">
+<p class="text-gray-900 dark:text-white text-base font-medium leading-normal truncate">[React] 강사</p>
+<p class="text-gray-500 dark:text-gray-400 text-sm font-normal leading-normal truncate">안녕하세요! 질문 확인했습니다.</p>
+</div>
+</div>
+<div class="shrink-0">
+<p class="text-gray-400 dark:text-gray-500 text-xs font-normal leading-normal">어제</p>
+</div>
+</div>
+<div class="flex items-center gap-4 px-4 min-h-[80px] py-3 justify-between border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800/50 cursor-pointer">
+<div class="flex items-center gap-4 overflow-hidden">
+<div class="relative shrink-0">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-14 flex items-center justify-center bg-gray-200 dark:bg-gray-700">
+<span class="material-symbols-outlined text-gray-500 dark:text-gray-400" style="font-size: 32px;">support_agent</span>
+</div>
+</div>
+<div class="flex flex-col justify-center overflow-hidden">
+<p class="text-gray-900 dark:text-white text-base font-medium leading-normal truncate">고객센터</p>
+<p class="text-gray-500 dark:text-gray-400 text-sm font-normal leading-normal truncate">문의주셔서 감사합니다.</p>
+</div>
+</div>
+<div class="shrink-0">
+<p class="text-gray-400 dark:text-gray-500 text-xs font-normal leading-normal">10월 25일</p>
+</div>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Chat Area -->
+<main class="flex flex-1 flex-col bg-background-light dark:bg-background-dark">
+<!-- Chat Header -->
+<header class="flex-shrink-0 flex items-center gap-4 p-4 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900/50">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-12" data-alt="Avatar of General Manager" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDPPH6op1NsvFFuw6C373JDKU8aenkszv8ZzKrHrVCvih0cfXxLHTn-w7dMDUPhDhENjJXTktALsAIQtwDgpubuFt_48eFy69NbCDOZndlgTpoWK8bBVCzCqSkJwBaJzVORsVHWdJuTgYOw3NQWz-Flc42nb87BP_v0fz_nHrTKEV2X6vuhaYTJlLH2gfGP87H1tgzIjeZLOW4pMepaeeSp9jGCYgspp1GNQBAl5SU82NAhAZ-WWAhgcGlU7J5nisrZV2CINLhnX8M");'></div>
+<div class="flex flex-col">
+<h2 class="text-lg font-bold text-gray-900 dark:text-white">총괄 매니저</h2>
+<div class="flex items-center gap-2">
+<div class="size-2 bg-green-500 rounded-full"></div>
+<p class="text-sm text-gray-500 dark:text-gray-400">온라인</p>
+</div>
+</div>
+</header>
+<!-- Messages Area -->
+<div class="flex-1 overflow-y-auto p-6 space-y-6">
+<div class="text-center text-xs text-gray-400 dark:text-gray-500 font-medium">2023년 10월 27일</div>
+<!-- Received Message -->
+<div class="flex items-end gap-3 max-w-xl">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-8 shrink-0" data-alt="Avatar of General Manager" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDTcXMhnsz5mZLE5HKaF2iqho7duaG079nSEBxlaJt-tJFKogwG0y1rFgWLN6sgQZOX68NMlwlyYtV_vjUx0bIyvuGNaupMpEocUEjQ2l7kOscs18OAKKYfRBwV2HulsUrLNBUR6_OHpQyEABEpH9Ofniihb1f5AFnk0dt2vedY2g2URE9CzmulTp8LHfRDg97o6OMlS7Rl_EvdV4wyd0pVoQ2mUowjkHBflyWJmBXWAUR6faU7U3B06KViH9ZItGxbv4gAhvMh600");'></div>
+<div class="flex flex-col items-start gap-1">
+<div class="p-3 bg-white dark:bg-gray-700 rounded-lg rounded-bl-none shadow-sm">
+<p class="text-sm text-gray-800 dark:text-gray-200">안녕하세요, 김민준님. 문의주신 내용 확인했습니다. 어떤 도움이 필요하신가요?</p>
+</div>
+<span class="text-xs text-gray-400 dark:text-gray-500">오후 2:42</span>
+</div>
+</div>
+<!-- Sent Message -->
+<div class="flex items-end gap-3 max-w-xl ml-auto flex-row-reverse">
+<div class="flex flex-col items-end gap-1">
+<div class="p-3 bg-primary text-white rounded-lg rounded-br-none shadow-sm">
+<p class="text-sm">안녕하세요. React 심화 과정 3강의 소스코드 관련해서 질문이 있습니다.</p>
+</div>
+<span class="text-xs text-gray-400 dark:text-gray-500">오후 2:43</span>
+</div>
+</div>
+<div class="flex items-end gap-3 max-w-xl ml-auto flex-row-reverse">
+<div class="flex flex-col items-end gap-1">
+<div class="p-3 bg-primary text-white rounded-lg rounded-br-none shadow-sm">
+<p class="text-sm">강의 자료에 포함된 코드와 실제 영상에서 보여주시는 코드가 일부 다른 것 같아서요. 확인 부탁드립니다!</p>
+</div>
+<span class="text-xs text-gray-400 dark:text-gray-500">오후 2:43</span>
+</div>
+</div>
+<!-- Received Message -->
+<div class="flex items-end gap-3 max-w-xl">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-8 shrink-0" data-alt="Avatar of General Manager" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCc50Fl0BCTJ6ruI81S99VD0vBK5bv-789ezF6g96h7IJTLs5fJJSVr6IFk3xIEN9v9ITkFr8nIADMsZwiAAAyGC1PGSZTJl_5UyMklBvIX_gUPbqlUqiy5jzKcK8JeJXZcjI3_S7hOgpdkZ99pmtJHcmUgmYq7Om9srByQUCve1OjI652SnVgU74kD7VLdnEdajyW5ezP_6Uo5k6-M26NTrJX-r77vKmAwtFZWuboCeE-Ht8Rw6rcOPpNEv5ZWcl-1Awg1TERSsTI");'></div>
+<div class="flex flex-col items-start gap-1">
+<div class="p-3 bg-white dark:bg-gray-700 rounded-lg rounded-bl-none shadow-sm">
+<p class="text-sm text-gray-800 dark:text-gray-200">네, 확인 후 바로 답변드리겠습니다. 잠시만 기다려주세요.</p>
+</div>
+<span class="text-xs text-gray-400 dark:text-gray-500">오후 2:45</span>
+</div>
+</div>
+</div>
+<!-- Message Input -->
+<div class="flex-shrink-0 p-4 bg-white dark:bg-gray-900/50 border-t border-gray-200 dark:border-gray-700">
+<div class="flex items-center gap-4">
+<input class="flex-1 px-4 py-3 bg-gray-100 dark:bg-gray-800 border-transparent rounded-lg focus:ring-primary focus:border-primary text-sm text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500" placeholder="메시지를 입력하세요..." type="text"/>
+<button class="flex-shrink-0 size-11 flex items-center justify-center bg-primary text-white rounded-lg hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary dark:focus:ring-offset-background-dark">
+<span class="material-symbols-outlined" style="font-size: 24px;">send</span>
+</button>
+</div>
+</div>
+</main>
+</div>
+</div>
+</body></html>

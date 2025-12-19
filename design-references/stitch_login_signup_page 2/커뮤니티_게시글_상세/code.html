@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html class="light" lang="ko"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>커뮤니티 게시글 상세</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#135bec",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#101622",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans", "Noto Sans KR", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings:
+                'FILL' 0,
+                'wght' 400,
+                'GRAD' 0,
+                'opsz' 24
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-[#111318] dark:text-white">
+<div class="relative flex min-h-screen w-full flex-col group/design-root overflow-x-hidden">
+<header class="w-full bg-white dark:bg-background-dark/50 backdrop-blur-sm sticky top-0 z-50 border-b border-gray-200 dark:border-gray-800">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex items-center justify-between h-16">
+<div class="flex items-center gap-4 text-[#111318] dark:text-white">
+<div class="size-6 text-primary">
+<svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path d="M36.7273 44C33.9891 44 31.6043 39.8386 30.3636 33.69C29.123 39.8386 26.7382 44 24 44C21.2618 44 18.877 39.8386 17.6364 33.69C16.3957 39.8386 14.0109 44 11.2727 44C7.25611 44 4 35.0457 4 24C4 12.9543 7.25611 4 11.2727 4C14.0109 4 16.3957 8.16144 17.6364 14.31C18.877 8.16144 21.2618 4 24 4C26.7382 4 29.123 8.16144 30.3636 14.31C31.6043 8.16144 33.9891 4 36.7273 4C40.7439 4 44 12.9543 44 24C44 35.0457 40.7439 44 36.7273 44Z" fill="currentColor"></path>
+</svg>
+</div>
+<h2 class="text-[#111318] dark:text-white text-lg font-bold leading-tight tracking-[-0.015em]">CourseHub</h2>
+</div>
+<div class="hidden md:flex items-center gap-9">
+<a class="text-[#111318] dark:text-gray-300 hover:text-primary dark:hover:text-white text-sm font-medium leading-normal" href="#">코스</a>
+<a class="text-primary dark:text-white text-sm font-bold leading-normal" href="#">커뮤니티</a>
+<a class="text-[#111318] dark:text-gray-300 hover:text-primary dark:hover:text-white text-sm font-medium leading-normal" href="#">이벤트</a>
+</div>
+<div class="flex items-center gap-2">
+<button class="hidden md:flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-10 px-4 bg-[#f0f2f4] dark:bg-white/10 text-[#111318] dark:text-white text-sm font-bold leading-normal tracking-[0.015em]">
+<span class="truncate">로그인</span>
+</button>
+<button class="hidden md:flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-10 px-4 bg-primary text-white text-sm font-bold leading-normal tracking-[0.015em]">
+<span class="truncate">회원가입</span>
+</button>
+<button class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-10 bg-[#f0f2f4] dark:bg-white/10 text-[#111318] dark:text-white gap-2 text-sm font-bold leading-normal tracking-[0.015em] min-w-0 px-2.5">
+<span class="material-symbols-outlined text-xl">notifications</span>
+</button>
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="User avatar with colorful gradient" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuATYcNToL9aQj9cbc1QI4B48cVCg07lstoNdsC3GcKmeenBnmKjSpEmldpmmBjQOQv2aA6t-D7c0VlbXVt7wt1HpffT-b0s7si0kpJx4jzBgvXT6lxp7z1RmnN-mGozOrwxgaynauX7hYulPWlZ0nIDIc_okqy3-e4nttZQ4M5zYHLmSrtusuTysGUEJ4yY90WoIJnWRA3sB7JvLzi1nye4tjR0jrrqYsEEbuoQ5f61LMfMhcqhdi6ImzvlFZUm_g3UX6IKHdwkF1o");'></div>
+</div>
+</div>
+</div>
+</header>
+<main class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12 items-start">
+<div class="lg:col-span-2 flex flex-col gap-8">
+<div class="flex flex-wrap gap-2">
+<a class="text-[#616f89] dark:text-gray-400 text-sm font-medium leading-normal hover:text-primary" href="#">커뮤니티</a>
+<span class="text-[#616f89] dark:text-gray-400 text-sm font-medium leading-normal">/</span>
+<span class="text-[#111318] dark:text-white text-sm font-medium leading-normal">스터디 모집</span>
+</div>
+<div class="bg-white dark:bg-background-dark rounded-xl p-6 md:p-8 flex flex-col gap-6">
+<h1 class="text-[#111318] dark:text-white tracking-tight text-3xl md:text-4xl font-bold leading-tight">프론트엔드 실전 프로젝트 스터디원 모집</h1>
+<div class="flex items-center gap-4 justify-between border-b border-gray-200 dark:border-gray-800 pb-6">
+<div class="flex items-center gap-4">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full h-12 w-12" data-alt="User avatar of Kang Min-jun" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDUOYJeDJB_BrIf1OD9EcwwZDHmmu1BrwtYyKEwr1xV_ToJgOVf-TBswvuNF891aV1t54Stg6NjEq4gGdSzfRF7dLwfOV5deoqp-2eoif16IFz2wmPbuJLKFaMGOSCsvr9rcLB14Pm7eATwA8h2xnOB7OpeYj6G5OR-swPuxF9Zd1ucQamvpEmkGiH1_krI6e4_IR74KdZAg2EDJbnPFc26i6daABam3uPmKImLSVKQyzkaDCtQsfrCR3szVsN7vAzalwn8XUdLXYc");'></div>
+<div class="flex flex-col">
+<p class="text-[#111318] dark:text-white text-base font-bold leading-normal flex-1 truncate">강민준</p>
+<p class="text-[#616f89] dark:text-gray-400 text-sm font-normal leading-normal">2023.10.27 | 조회수 1,234</p>
+</div>
+</div>
+<button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-full h-11 px-6 bg-primary text-white text-sm font-bold leading-normal tracking-[0.015em] shadow-lg shadow-primary/30 hover:bg-primary/90 transition-all duration-300 ease-in-out">
+<span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">chat_bubble</span>
+<span class="truncate">채팅하기</span>
+</button>
+</div>
+<div class="prose prose-lg dark:prose-invert max-w-none text-[#111318] dark:text-gray-300 text-base font-normal leading-relaxed pt-2 space-y-4">
+<p>안녕하세요! React와 TypeScript를 사용한 실전 프론트엔드 프로젝트를 함께 진행할 스터디원을 모집합니다.</p>
+<p><strong>🚀 스터디 목표</strong></p>
+<p>실무 수준의 프로젝트를 경험하며 포트폴리오를 강화하고, 협업 능력을 향상시키는 것을 목표로 합니다. 코드 리뷰와 페어 프로그래밍을 통해 함께 성장하는 스터디를 지향합니다.</p>
+<p><strong>💻 진행 방식</strong></p>
+<ul class="list-disc pl-6 space-y-2">
+<li><strong>기간:</strong> 2023년 11월 5일부터 8주간 진행</li>
+<li><strong>시간:</strong> 매주 일요일 오후 2시 - 5시 (온라인)</li>
+<li><strong>기술 스택:</strong> React, TypeScript, Tailwind CSS, Zustand</li>
+<li><strong>협업 툴:</strong> Git, GitHub, Discord, Figma</li>
+</ul>
+<p><strong>👥 모집 대상</strong></p>
+<p>JavaScript에 익숙하고 React 기본 개념을 이해하고 계신 분, 적극적으로 소통하며 스터디에 참여하실 분을 찾습니다. 초보자도 열정이 있다면 환영합니다!</p>
+</div>
+<div class="flex flex-wrap gap-2 pt-4">
+<span class="px-4 py-1.5 bg-primary/10 text-primary dark:bg-primary/20 dark:text-white/80 rounded-full text-sm font-medium">#프론트엔드</span>
+<span class="px-4 py-1.5 bg-primary/10 text-primary dark:bg-primary/20 dark:text-white/80 rounded-full text-sm font-medium">#프로젝트</span>
+<span class="px-4 py-1.5 bg-primary/10 text-primary dark:bg-primary/20 dark:text-white/80 rounded-full text-sm font-medium">#스터디모집</span>
+</div>
+<div class="flex items-center gap-2 pt-4 border-t border-gray-200 dark:border-gray-800">
+<button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-full h-11 px-4 bg-primary/10 text-primary dark:bg-primary/20 dark:text-white/80 text-sm font-bold leading-normal tracking-[0.015em]">
+<span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">thumb_up</span>
+<span class="truncate">좋아요 128</span>
+</button>
+<button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-full h-11 px-4 bg-[#f0f2f4] dark:bg-white/10 text-[#111318] dark:text-white text-sm font-bold leading-normal tracking-[0.015em]">
+<span class="material-symbols-outlined text-xl">bookmark</span>
+<span class="truncate">북마크하기</span>
+</button>
+<button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-full h-11 px-4 bg-[#f0f2f4] dark:bg-white/10 text-[#111318] dark:text-white text-sm font-bold leading-normal tracking-[0.015em]">
+<span class="material-symbols-outlined text-xl">share</span>
+<span class="truncate">공유하기</span>
+</button>
+</div>
+</div>
+</div>
+<div class="lg:col-span-1 w-full lg:sticky lg:top-24">
+<div class="bg-white dark:bg-background-dark rounded-xl p-6 flex flex-col gap-6">
+<div class="flex flex-col gap-4 border-b border-gray-200 dark:border-gray-800 pb-6">
+<span class="inline-block w-fit text-sm font-bold bg-green-100 dark:bg-green-500/20 text-green-600 dark:text-green-400 px-3 py-1 rounded-full">모집중</span>
+<div class="flex flex-col gap-1">
+<p class="text-sm font-medium text-gray-600 dark:text-gray-400">모집 인원</p>
+<div class="flex items-center justify-between gap-4">
+<p class="text-lg font-bold text-[#111318] dark:text-white">현재 8명 / 총 10명</p>
+</div>
+<div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mt-1">
+<div class="bg-primary h-2 rounded-full" style="width: 80%"></div>
+</div>
+</div>
+<div class="flex flex-col gap-1">
+<p class="text-sm font-medium text-gray-600 dark:text-gray-400">모임 일정</p>
+<p class="text-base font-semibold text-[#111318] dark:text-white">2023년 11월 5일 시작, 매주 일요일 오후 2시</p>
+</div>
+<div class="flex flex-col gap-1">
+<p class="text-sm font-medium text-gray-600 dark:text-gray-400">장소</p>
+<p class="text-base font-semibold text-[#111318] dark:text-white">온라인 (Discord)</p>
+</div>
+</div>
+<div class="flex flex-col gap-4">
+<h4 class="font-bold text-[#111318] dark:text-white text-lg">현재 참여자 (8)</h4>
+<div class="flex flex-col gap-3">
+<div class="flex items-center gap-3">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="Study participant avatar 1" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCkRiDGQN0taPsdwEsq2IlkzM7XGBgJDzVNAvQtlqTDlYyRmyIg_TOeZqzmP8aG5E-URgbncQGxXTww1yJwtcUXQqPlyeDDrRn-3pfchFNKPZW-I62lJ7yoEsnlLxCYiHVqA7_mTFZASQf6E4Kw-6WgQW0tFFZHmyLj-PZdJGZzYD0Wdvcwk78ZPO3Ylwcei119fSiKxeIl6gIoVXYAVx2czRpXzE9RdOPzzZjAlHY09AP2BU0urNURIkT_WpgQGa0d5aJhd6TdGDM")'></div>
+<span class="font-medium text-sm text-gray-800 dark:text-gray-200">김민지</span>
+</div>
+<div class="flex items-center gap-3">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="Study participant avatar 2" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDYErdA52HtzpoxhAKwrpCnYq06CynrMgousHMiQQqPx_lfXuEgC09Kk-P-yxi8YmTPEa46FNhwJlYMOtLJowh1HzFkc4DsHTybYFgSiwVL2ALAPm_2zuRxRuLeB_LYs7IBrinCty_Dpaj5Cuc9JeAKAIBlW_uryCP6Cog7L7Jiy2JxeXLP5uk2Ahgk7y9vTa8VXuGeAQuYb-8wXxoAy1JH5triu0kDoNfjjfnSS75kwaBkJLnZfS2V2c0gIy1IfmnkeFZvB1wyqWA")'></div>
+<span class="font-medium text-sm text-gray-800 dark:text-gray-200">이서준</span>
+</div>
+<div class="flex items-center gap-3">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="Study participant avatar 3" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDa7m3kCW5uwteeiI7KU1utRReg4CkAyyNUHcoNWk-eQnH5Sx181EzshQ8G2Tq1oXgRjmdDgmb771pAgp9B3kPuOyMXU3k6q9xvAknzWAXdBpiKXFz5EG10F_k2Nkvp-g_JJsd-3Hs88LPaMJ76jHyi1mC4w0HAd6A_gvH9JbcnVxHSEA-BPNtja7qB9gmPnzuUkamadgBf0Wwha7UFZ6RqjkwoEdJfEaYRCwSVAk3NF5KBgEXbTyjfc1hXnm07kuuaOK_wtSSUT04")'></div>
+<span class="font-medium text-sm text-gray-800 dark:text-gray-200">박하은</span>
+</div>
+<div class="flex items-center gap-3">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="Study participant avatar 4" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCRCaJxdeLVfcS1EUW1IlYd48sA3NPRWKO2zCMGKgcvM0zapw_CTnY5p1Gw39IOd9h51b2RgDS8iGAeClJlT0UBTR3UoCXdPzNkxBUvMSM1DfDhfPyx67T1U_1PSe6t-MysCxRuoRuetITgVK58eZOQsrIHxvbvTNugEVokEjmrR7rVI5eYxgFnIbeusL5XfJnL7ggGXd01im2ilRoiqR03-bdFthIptDyaNiSkqnyPoe0Hq6UO9uHNkGqw8bp4yafnY6N8YvsHurA")'></div>
+<span class="font-medium text-sm text-gray-800 dark:text-gray-200">정유진</span>
+</div>
+<div class="flex items-center gap-3">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="Study participant avatar 5" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCWKU-NbIYtkJnImouT92-nVEqImdd-FNUNKw8XMbbB9OU4tcbD4TQmMoDAbo0Ohgf1R9VNr7hMYovSIOVO1_q-cTswu9ITg7tbMElkjzx9ycLWbH4qK4E0TFSFIEKXdAlfU9SWbHL_8SM16fDw2DlalwD42ov8lMsYShAO2Mhm0XNEEnsF9PfN2R2dOYxRvHRWEEnBpDCP5hv9TWD0zPF2WyH7ahy8esiCx5aks8Vi6JT-hOmHXghvQ3WmQKjs0ZpSJ-0oINxz6sY")'></div>
+<span class="font-medium text-sm text-gray-800 dark:text-gray-200">최지훈</span>
+</div>
+<div class="p-3 bg-background-light dark:bg-white/5 rounded-lg text-center text-sm font-medium text-gray-600 dark:text-gray-400">+3명 더보기</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+
+</body></html>

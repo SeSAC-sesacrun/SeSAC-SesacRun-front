@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+
+<html class="light" lang="ko"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>커뮤니티 허브</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings:
+        'FILL' 0,
+        'wght' 400,
+        'GRAD' 0,
+        'opsz' 24
+      }
+    </style>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#135bec",
+              "background-light": "#f6f6f8",
+              "background-dark": "#101622",
+            },
+            fontFamily: {
+              "display": ["Lexend", "Noto Sans KR", "sans-serif"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+</head>
+<body class="font-display bg-background-light dark:bg-background-dark">
+<div class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
+<div class="layout-container flex h-full grow flex-col">
+<header class="flex items-center justify-center w-full bg-white dark:bg-background-dark border-b border-gray-200 dark:border-gray-800 sticky top-0 z-50">
+<div class="flex items-center justify-between w-full max-w-[1280px] px-8 py-3">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-3 text-gray-900 dark:text-white">
+<div class="text-primary" style="font-size: 28px;">
+<svg class="w-8 h-8" fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path d="M36.7273 44C33.9891 44 31.6043 39.8386 30.3636 33.69C29.123 39.8386 26.7382 44 24 44C21.2618 44 18.877 39.8386 17.6364 33.69C16.3957 39.8386 14.0109 44 11.2727 44C7.25611 44 4 35.0457 4 24C4 12.9543 7.25611 4 11.2727 4C14.0109 4 16.3957 8.16144 17.6364 14.31C18.877 8.16144 21.2618 4 24 4C26.7382 4 29.123 8.16144 30.3636 14.31C31.6043 8.16144 33.9891 4 36.7273 4C40.7439 4 44 12.9543 44 24C44 35.0457 40.7439 44 36.7273 44Z" fill="currentColor"></path>
+</svg>
+</div>
+<h2 class="text-xl font-bold tracking-[-0.015em]">CourseHub</h2>
+</div>
+<nav class="hidden md:flex items-center gap-8">
+<a class="text-gray-900 dark:text-gray-200 text-sm font-medium hover:text-primary dark:hover:text-primary" href="#">강의</a>
+<a class="text-primary dark:text-primary text-sm font-bold" href="#">커뮤니티</a>
+<a class="text-gray-900 dark:text-gray-200 text-sm font-medium hover:text-primary dark:hover:text-primary" href="#">로드맵</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<label class="hidden sm:flex flex-col min-w-40 !h-10 max-w-64">
+<div class="flex w-full flex-1 items-stretch rounded-lg h-full">
+<div class="text-gray-500 dark:text-gray-400 flex bg-gray-100 dark:bg-gray-800 items-center justify-center pl-3 rounded-l-lg border-r-0">
+<span class="material-symbols-outlined" style="font-size: 20px;">search</span>
+</div>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-gray-900 dark:text-white focus:outline-0 focus:ring-0 border-none bg-gray-100 dark:bg-gray-800 focus:border-none h-full placeholder:text-gray-500 dark:placeholder:text-gray-400 px-4 rounded-l-none border-l-0 pl-2 text-sm font-normal" placeholder="Search" value=""/>
+</div>
+</label>
+<div class="hidden md:flex gap-2">
+<button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary text-white text-sm font-bold">
+<span class="truncate">로그인</span>
+</button>
+<button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-200 text-sm font-bold">
+<span class="truncate">회원가입</span>
+</button>
+</div>
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="User profile avatar image" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuD9HS9Wcczd6CNig1fqnehD5-fqihUvomZ1DBCauuD8qGbYza73juJMbrZn0bZITy-NrAH8vcIZ2kuBVmdC2yNf1amfPl7fvAiO6ncRATf2Bo8iYEngB-s6Dofmjdx3a1DcYa5N7iKglx0yduNLc5zA6sRzpmX4tRnjyVJZ8ugeYr3CLOR2Sy9i9_AjZOZl_lNselnt2qfNQ68gbeRZLy02iwnW90IflHIV69AMwwCRi6XnSHYNzegx0EymMvdxzjiYvAB7IlbtydE");'></div>
+</div>
+</div>
+</header>
+<main class="flex flex-1 justify-center py-10 px-4 sm:px-6 lg:px-8">
+<div class="layout-content-container flex flex-col max-w-[1280px] flex-1">
+<div class="flex flex-wrap justify-between items-center gap-4 p-4">
+<div class="flex flex-col gap-2">
+<p class="text-gray-900 dark:text-white text-4xl font-black tracking-[-0.033em]">커뮤니티 허브</p>
+<p class="text-gray-600 dark:text-gray-400 text-base font-normal">함께 성장할 동료를 찾아보세요! 스터디와 프로젝트에 참여하고 실력을 키워나가세요.</p>
+</div>
+<button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-5 bg-primary text-white gap-2 text-sm font-bold">
+<span class="material-symbols-outlined" style="font-size: 20px;">edit</span>
+<span class="truncate">새 글 작성</span>
+</button>
+</div>
+<div class="flex flex-wrap gap-2 p-4 border-b border-gray-200 dark:border-gray-800">
+<div class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full bg-primary/20 text-primary pl-4 pr-4 cursor-pointer">
+<p class="text-sm font-bold">전체</p>
+</div>
+<div class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-200 pl-4 pr-4 cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700">
+<p class="text-sm font-medium">스터디</p>
+</div>
+<div class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-200 pl-4 pr-4 cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700">
+<p class="text-sm font-medium">프로젝트</p>
+</div>
+<div class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-200 pl-4 pr-4 cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700">
+<p class="text-sm font-medium">Python</p>
+</div>
+<div class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-200 pl-4 pr-4 cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700">
+<p class="text-sm font-medium">React</p>
+</div>
+<div class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-200 pl-4 pr-4 cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700">
+<p class="text-sm font-medium">UI/UX</p>
+</div>
+<div class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-200 pl-4 pr-4 cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700">
+<p class="text-sm font-medium">모집중</p>
+</div>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-4">
+<div class="flex flex-col gap-3 pb-3 bg-white dark:bg-gray-800/50 rounded-xl p-4 transition-transform hover:-translate-y-1">
+<div class="relative w-full">
+<div class="w-full bg-center bg-no-repeat aspect-[4/3] bg-cover rounded-lg" data-alt="Web service interface mockups" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAgbJHlP7seCY6JyD11MmUgc37FrSKuNoiTM5kcaHTBvSmEtBPLaGqlmC90FeaU42HsLwX5SDavuadgeLtPJ6qkmRK9EMPsMsoAVvXxRBOZOWbZ348qbFhx1P3vG4qeLiJ0Rs2KIjo1pJj-owtxqCYdM6KLXclzi0RNFgEYutYxqjcBBZiGi8nvdIReoxk42Vg3Nb4BUVvyFZk9-iAeZDGjy4aZktfkL5uJMBBDpt1U2zdnOe05vPaQWrjWVMElAdH5KEfAxvIiges");'></div>
+<span class="absolute top-2 left-2 bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">모집중</span>
+</div>
+<div>
+<p class="text-gray-500 dark:text-gray-400 text-xs font-semibold mb-1">[프로젝트]</p>
+<p class="text-gray-900 dark:text-white text-base font-bold leading-normal truncate">사이드 프로젝트: '오늘의 회고' 웹 서비스</p>
+<div class="flex gap-1.5 mt-2 flex-wrap">
+<span class="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-xs font-medium px-2 py-1 rounded">#React</span>
+<span class="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-xs font-medium px-2 py-1 rounded">#Node.js</span>
+</div>
+<div class="flex items-center gap-2 mt-3">
+<img class="w-6 h-6 rounded-full" data-alt="김코딩's profile picture" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDrYNk9raW8Mx_iUzchOGsJxWxLcg-tGSrzEcad-YSXHk7Q6gZ97cVegkh0zQTJCsPhLekSneB7J2niuNfAt9APH1Omxo6VClCwz2pziovMDWQ67P2yJl7p86SZxcJSE7bWfJ54IDDTom9TQ5UNE8tMD5TthPCURJ_RTETYw2grtQyOKDX6vzPRlD965TuXWvNfBKY-sAxF6ai8o98vjLMclAIAbKBp-tjM0Nmi8KCxNkHnOvpW3pi5BZ-J-hdY4CdrCGMbkHxHUVU"/>
+<p class="text-gray-600 dark:text-gray-400 text-sm font-normal">김코딩</p>
+</div>
+<p class="text-gray-500 dark:text-gray-400 text-xs font-normal mt-2">조회수 128 | 댓글 12 | 좋아요 25</p>
+</div>
+</div>
+<div class="flex flex-col gap-3 pb-3 bg-white dark:bg-gray-800/50 rounded-xl p-4 transition-transform hover:-translate-y-1">
+<div class="relative w-full">
+<div class="w-full bg-center bg-no-repeat aspect-[4/3] bg-cover rounded-lg" data-alt="Programming code on a laptop screen" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuA4JuheSnf-j4zJKDO2y752DhxkRGvvbt8KAgOBlE0pen5-iEh1FdqtUWCPqAoJpjMqATzxr5Y5sofcFH8xleHW8pc3jvk6pEEYjOh8sKT11Xj5gtff_hbQ7ECNl7PT4JHwwTfjMcRde5255zeehQNg6z3uiarcc1rUrFfpzFhtpshq98JWXhk9ylBC-18EWXkz0qAssQx7-UXm8NSTZo4vCkZhrgt53BtQfF2CF1PDx9uebZa47LR8idIAkiIJPz3mAODUNDuqcrU");'></div>
+<span class="absolute top-2 left-2 bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">모집중</span>
+</div>
+<div>
+<p class="text-gray-500 dark:text-gray-400 text-xs font-semibold mb-1">[스터디]</p>
+<p class="text-gray-900 dark:text-white text-base font-bold leading-normal truncate">알고리즘 스터디 주 2회 진행합니다</p>
+<div class="flex gap-1.5 mt-2 flex-wrap">
+<span class="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-xs font-medium px-2 py-1 rounded">#Python</span>
+<span class="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-xs font-medium px-2 py-1 rounded">#코딩테스트</span>
+</div>
+<div class="flex items-center gap-2 mt-3">
+<img class="w-6 h-6 rounded-full" data-alt="이학습's profile picture" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD3qufHsCQO39RJODrpqh7BghjpOm-8yTD4Yc2KMm9tUBgHtnqqujvehpcR_GuRUdSUCuSrfc6s1_SDluh-zTohqzUB0xnIgY6KdX5epvUnR1PLQYxD1QlBuAAFThqpDC9Po0vWlaTcLEpjOIHS1bvXA8KdOSbvqabJEZkmzbeq5uAwwWK-mGOZ-uioDswedc6HwAf4cB2maGvpmBg0ausj-uxIwtN3AlNVvtEK9XlqwrKRMdLXTQKWJRAX-KitTML8_HHXNaacKV0"/>
+<p class="text-gray-600 dark:text-gray-400 text-sm font-normal">이학습</p>
+</div>
+<p class="text-gray-500 dark:text-gray-400 text-xs font-normal mt-2">조회수 99 | 댓글 8 | 좋아요 15</p>
+</div>
+</div>
+<div class="flex flex-col gap-3 pb-3 bg-white dark:bg-gray-800/50 rounded-xl p-4 transition-transform hover:-translate-y-1">
+<div class="relative w-full">
+<div class="w-full bg-center bg-no-repeat aspect-[4/3] bg-cover rounded-lg" data-alt="UI/UX design sketches and wireframes" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCCrA7-ptYqcKnzl3cfn5WzA7ovs9fXuFsn7nwQ6-uhFrthwu3DP2YcBjv82FayCtizJveApRZ39BKpI9AOd65Re5dqrb3y-HNzeJ4HOWo6KQ99s7bhOwoKaddy1MZEbUFprP-ZWItQ8lO1Y-Xc7hF_vrDx9PIRNd97_4xhRZ-tM7fA4Zf-R4DP9KbQePCC8mFpu5ZQYBm18S_mKEpeLuTFMlvGrXaE1rTKSYEKB9NTZ856wlDByH8ynRS7HQDin-1lJlUqlWecsxc");'></div>
+<span class="absolute top-2 left-2 bg-gray-200 text-gray-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">모집완료</span>
+</div>
+<div>
+<p class="text-gray-500 dark:text-gray-400 text-xs font-semibold mb-1">[스터디]</p>
+<p class="text-gray-900 dark:text-white text-base font-bold leading-normal truncate">UI/UX 포트폴리오 스터디 모집</p>
+<div class="flex gap-1.5 mt-2 flex-wrap">
+<span class="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-xs font-medium px-2 py-1 rounded">#UIUX</span>
+<span class="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-xs font-medium px-2 py-1 rounded">#Figma</span>
+</div>
+<div class="flex items-center gap-2 mt-3">
+<img class="w-6 h-6 rounded-full" data-alt="박디자인's profile picture" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCSbhHs6obb0v1n_FtuaT1czI9vU5q8C3lcma6MckHTN2dmhAXSMiQPOI-T6gMrGcOcEVbjPRxW8tqOE021_8kFxR9oBvFoDnXk2jqTBwyLcjwC1EPk8qjDX17VXls-KNmoGJoZti51k_99svtMAxG-uIchVEygJZZxBNVWu0JgZXZsTxD410Gyzhwj3l5BCNGEk6vnA9mIp0eh55ed7f6HOU8heiIJQMI9AuPZWLxxQKvesQaIPdzAOYObKtVrVgMw9vaiy8tdOko"/>
+<p class="text-gray-600 dark:text-gray-400 text-sm font-normal">박디자인</p>
+</div>
+<p class="text-gray-500 dark:text-gray-400 text-xs font-normal mt-2">조회수 250 | 댓글 22 | 좋아요 40</p>
+</div>
+</div>
+<div class="flex flex-col gap-3 pb-3 bg-white dark:bg-gray-800/50 rounded-xl p-4 transition-transform hover:-translate-y-1">
+<div class="relative w-full">
+<div class="w-full bg-center bg-no-repeat aspect-[4/3] bg-cover rounded-lg" data-alt="Server room with network equipment" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuC_C1orXyItXjtpkMsbl2VVjVluVTlYMmE7rtDp9fhb0RQ0_kwLsZXmHFAggTXD7uAkgkHjp2wMduT_yZDm1CFTLeRkiy18sh8va45UAU3r9Ku31qetKyHfi8yCjvp0AcY__IBD3Wa-XYczvdBv1gfV-5KfHKZo1jzlW3Th4X7Z3x--rjXnUlpVyEoDH0BEr8WKCXTsFjl2anIhvnQvuhgdNh7gwEdizWAXdKpt3X-fV2TGMCrICLiveV9LK0--WCFx0uJgcQHcDco");'></div>
+<span class="absolute top-2 left-2 bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">모집중</span>
+</div>
+<div>
+<p class="text-gray-500 dark:text-gray-400 text-xs font-semibold mb-1">[프로젝트]</p>
+<p class="text-gray-900 dark:text-white text-base font-bold leading-normal truncate">Node.js 백엔드 개발 프로젝트 팀원 구해요</p>
+<div class="flex gap-1.5 mt-2 flex-wrap">
+<span class="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-xs font-medium px-2 py-1 rounded">#Node.js</span>
+<span class="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-xs font-medium px-2 py-1 rounded">#Backend</span>
+</div>
+<div class="flex items-center gap-2 mt-3">
+<img class="w-6 h-6 rounded-full" data-alt="최백엔's profile picture" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC3DRXhDhik0vjVxE5Y8BXCyOhRVSRxWs_81AIQDFJV_f0oUvaZ62Fq6tElC7IeWld2TxmbcsV1Z0uRbx2jtobY_MGc3Ea-YJ1dfKYeYsk9AIEUG09NFKeu0BRgNcErlbRiH6UQABJLjwsIOPCdjQzXhpeLBn03lzuSFfKInzBjaK5KfHpRNtOLRuzcK_hO9pGl0czuGcbdHbf2QrxG-r5geuw0hh_744l8p9wZkYhyxyVu6I6moG5CCT5RRcBsV5kQTxCDfK0rkv8"/>
+<p class="text-gray-600 dark:text-gray-400 text-sm font-normal">최백엔</p>
+</div>
+<p class="text-gray-500 dark:text-gray-400 text-xs font-normal mt-2">조회수 88 | 댓글 5 | 좋아요 18</p>
+</div>
+</div>
+<div class="flex flex-col gap-3 pb-3 bg-white dark:bg-gray-800/50 rounded-xl p-4 transition-transform hover:-translate-y-1">
+<div class="relative w-full">
+<div class="w-full bg-center bg-no-repeat aspect-[4/3] bg-cover rounded-lg" data-alt="Charts and graphs for data analysis" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBU0f7Dm8UVoJ0jliI7uwKK2jZ65wc5pm989WcWvehplzPDbq8eZZvlEWTEUyutFrI2Y3XQOA3VEMIFLxpiLkjShu9jspa1Au7JvHZE9-xTTEsVAxZEgudvDnO6ppFMfULy1Fbbx8t1zK0fP9G69NPGAhAK27C_ZJVoj6EgKKOpZDhJki8_TJsGxzeypqlcF6Zf9ZUQXy27kLR-J7Ef--WMDf7ymi3npZzc9ydwMn7Sy2UViHFu0Uc6TOJhscQxbICXq5bWqL9KMdo");'></div>
+<span class="absolute top-2 left-2 bg-gray-200 text-gray-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">모집완료</span>
+</div>
+<div>
+<p class="text-gray-500 dark:text-gray-400 text-xs font-semibold mb-1">[스터디]</p>
+<p class="text-gray-900 dark:text-white text-base font-bold leading-normal truncate">데이터 분석 공모전 준비 스터디</p>
+<div class="flex gap-1.5 mt-2 flex-wrap">
+<span class="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-xs font-medium px-2 py-1 rounded">#Data</span>
+<span class="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-xs font-medium px-2 py-1 rounded">#Pandas</span>
+</div>
+<div class="flex items-center gap-2 mt-3">
+<img class="w-6 h-6 rounded-full" data-alt="정데이터's profile picture" src="https://lh3.googleusercontent.com/aida-public/AB6AXuApXvUxFi0thwR38n8D2NzdWTexzC8A44eUtuK4qEksSozv5PoNGshEt-ouTL4LhftZ-4qe04TN_EZHnPgXS4nAUxO8w0jQlhX1LUlF8S831AWACLCJJUwAw92nDy8CgYO41X0pJb5oPQ7Smk_6pn6OmoMJicyZsJokJ6gDbfK9GQXDam0olzd7HpIrh-3EMaxcjc4HZ8uZosERiyN65cNb_TJVoiQJ1osC_XSkoDqavvtb_f38qKK_6l3YUqKFayOGGb3s6ivzoH0"/>
+<p class="text-gray-600 dark:text-gray-400 text-sm font-normal">정데이터</p>
+</div>
+<p class="text-gray-500 dark:text-gray-400 text-xs font-normal mt-2">조회수 150 | 댓글 14 | 좋아요 30</p>
+</div>
+</div>
+<div class="flex flex-col gap-3 pb-3 bg-white dark:bg-gray-800/50 rounded-xl p-4 transition-transform hover:-translate-y-1">
+<div class="relative w-full">
+<div class="w-full bg-center bg-no-repeat aspect-[4/3] bg-cover rounded-lg" data-alt="Mobile app UI design on a smartphone screen" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDrx8S_FoOh8J01hujhqcj3xhlDu7dlEsK6-iJ9C8IPx32a5bIhzcHmqRgdAqahnUfI8zlvsvHlyhrONQ5-fKqi5l6bg44YFkTujvaaCRja3TC_n1tTuuBuIzEs-W4jjIc-F0gho6WUVHH3DJbHC2a-chFmj4MbERueJ7GrHvyA2Hntt-O71T8ezXrTyOvnYSNC1cs1FPQCjp7NqzJaLx-2CKSnmvXvyM0fYEogwMJJ2JhUnr0eUCP8My4NhukaORBnh3E-kRM7Yv4");'></div>
+<span class="absolute top-2 left-2 bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">모집중</span>
+</div>
+<div>
+<p class="text-gray-500 dark:text-gray-400 text-xs font-semibold mb-1">[프로젝트]</p>
+<p class="text-gray-900 dark:text-white text-base font-bold leading-normal truncate">React Native 앱 개발 프로젝트</p>
+<div class="flex gap-1.5 mt-2 flex-wrap">
+<span class="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-xs font-medium px-2 py-1 rounded">#ReactNative</span>
+<span class="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-xs font-medium px-2 py-1 rounded">#Mobile</span>
+</div>
+<div class="flex items-center gap-2 mt-3">
+<img class="w-6 h-6 rounded-full" data-alt="앱개발러's profile picture" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCQuPSKkHbTZeAUyfXM1Pcx9E_DGfCzM_j1YU5Z94PNWmJFjVzE5uKFrN9JRex9_7KleWRNImkX1rE4jgBo-14qIINM1j5c50-lhABgkyUrDATq7yKUZ6dV73lYkE2q0zBBddE7XcgjXSOandYF58CPUUtymVsdu6GtJJRoFb9IRmn2wRKAQQg9f7hag-LNvU5aljwwQxsO6jkKB_d1Fy6BeOphJNQrPTHNFOQnChco7FtJ9VlIyq_NXFqLLR6ac_wb2qe6zqP1J2A"/>
+<p class="text-gray-600 dark:text-gray-400 text-sm font-normal">앱개발러</p>
+</div>
+<p class="text-gray-500 dark:text-gray-400 text-xs font-normal mt-2">조회수 75 | 댓글 10 | 좋아요 20</p>
+</div>
+</div>
+<div class="flex flex-col gap-3 pb-3 bg-white dark:bg-gray-800/50 rounded-xl p-4 transition-transform hover:-translate-y-1">
+<div class="relative w-full">
+<div class="w-full bg-center bg-no-repeat aspect-[4/3] bg-cover rounded-lg" data-alt="Cloud computing infrastructure diagram" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCWDiyEckKfV9AI4WVUQdlMzAprLjw9SzgJHW_dwNm5t5-FLNSmw22drAJ0YGbHBrR2XTIOZHzIdMCcCw-Z1yTbQHl7pZkuE6NgOGprj_LM6Jhw0NQqEuJiDMLUEm1-HrHEsOkkt8Pq0XaGT0ITMM3ccYAoZg9t57c8ijvBpvzKjPnAiycfEoZd07atOvdq6WZWgSkdc7cabxwXIDjP58fvNq9WaIyJqCdpblvuZ9fijbQURmpCpaKGvdIq6Np-O-QfpvJ-or2j1Xg");'></div>
+<span class="absolute top-2 left-2 bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">모집중</span>
+</div>
+<div>
+<p class="text-gray-500 dark:text-gray-400 text-xs font-semibold mb-1">[스터디]</p>
+<p class="text-gray-900 dark:text-white text-base font-bold leading-normal truncate">클라우드 자격증 취득 스터디</p>
+<div class="flex gap-1.5 mt-2 flex-wrap">
+<span class="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-xs font-medium px-2 py-1 rounded">#AWS</span>
+<span class="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-xs font-medium px-2 py-1 rounded">#DevOps</span>
+</div>
+<div class="flex items-center gap-2 mt-3">
+<img class="w-6 h-6 rounded-full" data-alt="강인프라's profile picture" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCUZgnRfh6vW-dmhtZQuqBOniPPwWdyrDez2zfUfuh1SrOTGrX7PYwsPgAPYwVCTlgW1IczbTZmjNsheyvmDNvq_1QNLboxbo1yrYgKRrvf638xdORjZ-Ewmc6UC3VzKrodMqCST8jKX_oaUMdO8BSrvlR5x6oBwUmRVMyBDLHUZOLl3NG7RrX8d6c7NrTZlazwKUvXk1240kdckMboAXADm89_n6_q6pXMq_hHTjTJq_qLhrMlP3ovz4TOK1EKfn42grOZh4xgg0I"/>
+<p class="text-gray-600 dark:text-gray-400 text-sm font-normal">강인프라</p>
+</div>
+<p class="text-gray-500 dark:text-gray-400 text-xs font-normal mt-2">조회수 110 | 댓글 9 | 좋아요 22</p>
+</div>
+</div>
+<div class="flex flex-col gap-3 pb-3 bg-white dark:bg-gray-800/50 rounded-xl p-4 transition-transform hover:-translate-y-1">
+<div class="relative w-full">
+<div class="w-full bg-center bg-no-repeat aspect-[4/3] bg-cover rounded-lg" data-alt="Cybersecurity concept with digital lock" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDmRtGI6DgLQHhhh6DBVAnpE86ouRW3MA2DQWLYkbqcFvfETIKB4kViClXeiTEh6fsRg5M0hyEi2Uot41ViS_Mj3v9YSl8YWLgO4tBkvgXhBSMUn61TTj53IWniwSKkcYqwy5lVRUL0qIx999awejHJqpxLqRyWvo85zzpnQ9PN3DZsac_CZPwtjkvG_vWkZXIJHxpBFR7NRNfumxeHcaIJXKNzjgc-NdnORRpZxsfaEwtmwayPvoxTT4RkTaGgx0CSfVLF58Ghr0Y");'></div>
+<span class="absolute top-2 left-2 bg-gray-200 text-gray-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">모집완료</span>
+</div>
+<div>
+<p class="text-gray-500 dark:text-gray-400 text-xs font-semibold mb-1">[프로젝트]</p>
+<p class="text-gray-900 dark:text-white text-base font-bold leading-normal truncate">블록체인 기반 보안 솔루션 개발</p>
+<div class="flex gap-1.5 mt-2 flex-wrap">
+<span class="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-xs font-medium px-2 py-1 rounded">#Blockchain</span>
+<span class="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-xs font-medium px-2 py-1 rounded">#Security</span>
+</div>
+<div class="flex items-center gap-2 mt-3">
+<img class="w-6 h-6 rounded-full" data-alt="나보안's profile picture" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBQlBozreyls6yQQ06ui3WY9ai_SMRF1gRz49uwhfcslnE89enkAcnqDcyfoBZS3yG59sXZ40wLD4vpuoycNwCZ_52zpLWUJLWQfMxLoLkF6mYd-Vu7_kW7BE5FrQeG1cZd8RcTe9wOpa5JO4uanCGXGbcZwS0SzcK7BcrYhfuJ0g0G80W6a1rlLE-lK_qnuWwtpPFlXlP2a3cf3Bj4sHDcSubNogZMrXInvwXSdf4QxXfaE6GSgqmzjnULSPuWhTIV1HUiGCE_kpo"/>
+<p class="text-gray-600 dark:text-gray-400 text-sm font-normal">나보안</p>
+</div>
+<p class="text-gray-500 dark:text-gray-400 text-xs font-normal mt-2">조회수 180 | 댓글 18 | 좋아요 35</p>
+</div>
+</div>
+</div>
+<div class="flex items-center justify-center p-4 mt-6">
+<a class="flex size-10 items-center justify-center text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-white" href="#">
+<span class="material-symbols-outlined">chevron_left</span>
+</a>
+<a class="text-sm font-bold flex size-10 items-center justify-center text-white rounded-full bg-primary" href="#">1</a>
+<a class="text-sm font-normal flex size-10 items-center justify-center text-gray-900 dark:text-gray-200 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800" href="#">2</a>
+<a class="text-sm font-normal flex size-10 items-center justify-center text-gray-900 dark:text-gray-200 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800" href="#">3</a>
+<a class="text-sm font-normal flex size-10 items-center justify-center text-gray-900 dark:text-gray-200 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800" href="#">4</a>
+<a class="text-sm font-normal flex size-10 items-center justify-center text-gray-900 dark:text-gray-200 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800" href="#">5</a>
+<a class="flex size-10 items-center justify-center text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-white" href="#">
+<span class="material-symbols-outlined">chevron_right</span>
+</a>
+</div>
+</div>
+</main>
+</div>
+</div>
+</body></html>
