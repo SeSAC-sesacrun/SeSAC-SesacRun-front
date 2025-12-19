@@ -90,28 +90,31 @@ export default function CommunityPage() {
           <div className="flex gap-2">
             <button
               onClick={() => setFilter('all')}
-              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${filter === 'all'
-                  ? 'bg-primary text-white'
-                  : 'bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-700'
-                }`}
+              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                filter === 'all'
+                  ? 'bg-gray-900 text-white dark:bg-white dark:text-gray-900'
+                  : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700'
+              }`}
             >
               전체
             </button>
             <button
               onClick={() => setFilter('recruiting')}
-              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${filter === 'recruiting'
-                  ? 'bg-primary text-white'
-                  : 'bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-700'
-                }`}
+              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                filter === 'recruiting'
+                  ? 'bg-gray-900 text-white dark:bg-white dark:text-gray-900'
+                  : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700'
+              }`}
             >
               모집중
             </button>
             <button
               onClick={() => setFilter('completed')}
-              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${filter === 'completed'
-                  ? 'bg-primary text-white'
-                  : 'bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-700'
-                }`}
+              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                filter === 'completed'
+                  ? 'bg-gray-900 text-white dark:bg-white dark:text-gray-900'
+                  : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700'
+              }`}
             >
               모집완료
             </button>
