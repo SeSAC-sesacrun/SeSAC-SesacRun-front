@@ -186,20 +186,6 @@ export default function MyCoursesPage() {
                                 )}
                             </div>
 
-                            {/* Settings */}
-                            <div className="mt-auto pt-6 border-t border-gray-200 dark:border-gray-700">
-                                <Link
-                                    href="/settings"
-                                    className="flex items-center gap-3 rounded-lg px-3 py-2 text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
-                                >
-                                    <span className="material-symbols-outlined text-xl">settings</span>
-                                    <p className="text-sm font-medium">설정</p>
-                                </Link>
-                                <button className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800">
-                                    <span className="material-symbols-outlined text-xl">logout</span>
-                                    <p className="text-sm font-medium">로그아웃</p>
-                                </button>
-                            </div>
                         </div>
                     </aside>
 
@@ -438,8 +424,8 @@ export default function MyCoursesPage() {
                                     <button
                                         onClick={() => setMeetingsFilter('all')}
                                         className={`px-4 py-2 text-sm font-medium border-b-2 ${meetingsFilter === 'all'
-                                                ? 'border-primary text-primary'
-                                                : 'border-transparent text-gray-600 dark:text-gray-400'
+                                            ? 'border-primary text-primary'
+                                            : 'border-transparent text-gray-600 dark:text-gray-400'
                                             }`}
                                     >
                                         전체
@@ -447,8 +433,8 @@ export default function MyCoursesPage() {
                                     <button
                                         onClick={() => setMeetingsFilter('organizer')}
                                         className={`px-4 py-2 text-sm font-medium border-b-2 ${meetingsFilter === 'organizer'
-                                                ? 'border-primary text-primary'
-                                                : 'border-transparent text-gray-600 dark:text-gray-400'
+                                            ? 'border-primary text-primary'
+                                            : 'border-transparent text-gray-600 dark:text-gray-400'
                                             }`}
                                     >
                                         모집자
@@ -456,8 +442,8 @@ export default function MyCoursesPage() {
                                     <button
                                         onClick={() => setMeetingsFilter('participant')}
                                         className={`px-4 py-2 text-sm font-medium border-b-2 ${meetingsFilter === 'participant'
-                                                ? 'border-primary text-primary'
-                                                : 'border-transparent text-gray-600 dark:text-gray-400'
+                                            ? 'border-primary text-primary'
+                                            : 'border-transparent text-gray-600 dark:text-gray-400'
                                             }`}
                                     >
                                         참여자
