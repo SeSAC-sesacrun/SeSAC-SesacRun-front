@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html class="light" lang="ko"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>강의 시청 페이지</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#135bec",
+            "background-light": "#f8f9fa",
+            "background-dark": "#101622",
+          },
+          fontFamily: {
+            "display": ["Noto Sans KR", "sans-serif"]
+          },
+          borderRadius: {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+  </style>
+</head>
+<body class="font-display bg-background-light dark:bg-background-dark text-[#111318] dark:text-white">
+<div class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#e9ecef] dark:border-b-background-dark/20 px-6 lg:px-10 py-3 bg-white dark:bg-[#182130] w-full z-10">
+<div class="flex items-center gap-4 text-[#111318] dark:text-white">
+<a class="flex items-center gap-2 text-[#495057] dark:text-gray-400" href="#">
+<span class="material-symbols-outlined">arrow_back</span>
+<span class="text-sm font-medium">내 강의</span>
+</a>
+<span class="text-gray-300 dark:text-gray-600">|</span>
+<h2 class="text-lg font-bold leading-tight tracking-[-0.015em]">UI/UX 마스터 클래스</h2>
+</div>
+<div class="flex items-center gap-2">
+<button class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 bg-[#f0f2f4] dark:bg-background-dark text-[#111318] dark:text-white gap-2 text-sm font-bold leading-normal tracking-[0.015em] min-w-0 px-2.5">
+<span class="material-symbols-outlined text-xl">notifications</span>
+</button>
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="User profile picture" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuASGFFT5KE8GCzR6c_o5n3N1JQ5p8pqFNsbT4swn1Y5z-CXbgOS8GF593HUV5k-S2ebV3I8YRcdF2r8Wzy1LGV7OihSLVlWQy0j-icrV-kpsBow2lxxcvjkmTLQgCelHHLfYWJilW8ISyZXucTgOZSyZvPvt5p4FNx-isXYnAj7bvW4QkLVeAgGmQDiYvv6F1ovyamu6r5KpKIsdHxmyFwVi8iWPLdzBsIm3UlUqz7x7foukUM7UAiwy7nCkZB96lsx0iAtFBdVm60");'></div>
+</div>
+</header>
+<div class="flex flex-1 w-full max-w-[1920px] mx-auto">
+<main class="flex-1 p-6 lg:p-8">
+<h1 class="text-2xl lg:text-3xl font-bold leading-tight tracking-[-0.015em] mb-4">1. 디자인 입문하기</h1>
+<div class="mb-6">
+<div class="relative flex items-center justify-center bg-black aspect-video rounded-xl overflow-hidden" data-alt="Abstract gradient background for video player">
+<div class="absolute inset-0 bg-cover bg-center" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAZG8blBZaEYW66k3-EwFTPVDAx81rZAmpLeA3KGfrQBDPuAAol3JpXE5BPnYr5rZP-tMiACDwiEfmROUficC-jFj8PdeYzjC1jc9rMY8TgliJjnVHTpcbjZ0qusX49tXKMOojx_Bxu2MmQk8HGxqnSvNnB8bZyJO5_Qn_gvX7t1IwYKj1wWYy3xQe6T_uiwFdNoZ96c57rPN719NjrReaVPrGFgmoXrm3Q9w06Zd-PPpSBa24c0EguhHhX4mVT6G4nlZEVanQyNUg");'></div>
+<div class="absolute inset-0 bg-black/30"></div>
+<button class="relative flex shrink-0 items-center justify-center rounded-full size-20 bg-black/40 text-white backdrop-blur-sm">
+<span class="material-symbols-outlined text-5xl" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</button>
+<div class="absolute inset-x-4 bottom-4 z-10">
+<div class="w-full group">
+<div class="w-full h-1 bg-white/20 rounded-full cursor-pointer">
+<div class="h-1 rounded-full bg-primary" style="width: 25%;">
+<div class="w-full h-full flex justify-end items-center">
+<div class="size-3 rounded-full bg-white ring-2 ring-primary scale-0 group-hover:scale-100 transition-transform"></div>
+</div>
+</div>
+</div>
+</div>
+<div class="flex items-center justify-between mt-2">
+<p class="text-white text-xs font-medium leading-normal tracking-wider">03:45 / 12:10</p>
+<div class="flex items-center gap-4">
+<button class="text-white"><span class="material-symbols-outlined">skip_previous</span></button>
+<button class="text-white"><span class="material-symbols-outlined">replay_10</span></button>
+<button class="text-white"><span class="material-symbols-outlined">forward_10</span></button>
+<button class="text-white"><span class="material-symbols-outlined">skip_next</span></button>
+<button class="text-white"><span class="material-symbols-outlined">volume_up</span></button>
+<button class="text-white"><span class="material-symbols-outlined">settings</span></button>
+<button class="text-white"><span class="material-symbols-outlined">fullscreen</span></button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="flex justify-between items-center mt-6">
+<div class="flex gap-2">
+<button class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 bg-gray-200 dark:bg-gray-700 text-[#111318] dark:text-white gap-2 text-sm font-medium leading-normal tracking-[0.015em] min-w-0 px-4">
+<span class="material-symbols-outlined text-lg">chevron_left</span>
+<span>이전 강의</span>
+</button>
+<button class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 bg-primary text-white gap-2 text-sm font-bold leading-normal tracking-[0.015em] min-w-0 px-4">
+<span>다음 강의</span>
+<span class="material-symbols-outlined text-lg">chevron_right</span>
+</button>
+</div>
+</div>
+</main>
+<aside class="w-[380px] flex-shrink-0 bg-white dark:bg-[#182130] border-l border-gray-200 dark:border-gray-800 flex-col hidden lg:flex">
+<div class="flex border-b border-gray-200 dark:border-gray-800">
+<button class="flex-1 py-4 text-center text-sm font-bold border-b-2 border-primary text-primary">커리큘럼</button>
+<button class="flex-1 py-4 text-center text-sm font-medium text-gray-500 dark:text-gray-400 border-b-2 border-transparent hover:text-gray-700 dark:hover:text-gray-200">Q&amp;A</button>
+</div>
+<div class="p-6 flex flex-col flex-1">
+<div class="flex flex-col gap-2 mb-6">
+<div class="flex gap-6 justify-between items-center">
+<p class="text-sm font-medium leading-normal">학습 진행률</p>
+<p class="text-sm font-bold leading-normal text-primary">25% 완료</p>
+</div>
+<div class="rounded-full bg-[#e9ecef] dark:bg-background-dark h-2"><div class="h-2 rounded-full bg-primary" style="width: 25%;"></div></div>
+</div>
+<div class="flex flex-col gap-2 overflow-y-auto pr-2 flex-1">
+<div class="flex flex-col">
+<button class="flex justify-between items-center w-full p-3 rounded-lg bg-gray-100 dark:bg-gray-700/50 text-left">
+<span class="font-bold text-gray-800 dark:text-white">섹션 1: 디자인 기초</span>
+<span class="material-symbols-outlined text-gray-600 dark:text-white">expand_less</span>
+</button>
+<ul class="flex flex-col mt-1 space-y-1">
+<li class="flex items-start gap-3 p-3 rounded-lg bg-primary/10 dark:bg-primary/20">
+<span class="material-symbols-outlined text-primary text-lg mt-0.5" style="font-variation-settings: 'FILL' 1;">play_circle</span>
+<div class="flex flex-col flex-1">
+<p class="font-bold text-sm text-primary dark:text-white">1. 디자인 입문하기</p>
+<p class="text-xs text-gray-600 dark:text-gray-300">12:10</p>
+</div>
+</li>
+<li class="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700/50 cursor-pointer">
+<span class="material-symbols-outlined text-gray-400 text-lg mt-0.5">play_circle</span>
+<div class="flex flex-col flex-1">
+<p class="font-medium text-sm text-gray-700 dark:text-gray-200">2. 디자인 툴 소개</p>
+<p class="text-xs text-gray-500 dark:text-gray-400">08:32</p>
+</div>
+</li>
+<li class="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700/50 cursor-pointer">
+<span class="material-symbols-outlined text-gray-400 text-lg mt-0.5">lock</span>
+<div class="flex flex-col flex-1">
+<p class="font-medium text-sm text-gray-400 dark:text-gray-500">3. 타이포그래피 기본</p>
+<p class="text-xs text-gray-500 dark:text-gray-400">15:00</p>
+</div>
+</li>
+</ul>
+</div>
+<div class="flex flex-col">
+<button class="flex justify-between items-center w-full p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700/50 text-left">
+<span class="font-bold">섹션 2: UI 디자인</span>
+<span class="material-symbols-outlined text-gray-500">expand_more</span>
+</button>
+</div>
+<div class="flex flex-col">
+<button class="flex justify-between items-center w-full p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700/50 text-left">
+<span class="font-bold">섹션 3: UX 리서치</span>
+<span class="material-symbols-outlined text-gray-500">expand_more</span>
+</button>
+</div>
+</div>
+</div>
+</aside>
+</div>
+</div>
+
+</body></html>
