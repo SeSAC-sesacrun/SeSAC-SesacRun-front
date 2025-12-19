@@ -1,6 +1,7 @@
-# CourseHub API 명세서
+# CourseHub API 명세서 - v1
 
 ## 목차
+
 - [1. 개요](#1-개요)
 - [2. 인증 및 권한](#2-인증-및-권한)
 - [3. 사용자 관리](#3-사용자-관리)
@@ -15,12 +16,14 @@
 ## 1. 개요
 
 ### 1.1 Base URL
+
 ```
 개발: http://localhost:8080/api/v1
 운영: https://api.coursehub.com/api/v1
 ```
 
 ### 1.2 공통 응답 형식
+
 ```json
 {
   "success": true,
@@ -31,6 +34,7 @@
 ```
 
 ### 1.3 에러 응답 형식
+
 ```json
 {
   "success": false,
@@ -48,9 +52,11 @@
 ## 2. 인증 및 권한
 
 ### 2.1 회원가입
+
 **Endpoint:** `POST /auth/signup`
 
 **Request Body:**
+
 ```json
 {
   "email": "user@example.com",
@@ -61,6 +67,7 @@
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -76,9 +83,11 @@
 ```
 
 ### 2.2 로그인
+
 **Endpoint:** `POST /auth/login`
 
 **Request Body:**
+
 ```json
 {
   "email": "user@example.com",
@@ -87,6 +96,7 @@
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -103,9 +113,11 @@
 ```
 
 ### 2.3 소셜 로그인 (Google)
+
 **Endpoint:** `POST /auth/google`
 
 **Request Body:**
+
 ```json
 {
   "idToken": "google_id_token"
@@ -113,9 +125,11 @@
 ```
 
 ### 2.4 소셜 로그인 (Kakao)
+
 **Endpoint:** `POST /auth/kakao`
 
 **Request Body:**
+
 ```json
 {
   "accessToken": "kakao_access_token"
@@ -123,9 +137,11 @@
 ```
 
 ### 2.5 토큰 갱신
+
 **Endpoint:** `POST /auth/refresh`
 
 **Request Body:**
+
 ```json
 {
   "refreshToken": "refresh_token"
@@ -133,9 +149,11 @@
 ```
 
 ### 2.6 로그아웃
+
 **Endpoint:** `POST /auth/logout`
 
 **Headers:**
+
 ```
 Authorization: Bearer {access_token}
 ```
@@ -145,14 +163,17 @@ Authorization: Bearer {access_token}
 ## 3. 사용자 관리
 
 ### 3.1 내 프로필 조회
+
 **Endpoint:** `GET /users/me`
 
 **Headers:**
+
 ```
 Authorization: Bearer {access_token}
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -168,14 +189,17 @@ Authorization: Bearer {access_token}
 ```
 
 ### 3.2 프로필 수정
+
 **Endpoint:** `PATCH /users/me`
 
 **Headers:**
+
 ```
 Authorization: Bearer {access_token}
 ```
 
 **Request Body:**
+
 ```json
 {
   "name": "홍길동",
@@ -188,9 +212,11 @@ Authorization: Bearer {access_token}
 ## 4. 강의 관리
 
 ### 4.1 강의 목록 조회
+
 **Endpoint:** `GET /courses`
 
 **Query Parameters:**
+
 - `page`: 페이지 번호 (default: 1)
 - `limit`: 페이지당 항목 수 (default: 12)
 - `category`: 카테고리 필터
@@ -198,6 +224,7 @@ Authorization: Bearer {access_token}
 - `sort`: 정렬 기준 (popular, recent, rating)
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -234,9 +261,11 @@ Authorization: Bearer {access_token}
 ```
 
 ### 4.2 강의 상세 조회
+
 **Endpoint:** `GET /courses/:courseId`
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -289,14 +318,17 @@ Authorization: Bearer {access_token}
 ```
 
 ### 4.3 강의 생성 (강사 전용)
+
 **Endpoint:** `POST /courses`
 
 **Headers:**
+
 ```
 Authorization: Bearer {access_token}
 ```
 
 **Request Body:**
+
 ```json
 {
   "title": "초보자를 위한 완벽한 웹 개발 마스터클래스",
@@ -305,10 +337,7 @@ Authorization: Bearer {access_token}
   "thumbnail": "https://example.com/thumbnail.jpg",
   "price": 129000,
   "originalPrice": 258000,
-  "features": [
-    "24.5시간의 동영상 강의",
-    "12개의 아티클"
-  ],
+  "features": ["24.5시간의 동영상 강의", "12개의 아티클"],
   "curriculum": [
     {
       "title": "섹션 1: 시작하기",
@@ -328,6 +357,7 @@ Authorization: Bearer {access_token}
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -340,9 +370,11 @@ Authorization: Bearer {access_token}
 ```
 
 ### 4.4 강의 수정 (강사 전용)
+
 **Endpoint:** `PATCH /courses/:courseId`
 
 **Headers:**
+
 ```
 Authorization: Bearer {access_token}
 ```
@@ -350,17 +382,21 @@ Authorization: Bearer {access_token}
 **Request Body:** (4.3과 동일, 부분 수정 가능)
 
 ### 4.5 강의 삭제 (강사 전용)
+
 **Endpoint:** `DELETE /courses/:courseId`
 
 **Headers:**
+
 ```
 Authorization: Bearer {access_token}
 ```
 
 ### 4.6 강사의 강의 목록 조회
+
 **Endpoint:** `GET /instructors/:instructorId/courses`
 
 **Query Parameters:**
+
 - `page`: 페이지 번호
 - `limit`: 페이지당 항목 수
 
@@ -369,15 +405,18 @@ Authorization: Bearer {access_token}
 ## 5. 커뮤니티 관리
 
 ### 5.1 커뮤니티 게시글 목록 조회
+
 **Endpoint:** `GET /community/posts`
 
 **Query Parameters:**
+
 - `page`: 페이지 번호 (default: 1)
 - `limit`: 페이지당 항목 수 (default: 20)
 - `category`: 카테고리 (study, project)
 - `status`: 모집 상태 (recruiting, completed)
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -412,9 +451,11 @@ Authorization: Bearer {access_token}
 ```
 
 ### 5.2 커뮤니티 게시글 상세 조회
+
 **Endpoint:** `GET /community/posts/:postId`
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -453,14 +494,17 @@ Authorization: Bearer {access_token}
 ```
 
 ### 5.3 커뮤니티 게시글 작성
+
 **Endpoint:** `POST /community/posts`
 
 **Headers:**
+
 ```
 Authorization: Bearer {access_token}
 ```
 
 **Request Body:**
+
 ```json
 {
   "category": "study",
@@ -478,6 +522,7 @@ Authorization: Bearer {access_token}
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -490,9 +535,11 @@ Authorization: Bearer {access_token}
 ```
 
 ### 5.4 커뮤니티 게시글 수정
+
 **Endpoint:** `PATCH /community/posts/:postId`
 
 **Headers:**
+
 ```
 Authorization: Bearer {access_token}
 ```
@@ -500,37 +547,46 @@ Authorization: Bearer {access_token}
 **Request Body:** (5.3과 동일, 부분 수정 가능)
 
 ### 5.5 커뮤니티 게시글 삭제
+
 **Endpoint:** `DELETE /community/posts/:postId`
 
 **Headers:**
+
 ```
 Authorization: Bearer {access_token}
 ```
 
 ### 5.6 내가 작성한 게시글 목록
+
 **Endpoint:** `GET /community/posts/my`
 
 **Headers:**
+
 ```
 Authorization: Bearer {access_token}
 ```
 
 **Query Parameters:**
+
 - `page`: 페이지 번호
 - `limit`: 페이지당 항목 수
 
 ### 5.7 게시글 좋아요
+
 **Endpoint:** `POST /community/posts/:postId/like`
 
 **Headers:**
+
 ```
 Authorization: Bearer {access_token}
 ```
 
 ### 5.8 게시글 좋아요 취소
+
 **Endpoint:** `DELETE /community/posts/:postId/like`
 
 **Headers:**
+
 ```
 Authorization: Bearer {access_token}
 ```
@@ -540,14 +596,17 @@ Authorization: Bearer {access_token}
 ## 6. 채팅 관리
 
 ### 6.1 채팅방 목록 조회
+
 **Endpoint:** `GET /chats`
 
 **Headers:**
+
 ```
 Authorization: Bearer {access_token}
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -576,18 +635,22 @@ Authorization: Bearer {access_token}
 ```
 
 ### 6.2 채팅방 상세 조회 (메시지 목록)
+
 **Endpoint:** `GET /chats/:chatId/messages`
 
 **Headers:**
+
 ```
 Authorization: Bearer {access_token}
 ```
 
 **Query Parameters:**
+
 - `page`: 페이지 번호
 - `limit`: 페이지당 메시지 수 (default: 50)
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -618,14 +681,17 @@ Authorization: Bearer {access_token}
 ```
 
 ### 6.3 메시지 전송
+
 **Endpoint:** `POST /chats/:chatId/messages`
 
 **Headers:**
+
 ```
 Authorization: Bearer {access_token}
 ```
 
 **Request Body:**
+
 ```json
 {
   "content": "안녕하세요. React 심화 과정 3강의 소스코드 관련해서 질문이 있습니다."
@@ -633,6 +699,7 @@ Authorization: Bearer {access_token}
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -647,14 +714,17 @@ Authorization: Bearer {access_token}
 ```
 
 ### 6.4 채팅방 생성 (커뮤니티 게시글 관련)
+
 **Endpoint:** `POST /chats`
 
 **Headers:**
+
 ```
 Authorization: Bearer {access_token}
 ```
 
 **Request Body:**
+
 ```json
 {
   "type": "community",
@@ -664,14 +734,17 @@ Authorization: Bearer {access_token}
 ```
 
 ### 6.5 참여 신청 (참여자)
+
 **Endpoint:** `POST /community/posts/:postId/apply`
 
 **Headers:**
+
 ```
 Authorization: Bearer {access_token}
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -683,17 +756,21 @@ Authorization: Bearer {access_token}
 ```
 
 ### 6.6 참여 승인 (모집자)
+
 **Endpoint:** `POST /community/applications/:applicationId/approve`
 
 **Headers:**
+
 ```
 Authorization: Bearer {access_token}
 ```
 
 ### 6.7 참여 거절 (모집자)
+
 **Endpoint:** `POST /community/applications/:applicationId/reject`
 
 **Headers:**
+
 ```
 Authorization: Bearer {access_token}
 ```
@@ -703,17 +780,21 @@ Authorization: Bearer {access_token}
 ## 7. 수강 관리
 
 ### 7.1 내 수강 강의 목록
+
 **Endpoint:** `GET /enrollments/my`
 
 **Headers:**
+
 ```
 Authorization: Bearer {access_token}
 ```
 
 **Query Parameters:**
+
 - `status`: 수강 상태 (in_progress, completed)
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -743,14 +824,17 @@ Authorization: Bearer {access_token}
 ```
 
 ### 7.2 강의 수강 신청
+
 **Endpoint:** `POST /enrollments`
 
 **Headers:**
+
 ```
 Authorization: Bearer {access_token}
 ```
 
 **Request Body:**
+
 ```json
 {
   "courseId": "uuid"
@@ -758,6 +842,7 @@ Authorization: Bearer {access_token}
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -771,14 +856,17 @@ Authorization: Bearer {access_token}
 ```
 
 ### 7.3 강의 진행률 업데이트
+
 **Endpoint:** `PATCH /enrollments/:enrollmentId/progress`
 
 **Headers:**
+
 ```
 Authorization: Bearer {access_token}
 ```
 
 **Request Body:**
+
 ```json
 {
   "lectureId": "uuid",
@@ -788,14 +876,17 @@ Authorization: Bearer {access_token}
 ```
 
 ### 7.4 강의 시청 정보 조회
+
 **Endpoint:** `GET /enrollments/:enrollmentId/watch/:lectureId`
 
 **Headers:**
+
 ```
 Authorization: Bearer {access_token}
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -831,14 +922,17 @@ Authorization: Bearer {access_token}
 ## 8. 리뷰 및 평가
 
 ### 8.1 강의 리뷰 목록 조회
+
 **Endpoint:** `GET /courses/:courseId/reviews`
 
 **Query Parameters:**
+
 - `page`: 페이지 번호
 - `limit`: 페이지당 항목 수
 - `sort`: 정렬 (recent, rating_high, rating_low)
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -877,14 +971,17 @@ Authorization: Bearer {access_token}
 ```
 
 ### 8.2 리뷰 작성
+
 **Endpoint:** `POST /courses/:courseId/reviews`
 
 **Headers:**
+
 ```
 Authorization: Bearer {access_token}
 ```
 
 **Request Body:**
+
 ```json
 {
   "rating": 5,
@@ -893,6 +990,7 @@ Authorization: Bearer {access_token}
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -906,14 +1004,17 @@ Authorization: Bearer {access_token}
 ```
 
 ### 8.3 리뷰 수정
+
 **Endpoint:** `PATCH /reviews/:reviewId`
 
 **Headers:**
+
 ```
 Authorization: Bearer {access_token}
 ```
 
 **Request Body:**
+
 ```json
 {
   "rating": 5,
@@ -922,9 +1023,11 @@ Authorization: Bearer {access_token}
 ```
 
 ### 8.4 리뷰 삭제
+
 **Endpoint:** `DELETE /reviews/:reviewId`
 
 **Headers:**
+
 ```
 Authorization: Bearer {access_token}
 ```
@@ -934,14 +1037,17 @@ Authorization: Bearer {access_token}
 ## 9. Q&A 관리
 
 ### 9.1 강의 Q&A 목록 조회
+
 **Endpoint:** `GET /courses/:courseId/qna`
 
 **Query Parameters:**
+
 - `lectureId`: 특정 강의 필터링 (optional)
 - `page`: 페이지 번호
 - `limit`: 페이지당 항목 수
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -982,14 +1088,17 @@ Authorization: Bearer {access_token}
 ```
 
 ### 9.2 질문 작성
+
 **Endpoint:** `POST /courses/:courseId/qna`
 
 **Headers:**
+
 ```
 Authorization: Bearer {access_token}
 ```
 
 **Request Body:**
+
 ```json
 {
   "lectureId": "uuid",
@@ -998,14 +1107,17 @@ Authorization: Bearer {access_token}
 ```
 
 ### 9.3 답변 작성 (강사 전용)
+
 **Endpoint:** `POST /qna/:questionId/answer`
 
 **Headers:**
+
 ```
 Authorization: Bearer {access_token}
 ```
 
 **Request Body:**
+
 ```json
 {
   "content": "Figma를 주로 사용합니다."
@@ -1017,19 +1129,23 @@ Authorization: Bearer {access_token}
 ## 10. 알림 관리
 
 ### 10.1 알림 목록 조회
+
 **Endpoint:** `GET /notifications`
 
 **Headers:**
+
 ```
 Authorization: Bearer {access_token}
 ```
 
 **Query Parameters:**
+
 - `page`: 페이지 번호
 - `limit`: 페이지당 항목 수
 - `isRead`: 읽음 여부 필터 (optional)
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -1056,17 +1172,21 @@ Authorization: Bearer {access_token}
 ```
 
 ### 10.2 알림 읽음 처리
+
 **Endpoint:** `PATCH /notifications/:notificationId/read`
 
 **Headers:**
+
 ```
 Authorization: Bearer {access_token}
 ```
 
 ### 10.3 모든 알림 읽음 처리
+
 **Endpoint:** `PATCH /notifications/read-all`
 
 **Headers:**
+
 ```
 Authorization: Bearer {access_token}
 ```
@@ -1076,15 +1196,18 @@ Authorization: Bearer {access_token}
 ## 11. 검색
 
 ### 11.1 통합 검색
+
 **Endpoint:** `GET /search`
 
 **Query Parameters:**
+
 - `q`: 검색어 (required)
 - `type`: 검색 타입 (courses, community, all)
 - `page`: 페이지 번호
 - `limit`: 페이지당 항목 수
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -1118,20 +1241,20 @@ Authorization: Bearer {access_token}
 
 ## 부록: 에러 코드
 
-| 코드 | 설명 |
-|------|------|
-| AUTH_001 | 인증 토큰이 없습니다 |
-| AUTH_002 | 유효하지 않은 토큰입니다 |
-| AUTH_003 | 토큰이 만료되었습니다 |
-| AUTH_004 | 권한이 없습니다 |
-| USER_001 | 사용자를 찾을 수 없습니다 |
-| USER_002 | 이미 존재하는 이메일입니다 |
-| COURSE_001 | 강의를 찾을 수 없습니다 |
-| COURSE_002 | 이미 수강 중인 강의입니다 |
-| COMMUNITY_001 | 게시글을 찾을 수 없습니다 |
-| COMMUNITY_002 | 모집이 마감되었습니다 |
-| CHAT_001 | 채팅방을 찾을 수 없습니다 |
-| REVIEW_001 | 수강하지 않은 강의는 리뷰를 작성할 수 없습니다 |
-| VALIDATION_001 | 필수 필드가 누락되었습니다 |
-| VALIDATION_002 | 유효하지 않은 형식입니다 |
-| SERVER_001 | 서버 내부 오류가 발생했습니다 |
+| 코드           | 설명                                           |
+| -------------- | ---------------------------------------------- |
+| AUTH_001       | 인증 토큰이 없습니다                           |
+| AUTH_002       | 유효하지 않은 토큰입니다                       |
+| AUTH_003       | 토큰이 만료되었습니다                          |
+| AUTH_004       | 권한이 없습니다                                |
+| USER_001       | 사용자를 찾을 수 없습니다                      |
+| USER_002       | 이미 존재하는 이메일입니다                     |
+| COURSE_001     | 강의를 찾을 수 없습니다                        |
+| COURSE_002     | 이미 수강 중인 강의입니다                      |
+| COMMUNITY_001  | 게시글을 찾을 수 없습니다                      |
+| COMMUNITY_002  | 모집이 마감되었습니다                          |
+| CHAT_001       | 채팅방을 찾을 수 없습니다                      |
+| REVIEW_001     | 수강하지 않은 강의는 리뷰를 작성할 수 없습니다 |
+| VALIDATION_001 | 필수 필드가 누락되었습니다                     |
+| VALIDATION_002 | 유효하지 않은 형식입니다                       |
+| SERVER_001     | 서버 내부 오류가 발생했습니다                  |
