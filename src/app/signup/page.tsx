@@ -1,22 +1,46 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { authService } from '@/services/auth';
 
 export default function SignupPage() {
+    const router = useRouter();
     const [showPassword, setShowPassword] = useState(false);
-    const [activeTab, setActiveTab] = useState<'login' | 'signup'>('signup');
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [role, setRole] = useState<'STUDENT' | 'INSTRUCTOR' | 'ADMIN'>('STUDENT');
+    const [error, setError] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setError('');
+        setIsLoading(true);
+
+        try {
+            await authService.signup(name, email, password, role);
+            alert('회원가입이 완료되었습니다!');
+            router.push('/courses');
+        } catch (err: any) {
+            setError(err.message || '회원가입에 실패했습니다');
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     return (
         <div className="relative flex min-h-screen w-full flex-col items-center justify-center p-4 overflow-x-hidden">
             <div className="flex w-full max-w-md flex-col items-center gap-8 rounded-xl bg-white p-6 shadow-sm dark:bg-gray-900 sm:p-10">
-                {/* PageHeading */}
+                {/* Page Heading */}
                 <div className="flex w-full flex-col gap-2 text-center">
                     <p className="text-3xl font-black leading-tight tracking-[-0.033em] text-gray-900 dark:text-white">
                         비디오 교육 코스
                     </p>
                     <p className="text-base font-normal leading-normal text-gray-600 dark:text-gray-400">
-                        {activeTab === 'login' ? '로그인하여 학습을 계속하세요' : '회원가입하고 학습을 시작하세요'}
+                        회원가입하고 학습을 시작하세요
                     </p>
                 </div>
 
@@ -24,40 +48,72 @@ export default function SignupPage() {
                     {/* Tabs */}
                     <div className="pb-3">
                         <div className="flex border-b border-gray-300 dark:border-gray-700">
-                            <button
-                                onClick={() => setActiveTab('login')}
-                                className={`flex flex-1 flex-col items-center justify-center border-b-[3px] pb-[13px] pt-4 ${activeTab === 'login'
-                                        ? 'border-b-primary text-primary'
-                                        : 'border-b-transparent text-gray-600 dark:text-gray-400'
-                                    }`}
+                            <Link
+                                href="/login"
+                                className="flex flex-1 flex-col items-center justify-center border-b-[3px] border-b-transparent pb-[13px] pt-4 text-gray-600 dark:text-gray-400"
                             >
                                 <p className="text-sm font-bold leading-normal tracking-[0.015em]">로그인</p>
-                            </button>
-                            <button
-                                onClick={() => setActiveTab('signup')}
-                                className={`flex flex-1 flex-col items-center justify-center border-b-[3px] pb-[13px] pt-4 ${activeTab === 'signup'
-                                        ? 'border-b-primary text-primary'
-                                        : 'border-b-transparent text-gray-600 dark:text-gray-400'
-                                    }`}
-                            >
+                            </Link>
+                            <div className="flex flex-1 flex-col items-center justify-center border-b-[3px] border-b-primary pb-[13px] pt-4 text-primary">
                                 <p className="text-sm font-bold leading-normal tracking-[0.015em]">회원가입</p>
-                            </button>
+                            </div>
                         </div>
                     </div>
 
-                    <div className="mt-6 flex flex-col gap-4">
-                        {/* TextField: Email */}
+                    <form onSubmit={handleSubmit} className="mt-6 flex flex-col gap-4">
+                        {error && (
+                            <div className="bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 p-3 rounded-lg text-sm">
+                                {error}
+                            </div>
+                        )}
+
+                        {/* Name Input */}
                         <label className="flex flex-col">
                             <p className="pb-2 text-sm font-medium leading-normal text-gray-900 dark:text-gray-300">
-                                이메일 또는 사용자 이름
+                                이름
+                            </p>
+                            <input
+                                className="form-input h-12 w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg border border-gray-300 bg-white p-[15px] text-base font-normal leading-normal text-gray-900 placeholder:text-gray-600 focus:border-primary focus:outline-0 focus:ring-2 focus:ring-primary/20 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:placeholder-gray-400 dark:focus:border-primary"
+                                placeholder="이름을 입력하세요"
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                                required
+                            />
+                        </label>
+
+                        {/* Role Select */}
+                        <label className="flex flex-col">
+                            <p className="pb-2 text-sm font-medium leading-normal text-gray-900 dark:text-gray-300">
+                                역할
+                            </p>
+                            <select
+                                className="form-input h-12 w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg border border-gray-300 bg-white p-[15px] text-base font-normal leading-normal text-gray-900 focus:border-primary focus:outline-0 focus:ring-2 focus:ring-primary/20 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:focus:border-primary"
+                                value={role}
+                                onChange={(e) => setRole(e.target.value as 'STUDENT' | 'INSTRUCTOR' | 'ADMIN')}
+                                required
+                            >
+                                <option value="STUDENT">수강생</option>
+                                <option value="INSTRUCTOR">강사</option>
+                                <option value="ADMIN">관리자</option>
+                            </select>
+                        </label>
+
+                        {/* Email Input */}
+                        <label className="flex flex-col">
+                            <p className="pb-2 text-sm font-medium leading-normal text-gray-900 dark:text-gray-300">
+                                이메일
                             </p>
                             <input
                                 className="form-input h-12 w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg border border-gray-300 bg-white p-[15px] text-base font-normal leading-normal text-gray-900 placeholder:text-gray-600 focus:border-primary focus:outline-0 focus:ring-2 focus:ring-primary/20 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:placeholder-gray-400 dark:focus:border-primary"
                                 placeholder="이메일 주소를 입력하세요"
+                                type="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                required
                             />
                         </label>
 
-                        {/* TextField: Password */}
+                        {/* Password Input */}
                         <label className="flex flex-col">
                             <p className="pb-2 text-sm font-medium leading-normal text-gray-900 dark:text-gray-300">
                                 비밀번호
@@ -65,8 +121,12 @@ export default function SignupPage() {
                             <div className="relative flex w-full flex-1 items-stretch">
                                 <input
                                     className="form-input h-12 w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg border border-gray-300 bg-white p-[15px] pr-10 text-base font-normal leading-normal text-gray-900 placeholder:text-gray-600 focus:border-primary focus:outline-0 focus:ring-2 focus:ring-primary/20 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:placeholder-gray-400 dark:focus:border-primary"
-                                    placeholder="비밀번호를 입력하세요"
+                                    placeholder="비밀번호를 입력하세요 (최소 8자)"
                                     type={showPassword ? 'text' : 'password'}
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    required
+                                    minLength={8}
                                 />
                                 <div className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-600 dark:text-gray-400">
                                     <span
@@ -80,36 +140,17 @@ export default function SignupPage() {
                             </div>
                         </label>
 
-                        {activeTab === 'login' && (
-                            <div className="flex min-h-14 items-center justify-between gap-4">
-                                <div className="flex items-center gap-2">
-                                    <input
-                                        className="h-4 w-4 rounded border-2 border-gray-300 bg-transparent text-primary focus:ring-0 focus:ring-offset-0 checked:border-primary checked:bg-primary dark:border-gray-600 dark:checked:bg-primary dark:focus:ring-offset-gray-800"
-                                        id="keep-logged-in"
-                                        type="checkbox"
-                                    />
-                                    <label
-                                        className="text-sm font-normal leading-normal text-gray-900 dark:text-gray-300"
-                                        htmlFor="keep-logged-in"
-                                    >
-                                        로그인 상태 유지
-                                    </label>
-                                </div>
-                                <div className="shrink-0">
-                                    <Link className="text-sm font-medium leading-normal text-primary hover:underline" href="#">
-                                        비밀번호 찾기
-                                    </Link>
-                                </div>
-                            </div>
-                        )}
-                    </div>
-
-                    {/* Primary Button */}
-                    <div className="mt-6">
-                        <button className="flex h-12 w-full items-center justify-center rounded-lg bg-primary px-6 text-base font-bold text-white shadow-sm transition-colors hover:bg-primary/90">
-                            {activeTab === 'login' ? '로그인하기' : '회원가입하기'}
-                        </button>
-                    </div>
+                        {/* Submit Button */}
+                        <div className="mt-6">
+                            <button
+                                type="submit"
+                                disabled={isLoading}
+                                className="flex h-12 w-full items-center justify-center rounded-lg bg-[#135bec] px-6 text-base font-bold text-white shadow-sm transition-colors hover:bg-[#0d47b8] disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                {isLoading ? '처리 중...' : '회원가입하기'}
+                            </button>
+                        </div>
+                    </form>
 
                     {/* Divider */}
                     <div className="relative my-8 flex items-center justify-center">
@@ -127,7 +168,7 @@ export default function SignupPage() {
                                 className="h-5 w-5"
                                 src="https://www.google.com/favicon.ico"
                             />
-                            <span>Google 계정으로 {activeTab === 'login' ? '로그인' : '회원가입'}</span>
+                            <span>Google 계정으로 회원가입</span>
                         </button>
                         <button className="flex h-12 w-full items-center justify-center gap-2 rounded-lg border border-[#FEE500] bg-[#FEE500] px-6 text-base font-medium text-[#000000] shadow-sm transition-colors hover:bg-[#FEE500]/90">
                             <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -136,34 +177,17 @@ export default function SignupPage() {
                                     fill="#181600"
                                 />
                             </svg>
-                            <span>카카오 계정으로 {activeTab === 'login' ? '로그인' : '회원가입'}</span>
+                            <span>카카오 계정으로 회원가입</span>
                         </button>
                     </div>
 
                     {/* Footer Link */}
                     <div className="mt-8 text-center">
                         <p className="text-sm text-gray-600 dark:text-gray-400">
-                            {activeTab === 'login' ? (
-                                <>
-                                    아직 회원이 아니신가요?{' '}
-                                    <button
-                                        className="font-medium text-primary hover:underline"
-                                        onClick={() => setActiveTab('signup')}
-                                    >
-                                        회원가입
-                                    </button>
-                                </>
-                            ) : (
-                                <>
-                                    이미 회원이신가요?{' '}
-                                    <button
-                                        className="font-medium text-primary hover:underline"
-                                        onClick={() => setActiveTab('login')}
-                                    >
-                                        로그인
-                                    </button>
-                                </>
-                            )}
+                            이미 회원이신가요?{' '}
+                            <Link href="/login" className="font-medium text-[#135bec] hover:underline">
+                                로그인
+                            </Link>
                         </p>
                     </div>
                 </div>

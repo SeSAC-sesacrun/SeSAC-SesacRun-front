@@ -2,8 +2,10 @@
 
 import React from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import Button from '../common/Button';
 import Avatar from '../common/Avatar';
+import { authService } from '@/services/auth';
 
 export interface HeaderProps {
   isAuthenticated?: boolean;
@@ -15,6 +17,13 @@ export interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({ isAuthenticated = false, user }) => {
+  const router = useRouter();
+
+  const handleLogout = () => {
+    authService.logout();
+    router.push('/');
+  };
+
   return (
     <header className="sticky top-0 z-50 w-full bg-white dark:bg-gray-900 backdrop-blur-sm border-b border-gray-200 dark:border-gray-700">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -72,6 +81,11 @@ const Header: React.FC<HeaderProps> = ({ isAuthenticated = false, user }) => {
                 <Link href="/profile" className="flex items-center gap-3">
                   <Avatar src={user.avatar} alt={user.name} size="md" />
                 </Link>
+
+                {/* 로그아웃 버튼 */}
+                <Button variant="secondary" onClick={handleLogout}>
+                  로그아웃
+                </Button>
               </>
             ) : (
               <Link href="/login">

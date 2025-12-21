@@ -55,7 +55,7 @@ export interface CourseDetail extends Course {
     name: string;
     avatar?: string;
   };
-  features?: string;
+  features?: string[];
   sections: Section[];
 }
 
@@ -75,7 +75,7 @@ export interface CreateCourseData {
   price: number;
   originalPrice?: number;
   discount?: number;
-  features?: string;
+  features?: string[];
   sections: {
     title: string;
     order: number;

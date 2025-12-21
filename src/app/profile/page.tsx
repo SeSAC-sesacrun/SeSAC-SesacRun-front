@@ -1,19 +1,36 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { authService } from '@/services/auth';
+import { User } from '@/types';
 
 export default function MyPage() {
     const [activeTab, setActiveTab] = useState<'courses' | 'posts' | 'meetings' | 'purchases' | 'instructor'>('courses');
     const [postsSubTab, setPostsSubTab] = useState<'qna' | 'study' | 'project'>('qna');
     const [meetingsFilter, setMeetingsFilter] = useState<'all' | 'organizer' | 'participant'>('all');
+    const [user, setUser] = useState<User | null>(null);
 
-    // 사용자 정보
-    const user = {
-        name: '김학습',
-        email: 'student@example.com',
-        avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400',
-        role: 'instructor', // 'student' | 'instructor'
+    // 사용자 정보 로드
+    useEffect(() => {
+        const storedUser = authService.getStoredUser();
+        if (storedUser) {
+            setUser(storedUser);
+        }
+    }, []);
+
+    // 역할을 한글로 변환
+    const getRoleLabel = (role: string) => {
+        switch (role) {
+            case 'INSTRUCTOR':
+                return '강사';
+            case 'ADMIN':
+                return '관리자';
+            case 'STUDENT':
+                return '수강생';
+            default:
+                return '수강생';
+        }
     };
 
     const myCourses = [
@@ -111,14 +128,14 @@ export default function MyPage() {
                             <div className="flex flex-col items-center gap-4 pb-6 border-b border-gray-200 dark:border-gray-700">
                                 <div
                                     className="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-20"
-                                    style={{ backgroundImage: `url('${user.avatar}')` }}
+                                    style={{ backgroundImage: `url('${user?.avatar || 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400'}')` }}
                                 />
                                 <div className="text-center">
-                                    <h1 className="text-lg font-bold text-gray-900 dark:text-white">{user.name}</h1>
-                                    <p className="text-sm text-gray-500 dark:text-gray-400">{user.email}</p>
-                                    {user.role === 'instructor' && (
+                                    <h1 className="text-lg font-bold text-gray-900 dark:text-white">{user?.name || '사용자'}</h1>
+                                    <p className="text-sm text-gray-500 dark:text-gray-400">{user?.email || ''}</p>
+                                    {user?.role && (
                                         <span className="inline-block mt-2 px-3 py-1 bg-primary/10 text-primary text-xs font-bold rounded-full">
-                                            강사
+                                            {getRoleLabel(user.role)}
                                         </span>
                                     )}
                                 </div>
@@ -166,7 +183,7 @@ export default function MyPage() {
                                     <span className="material-symbols-outlined text-xl">groups</span>
                                     <p className="text-sm font-medium">모임</p>
                                 </button>
-                                {user.role === 'instructor' && (
+                                {user?.role === 'INSTRUCTOR' && (
                                     <button
                                         onClick={() => setActiveTab('instructor')}
                                         className={`flex items-center gap-3 rounded-lg px-3 py-2 ${activeTab === 'instructor'
@@ -482,7 +499,7 @@ export default function MyPage() {
                         )}
 
                         {/* Instructor Courses Tab */}
-                        {activeTab === 'instructor' && user.role === 'instructor' && (
+                        {activeTab === 'instructor' && user?.role === 'INSTRUCTOR' && (
                             <div className="flex flex-col gap-6">
                                 <div className="flex items-center justify-between">
                                     <h2 className="text-2xl font-bold text-gray-900 dark:text-white">운영 중인 강의</h2>
