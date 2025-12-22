@@ -14,7 +14,6 @@
 | email     | String        | N        | 이메일 (unique)      |
 | password  | String        | N        | 비밀번호 (암호화)    |
 | name      | String        | N        | 이름                 |
-| avatar    | String        | Y        | 프로필 이미지 URL    |
 | role      | Enum          | N        | USER, INSTRUCTOR     |
 | createdAt | LocalDateTime | N        | 가입일               |
 | updatedAt | LocalDateTime | N        | 수정일               |
@@ -53,12 +52,10 @@ public enum UserRole {
 | category            | String        | N        | 카테고리                 |
 | price               | Integer       | N        | 판매가                   |
 | originalPrice       | Integer       | Y        | 정가                     |
-| discount            | Integer       | Y        | 할인율 (%)               |
 | level               | String        | N        | 난이도 (초급/중급/고급)  |
 | language            | String        | N        | 언어                     |
 | duration            | String        | N        | 총 시간 (예: "24.5시간") |
-| rating              | Decimal       | N        | 평균 평점 (기본값 0)     |
-| reviewCount         | Integer       | N        | 리뷰 수 (기본값 0)       |
+<!-- | reviewCount         | Integer       | N        | 리뷰 수 (기본값 0)       | -->
 | studentCount        | Integer       | N        | 수강생 수 (기본값 0)     |
 | lastUpdated         | LocalDate     | N        | 최근 업데이트            |
 | createdAt           | LocalDateTime | N        | 생성일                   |
@@ -91,6 +88,7 @@ public enum UserRole {
 - Course (N:1)
 - Lecture (1:N) - 강의 목록
 
+
 ---
 
 ## 4. Lecture (강의 영상)
@@ -115,26 +113,8 @@ public enum UserRole {
 
 ---
 
-## 5. Purchase (구매 내역)
 
-### 5.1 필드
-
-| 필드명      | 타입          | Nullable | 설명        |
-| ----------- | ------------- | -------- | ----------- |
-| id          | Long          | N        | PK          |
-| userId      | Long          | N        | FK (User)   |
-| courseId    | Long          | N        | FK (Course) |
-| price       | Integer       | N        | 구매 가격   |
-| purchasedAt | LocalDateTime | N        | 구매일      |
-
-### 5.2 연관관계
-
-- User (N:1)
-- Course (N:1)
-
----
-
-## 6. WatchHistory (시청 기록)
+<!-- ## 6. WatchHistory (시청 기록)
 
 ### 6.1 필드
 
@@ -149,11 +129,11 @@ public enum UserRole {
 ### 6.2 연관관계
 
 - User (N:1)
-- Lecture (N:1)
+- Lecture (N:1) -->
 
 ---
 
-## 7. Review (수강평)
+<!-- ## 7. Review (수강평)
 
 ### 7.1 필드
 
@@ -170,11 +150,11 @@ public enum UserRole {
 ### 7.2 연관관계
 
 - User (N:1)
-- Course (N:1)
+- Course (N:1) -->
 
 ---
 
-## 8. CourseQnA (강의 Q&A)
+<!-- ## 8. CourseQnA (강의 Q&A)
 
 ### 8.1 필드
 
@@ -191,7 +171,7 @@ public enum UserRole {
 ### 8.2 연관관계
 
 - User (N:1)
-- Course (N:1)
+- Course (N:1) -->
 
 ---
 
@@ -210,7 +190,6 @@ public enum UserRole {
 | currentMembers | Integer       | N        | 현재 인원                         |
 | totalMembers   | Integer       | N        | 모집 인원                         |
 | views          | Integer       | N        | 조회수 (기본값 0)                 |
-| tags           | String        | Y        | 태그 (JSON 배열 또는 별도 테이블) |
 | createdAt      | LocalDateTime | N        | 작성일                            |
 | updatedAt      | LocalDateTime | N        | 수정일                            |
 | deletedAt      | LocalDateTime | Y        | 삭제일                            |
@@ -283,18 +262,6 @@ public enum MemberStatus {
 
 ---
 
-## 12. ChatParticipant (채팅 참여자)
-
-### 12.1 필드
-
-| 필드명   | 타입          | Nullable | 설명      |
-| -------- | ------------- | -------- | --------- |
-| id       | Long          | N        | PK        |
-| chatId   | Long          | N        | FK (Chat) |
-| userId   | Long          | N        | FK (User) |
-| joinedAt | LocalDateTime | N        | 참여일    |
-
----
 
 ## 13. ChatMessage (채팅 메시지)
 
