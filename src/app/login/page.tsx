@@ -3,12 +3,34 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import Input from '@/components/common/Input';
 import Button from '@/components/common/Button';
+import { authService } from '@/services/auth';
 
 export default function LoginPage() {
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [keepLoggedIn, setKeepLoggedIn] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    setIsLoading(true);
+
+    try {
+      await authService.login(email, password);
+      router.push('/courses');
+    } catch (err: any) {
+      setError(err.message || '로그인에 실패했습니다');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className="relative flex min-h-screen w-full flex-col items-center justify-center p-4 overflow-x-hidden">
@@ -42,13 +64,22 @@ export default function LoginPage() {
             </div>
           </div>
 
-          <div className="mt-6 flex flex-col gap-4">
+          <form onSubmit={handleSubmit} className="mt-6 flex flex-col gap-4">
+            {error && (
+              <div className="bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 p-3 rounded-lg text-sm">
+                {error}
+              </div>
+            )}
+
             {/* Email Input */}
             <Input
               label="이메일 또는 사용자 이름"
-              type="text"
+              type="email"
               placeholder="이메일 주소를 입력하세요"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               fullWidth
+              required
             />
 
             {/* Password Input */}
@@ -61,6 +92,9 @@ export default function LoginPage() {
                   className="form-input h-12 w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 p-[15px] pr-10 text-base font-normal leading-normal text-gray-900 dark:text-white placeholder:text-gray-600 dark:placeholder:text-gray-400 focus:border-primary focus:outline-0 focus:ring-2 focus:ring-primary/20"
                   placeholder="비밀번호를 입력하세요"
                   type={showPassword ? 'text' : 'password'}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
                 />
                 <div className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-600 dark:text-gray-400">
                   <span
@@ -100,14 +134,14 @@ export default function LoginPage() {
                 </Link>
               </div>
             </div>
-          </div>
 
-          {/* Login Button */}
-          <div className="mt-6">
-            <Button variant="secondary" fullWidth size="lg">
-              로그인하기
-            </Button>
-          </div>
+            {/* Login Button */}
+            <div className="mt-6">
+              <Button variant="secondary" fullWidth size="lg" type="submit" disabled={isLoading}>
+                {isLoading ? '로그인 중...' : '로그인하기'}
+              </Button>
+            </div>
+          </form>
 
           {/* Divider */}
           <div className="relative my-8 flex items-center justify-center">
