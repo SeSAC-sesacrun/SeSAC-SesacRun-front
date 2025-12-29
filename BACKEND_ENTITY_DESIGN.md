@@ -31,7 +31,7 @@ public enum UserRole {
 ### 1.3 연관관계
 
 - Course (1:N) - 강사가 생성한 강의
-- Purchase (1:N) - 구매 내역
+- Order  (1:N) - 구매 내역
 - CommunityPost (1:N) - 작성한 커뮤니티 글
 - ChatMessage (1:N) - 채팅 메시지
 
@@ -47,7 +47,7 @@ public enum UserRole {
 | instructorId        | Long          | N        | FK (User)                |
 | title               | String        | N        | 강의 제목                |
 | description         | String        | N        | 간단한 설명              |
-| detailedDescription | Text          | Y        | 상세 설명                |
+| detailedDescription | String          | Y        | 상세 설명                |
 | thumbnail           | String        | N        | 썸네일 URL               |
 | category            | String        | N        | 카테고리                 |
 | price               | Integer       | N        | 판매가                   |
@@ -66,7 +66,7 @@ public enum UserRole {
 
 - User (N:1) - 강사
 - Section (1:N) - 섹션 목록
-- Review (1:N) - 수강평
+<!-- - Review (1:N) - 수강평 -->
 - Purchase (1:N) - 구매 내역
 
 ---
@@ -109,7 +109,7 @@ public enum UserRole {
 ### 4.2 연관관계
 
 - Section (N:1)
-- WatchHistory (1:N) - 시청 기록
+<!-- - WatchHistory (1:N) - 시청 기록 -->
 
 ---
 
@@ -257,8 +257,8 @@ public enum MemberStatus {
 
 ### 11.2 연관관계
 
-- ChatParticipant (1:N) - 참여자
-- ChatMessage (1:N) - 메시지
+<!-- - ChatParticipant (1:N) - 참여자 -->
+- ChatMessage (1:N) - 메시지@
 
 ---
 

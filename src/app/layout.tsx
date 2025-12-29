@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import { Providers } from "@/components/providers/Providers";
 
 export const metadata: Metadata = {
   title: "CourseHub - 온라인 강의 플랫폼",
@@ -33,11 +34,13 @@ export default function RootLayout({
         />
       </head>
       <body className="antialiased bg-background-light dark:bg-background-dark">
-        <div className="flex flex-col min-h-screen">
-          <Header />
-          <main className="flex-1">{children}</main>
-          <Footer />
-        </div>
+        <Providers>
+          <div className="flex flex-col min-h-screen">
+            <Header />
+            <main className="flex-1">{children}</main>
+            <Footer />
+          </div>
+        </Providers>
       </body>
     </html>
   );
