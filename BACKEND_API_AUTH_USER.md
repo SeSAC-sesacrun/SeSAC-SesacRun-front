@@ -30,8 +30,7 @@
       "id": 1,
       "email": "user@example.com",
       "name": "홍길동",
-      "role": "USER",
-      "avatar": null
+      "role": "USER"
     }
   }
 }

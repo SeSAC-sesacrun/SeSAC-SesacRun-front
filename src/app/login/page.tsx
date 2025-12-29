@@ -3,12 +3,46 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import Input from '@/components/common/Input';
-import Button from '@/components/common/Button';
+import api from '@/lib/axios';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function LoginPage() {
+  const { login } = useAuth();
+  
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [keepLoggedIn, setKeepLoggedIn] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const response = await api.post('/api/auth/login', {
+        email,
+        password
+      });
+
+      // 헤더에서 토큰 추출
+      const authHeader = response.headers['authorization'];
+      if (authHeader && authHeader.startsWith('Bearer ')) {
+          const token = authHeader.split(' ')[1];
+          await login(token);
+      } else {
+            throw new Error('토큰을 찾을 수 없습니다.');
+      }
+    } catch (err: any) {
+        console.error('Login error:', err);
+        const errorMessage = err.response?.data?.message || err.message || '이메일 또는 비밀번호를 확인해주세요.';
+        setError(errorMessage);
+    } finally {
+        setIsLoading(false);
+    }
+  };
 
   return (
     <div className="relative flex min-h-screen w-full flex-col items-center justify-center p-4 overflow-x-hidden">
@@ -42,14 +76,28 @@ export default function LoginPage() {
             </div>
           </div>
 
-          <div className="mt-6 flex flex-col gap-4">
+          <form onSubmit={handleSubmit} className="mt-6 flex flex-col gap-4">
+             {/* Error Message */}
+             {error && (
+                <div className="rounded-lg bg-red-50 p-3 text-sm text-red-500 dark:bg-red-900/20 dark:text-red-400">
+                    {error}
+                </div>
+            )}
+
             {/* Email Input */}
-            <Input
-              label="이메일 또는 사용자 이름"
-              type="text"
-              placeholder="이메일 주소를 입력하세요"
-              fullWidth
-            />
+            <label className="flex flex-col">
+                <p className="pb-2 text-sm font-medium leading-normal text-gray-900 dark:text-gray-300">
+                    이메일 또는 사용자 이름
+                </p>
+                <input
+                    required
+                    type="text"
+                    className="form-input h-12 w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg border border-gray-300 bg-white p-[15px] text-base font-normal leading-normal text-gray-900 placeholder:text-gray-600 focus:border-primary focus:outline-0 focus:ring-2 focus:ring-primary/20 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:placeholder-gray-400 dark:focus:border-primary"
+                    placeholder="이메일 주소를 입력하세요"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                />
+            </label>
 
             {/* Password Input */}
             <label className="flex flex-col">
@@ -58,13 +106,16 @@ export default function LoginPage() {
               </p>
               <div className="relative flex w-full flex-1 items-stretch">
                 <input
+                  required
                   className="form-input h-12 w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 p-[15px] pr-10 text-base font-normal leading-normal text-gray-900 dark:text-white placeholder:text-gray-600 dark:placeholder:text-gray-400 focus:border-primary focus:outline-0 focus:ring-2 focus:ring-primary/20"
                   placeholder="비밀번호를 입력하세요"
                   type={showPassword ? 'text' : 'password'}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                 />
                 <div className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-600 dark:text-gray-400">
                   <span
-                    className="material-symbols-outlined cursor-pointer"
+                    className="material-symbols-outlined cursor-pointer select-none"
                     style={{ fontSize: '20px' }}
                     onClick={() => setShowPassword(!showPassword)}
                   >
@@ -100,14 +151,28 @@ export default function LoginPage() {
                 </Link>
               </div>
             </div>
-          </div>
 
-          {/* Login Button */}
-          <div className="mt-6">
-            <Button variant="secondary" fullWidth size="lg">
-              로그인하기
-            </Button>
-          </div>
+            {/* Login Button */}
+            <div className="mt-2">
+                <button
+                    disabled={isLoading}
+                    type="submit"
+                    className={`flex h-12 w-full items-center justify-center rounded-lg bg-primary px-6 text-base font-bold text-white shadow-sm transition-colors hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed`}
+                >
+                    {isLoading ? (
+                        <span className="flex items-center gap-2">
+                            <svg className="h-5 w-5 animate-spin text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                            처리 중...
+                        </span>
+                    ) : (
+                        '로그인하기'
+                    )}
+                </button>
+            </div>
+          </form>
 
           {/* Divider */}
           <div className="relative my-8 flex items-center justify-center">
