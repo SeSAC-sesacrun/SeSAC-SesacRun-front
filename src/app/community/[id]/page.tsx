@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 
 interface PostDetail {
@@ -24,6 +24,7 @@ interface ApiResponse {
 
 export default function CommunityDetailPage() {
     const params = useParams();
+    const router = useRouter();
     const postId = params.id;
     const [post, setPost] = useState<PostDetail | null>(null);
     const [loading, setLoading] = useState(true);
@@ -105,6 +106,50 @@ export default function CommunityDetailPage() {
     const isRecruiting = post.status === 'RECRUITING';
     const statusText = isRecruiting ? '모집중' : '모집완료';
 
+    // 삭제 핸들러
+    const handleDelete = async () => {
+        if (!confirm('정말로 이 모집 글을 삭제하시겠습니까?')) {
+            return;
+        }
+
+        try {
+            const accessToken = localStorage.getItem('accessToken');
+
+            if (!accessToken) {
+                alert('로그인이 필요합니다.');
+                router.push('/login');
+                return;
+            }
+
+            const response = await fetch(`http://localhost:8080/api/recruitments/posts/${post.postId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`,
+                },
+            });
+
+            if (!response.ok) {
+                if (response.status === 401) {
+                    alert('로그인이 만료되었습니다. 다시 로그인해주세요.');
+                    localStorage.removeItem('accessToken');
+                    router.push('/login');
+                    return;
+                }
+                if (response.status === 403) {
+                    alert('삭제 권한이 없습니다.');
+                    return;
+                }
+                throw new Error('Failed to delete post');
+            }
+
+            alert('모집 글이 삭제되었습니다.');
+            router.push('/community');
+        } catch (error) {
+            console.error('Error deleting post:', error);
+            alert('모집 글 삭제에 실패했습니다. 다시 시도해주세요.');
+        }
+    };
+
     return (
         <main className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12 items-start">
@@ -146,13 +191,22 @@ export default function CommunityDetailPage() {
                             </div>
                             <div className="flex gap-2">
                                 {post.author && (
-                                    <Link
-                                        href={`/community/${post.postId}/edit`}
-                                        className="flex min-w-[84px] cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-full h-11 px-6 bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white text-sm font-bold leading-normal tracking-[0.015em] hover:bg-gray-200 dark:hover:bg-gray-700 transition-all duration-300 ease-in-out"
-                                    >
-                                        <span className="material-symbols-outlined text-xl">edit</span>
-                                        <span className="truncate">수정</span>
-                                    </Link>
+                                    <>
+                                        <Link
+                                            href={`/community/${post.postId}/edit`}
+                                            className="flex min-w-[84px] cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-full h-11 px-6 bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white text-sm font-bold leading-normal tracking-[0.015em] hover:bg-gray-200 dark:hover:bg-gray-700 transition-all duration-300 ease-in-out"
+                                        >
+                                            <span className="material-symbols-outlined text-xl">edit</span>
+                                            <span className="truncate">수정</span>
+                                        </Link>
+                                        <button
+                                            onClick={handleDelete}
+                                            className="flex min-w-[84px] cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-full h-11 px-6 bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 text-sm font-bold leading-normal tracking-[0.015em] hover:bg-red-200 dark:hover:bg-red-900/50 transition-all duration-300 ease-in-out"
+                                        >
+                                            <span className="material-symbols-outlined text-xl">delete</span>
+                                            <span className="truncate">삭제</span>
+                                        </button>
+                                    </>
                                 )}
                                 <Link href="/chat/1" className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-full h-11 px-6 bg-primary text-white text-sm font-bold leading-normal tracking-[0.015em] shadow-lg shadow-primary/30 hover:bg-primary/90 transition-all duration-300 ease-in-out">
                                     <span className="material-symbols-outlined text-xl text-black dark:text-white" style={{ fontVariationSettings: "'FILL' 1" }}>
