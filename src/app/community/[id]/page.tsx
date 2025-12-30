@@ -27,10 +27,15 @@ export default function CommunityDetailPage() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        const abortController = new AbortController();
+
         const fetchPostDetail = async () => {
             setLoading(true);
             try {
-                const response = await fetch(`http://localhost:8080/api/recruitments/posts/${postId}`);
+                const response = await fetch(
+                    `http://localhost:8080/api/recruitments/posts/${postId}`,
+                    { signal: abortController.signal }
+                );
 
                 if (!response.ok) {
                     throw new Error('Failed to fetch post detail');
@@ -42,6 +47,10 @@ export default function CommunityDetailPage() {
                     setPost(result.data);
                 }
             } catch (error) {
+                // AbortError는 무시 (정상적인 취소)
+                if (error instanceof Error && error.name === 'AbortError') {
+                    return;
+                }
                 console.error('Error fetching post detail:', error);
             } finally {
                 setLoading(false);
@@ -51,6 +60,11 @@ export default function CommunityDetailPage() {
         if (postId) {
             fetchPostDetail();
         }
+
+        // cleanup 함수: 컴포넌트 언마운트 시 요청 취소
+        return () => {
+            abortController.abort();
+        };
     }, [postId]);
 
     // 로딩 중일 때
