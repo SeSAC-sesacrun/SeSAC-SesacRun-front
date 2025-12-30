@@ -7,8 +7,7 @@ export interface CourseCardProps {
   title: string;
   instructor: string;
   thumbnail: string;
-  rating: number;
-  reviewCount: number;
+  studentCount: number;
   price: number;
   originalPrice?: number;
 }
@@ -18,8 +17,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
   title,
   instructor,
   thumbnail,
-  rating,
-  reviewCount,
+  studentCount,
   price,
   originalPrice,
 }) => {
@@ -42,11 +40,11 @@ const CourseCard: React.FC<CourseCardProps> = ({
           </h3>
           <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">{instructor}</p>
           <div className="flex items-center text-sm text-gray-600 dark:text-gray-300 mt-auto">
-            <span className="material-symbols-outlined fill text-yellow-500 !text-base mr-1">
-              star
+            <span className="material-symbols-outlined !text-base mr-1">
+              person
             </span>
             <span>
-              {rating.toFixed(1)} ({reviewCount.toLocaleString()})
+              {studentCount.toLocaleString()}명 수강중
             </span>
             <div className="ml-auto flex items-center gap-2">
               {originalPrice && (

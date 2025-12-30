@@ -1,77 +1,111 @@
-import React from 'react';
+'use client';
+
+import React, { useState, useEffect } from 'react';
 import CourseCard from '@/components/course/CourseCard';
+import axios from 'axios';
+
+interface Course {
+  id: string;
+  title: string;
+  instructor: string;
+  thumbnail: string;
+  studentCount: number;
+  price: number;
+}
 
 export default function CoursesPage() {
-  const popularCourses = [
-    {
-      id: '1',
-      title: '비즈니스 전략 마스터클래스',
-      instructor: '김민준 강사',
-      thumbnail: 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=800',
-      rating: 4.8,
-      reviewCount: 1204,
-      price: 120000,
-    },
-    {
-      id: '2',
-      title: '데이터 시각화 완벽 가이드',
-      instructor: '이서연 강사',
-      thumbnail: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800',
-      rating: 4.9,
-      reviewCount: 2531,
-      price: 150000,
-    },
-    {
-      id: '3',
-      title: '실전! React & TypeScript',
-      instructor: '박서준 강사',
-      thumbnail: 'https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=800',
-      rating: 4.7,
-      reviewCount: 3012,
-      price: 180000,
-    },
-  ];
-
-  const allCourses = [
-    {
-      id: '4',
-      title: '웹 개발 입문',
-      instructor: '최지우 강사',
-      thumbnail: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=800',
-      rating: 4.6,
-      reviewCount: 5890,
-      price: 99000,
-    },
-    {
-      id: '5',
-      title: 'UI/UX 디자인 기초',
-      instructor: '윤아영 강사',
-      thumbnail: 'https://images.unsplash.com/photo-1561070791-2526d30994b5?w=800',
-      rating: 4.9,
-      reviewCount: 4123,
-      price: 110000,
-    },
-    {
-      id: '6',
-      title: '디지털 마케팅 전략',
-      instructor: '강태현 강사',
-      thumbnail: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800',
-      rating: 4.7,
-      reviewCount: 2245,
-      price: 135000,
-    },
-    {
-      id: '7',
-      title: '성공하는 비즈니스 협상',
-      instructor: '정하윤 강사',
-      thumbnail: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=800',
-      rating: 4.8,
-      reviewCount: 897,
-      price: 160000,
-    },
-  ];
+  const [popularCourses, setPopularCourses] = useState<Course[]>([]);
+  const [allCourses, setAllCourses] = useState<Course[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState(''); // 실제 검색에 사용될 값
+  const [inputValue, setInputValue] = useState(''); // 입력 필드 값
+  const [selectedCategory, setSelectedCategory] = useState('전체');
 
   const categories = ['전체', '프로그래밍', '데이터 사이언스', '디자인', '마케팅', '비즈니스'];
+
+  // 검색 실행 함수
+  const handleSearch = () => {
+    setSearchQuery(inputValue);
+    setSelectedCategory('전체'); // 검색 시 카테고리 초기화
+  };
+
+  const fetchCourses = async (category: string = '전체', keyword: string = '') => {
+    try {
+      setLoading(true);
+
+      let response;
+
+      // 검색어가 있으면 검색 API 호출
+      if (keyword.trim()) {
+        response = await axios.get(`http://localhost:8080/api/courses/search?keyword=${encodeURIComponent(keyword)}`);
+      }
+      // 카테고리가 '전체'가 아니면 카테고리 API 호출
+      else if (category !== '전체') {
+        response = await axios.get(`http://localhost:8080/api/courses/category/${encodeURIComponent(category)}`);
+      }
+      // 그 외에는 전체 강의 조회
+      else {
+        response = await axios.get('http://localhost:8080/api/courses');
+      }
+
+      // 백엔드 응답: { success: true, data: { content: [...], ... } }
+      const courses = response.data.data.content;
+
+      // 인기 강의: 수강생 수가 많은 순으로 정렬하여 상위 3개
+      const sortedByStudents = [...courses].sort((a: Course, b: Course) => b.studentCount - a.studentCount);
+      setPopularCourses(sortedByStudents.slice(0, 3));
+
+      // 전체 강의
+      setAllCourses(courses);
+      setError(null);
+    } catch (err: any) {
+      console.error('강의 목록을 불러오는데 실패했습니다:', err);
+      const errorMessage = err.response?.data?.message || err.message || '강의 목록을 불러오는데 실패했습니다.';
+      setError(errorMessage);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchCourses(selectedCategory, searchQuery);
+  }, [selectedCategory, searchQuery]);
+
+  if (loading) {
+    return (
+      <main className="flex-1">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-16">
+          <div className="flex items-center justify-center min-h-[400px]">
+            <div className="text-center">
+              <div className="inline-block h-12 w-12 animate-spin rounded-full border-4 border-solid border-primary border-r-transparent mb-4"></div>
+              <p className="text-gray-600 dark:text-gray-400">강의 목록을 불러오는 중...</p>
+            </div>
+          </div>
+        </div>
+      </main>
+    );
+  }
+
+  if (error) {
+    return (
+      <main className="flex-1">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-16">
+          <div className="flex items-center justify-center min-h-[400px]">
+            <div className="text-center">
+              <p className="text-red-600 dark:text-red-400 mb-4">{error}</p>
+              <button
+                onClick={() => window.location.reload()}
+                className="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
+              >
+                다시 시도
+              </button>
+            </div>
+          </div>
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main className="flex-1">
@@ -92,17 +126,28 @@ export default function CoursesPage() {
             </h2>
           </div>
           <div className="w-full max-w-lg mt-4">
-            <label className="flex flex-col min-w-40 h-14 w-full">
-              <div className="flex w-full flex-1 items-stretch rounded-lg h-full shadow-lg">
-                <div className="text-gray-500 flex bg-white dark:bg-gray-800 items-center justify-center pl-4 rounded-l-lg">
-                  <span className="material-symbols-outlined">search</span>
-                </div>
-                <input
-                  className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-r-lg text-gray-900 dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/50 border-none bg-white dark:bg-gray-800 h-full placeholder:text-gray-500 dark:placeholder:text-gray-400 px-4 text-base font-normal"
-                  placeholder="배우고 싶은 지식을 검색해보세요."
-                />
+            <div className="flex w-full flex-1 items-stretch rounded-lg h-14 shadow-lg">
+              <div className="text-gray-500 flex bg-white dark:bg-gray-800 items-center justify-center pl-4 rounded-l-lg">
+                <span className="material-symbols-outlined">search</span>
               </div>
-            </label>
+              <input
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    handleSearch();
+                  }
+                }}
+                className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden text-gray-900 dark:text-white focus:outline-0 border-none bg-white dark:bg-gray-800 h-full placeholder:text-gray-500 dark:placeholder:text-gray-400 px-4 text-base font-normal"
+                placeholder="배우고 싶은 지식을 검색해보세요."
+              />
+              <button
+                onClick={handleSearch}
+                className="bg-primary hover:bg-primary/90 text-white px-6 rounded-r-lg transition-colors font-medium"
+              >
+                검색
+              </button>
+            </div>
           </div>
         </div>
 
@@ -110,11 +155,17 @@ export default function CoursesPage() {
           <h2 className="text-gray-900 dark:text-white text-2xl md:text-3xl font-bold tracking-tight mb-6">
             지금 가장 인기 있는 강의 🔥
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-            {popularCourses.map((course) => (
-              <CourseCard key={course.id} {...course} />
-            ))}
-          </div>
+          {popularCourses.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+              {popularCourses.map((course) => (
+                <CourseCard key={course.id} {...course} />
+              ))}
+            </div>
+          ) : (
+            <p className="text-gray-500 dark:text-gray-400 text-center py-10">
+              인기 강의가 없습니다.
+            </p>
+          )}
         </section>
 
         <section>
@@ -125,23 +176,34 @@ export default function CoursesPage() {
             {categories.map((category, index) => (
               <div
                 key={index}
-                className={`flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full px-4 cursor-pointer ${
-                  index === 0
+                onClick={() => {
+                  setSelectedCategory(category);
+                  setSearchQuery(''); // 카테고리 선택 시 검색어 초기화
+                  setInputValue(''); // 입력 필드도 초기화
+                }}
+                className={`flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full px-4 cursor-pointer transition-colors ${
+                  selectedCategory === category
                     ? 'bg-primary text-black dark:text-white'
                     : 'bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700'
                 }`}
               >
-                <p className={`text-sm ${index === 0 ? 'font-bold' : 'font-medium'}`}>
+                <p className={`text-sm ${selectedCategory === category ? 'font-bold' : 'font-medium'}`}>
                   {category}
                 </p>
               </div>
             ))}
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8 mt-6">
-            {allCourses.map((course) => (
-              <CourseCard key={course.id} {...course} />
-            ))}
-          </div>
+          {allCourses.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8 mt-6">
+              {allCourses.map((course) => (
+                <CourseCard key={course.id} {...course} />
+              ))}
+            </div>
+          ) : (
+            <p className="text-gray-500 dark:text-gray-400 text-center py-10 mt-6">
+              강의가 없습니다.
+            </p>
+          )}
         </section>
       </div>
     </main>
