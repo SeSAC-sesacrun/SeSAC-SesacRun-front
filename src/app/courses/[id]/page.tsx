@@ -1,8 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
+import axios from 'axios';
 
 export default function CourseDetailPage() {
     const params = useParams();
@@ -11,11 +12,110 @@ export default function CourseDetailPage() {
     const [isInCart, setIsInCart] = useState(false);
     const [showPreviewModal, setShowPreviewModal] = useState(false);
     const [previewLecture, setPreviewLecture] = useState<any>(null);
+    const [course, setCourse] = useState<any>(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
     // 사용자 구매 여부 (실제로는 API에서 확인)
     const isPurchased = false; // true면 구매한 사용자
 
-    const course = {
+    // 초를 MM:SS 형식으로 변환
+    const formatDuration = (seconds: number): string => {
+        const mins = Math.floor(seconds / 60);
+        const secs = seconds % 60;
+        return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+    };
+
+    useEffect(() => {
+        const fetchCourseDetail = async () => {
+            try {
+                setLoading(true);
+                const response = await axios.get(`http://localhost:8080/api/courses/${courseId}`);
+
+                // 백엔드 응답: { success: true, data: {...} }
+                const data = response.data.data;
+
+                // 백엔드 데이터를 프론트엔드 형식으로 변환
+                const formattedCourse = {
+                    courseId: data.id,
+                    title: data.title,
+                    description: data.description,
+                    detailedDescription: data.detailedDescription || '상세 설명이 없습니다.',
+                    instructor: {
+                        name: '강사', // TODO: 백엔드에서 instructor 정보 가져오기
+                        avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400',
+                        bio: '전문 강사입니다.',
+                        students: 0,
+                        courses: 0,
+                        rating: 0,
+                    },
+                    thumbnail: data.thumbnail,
+                    category: data.category,
+                    price: data.price,
+                    originalPrice: null,
+                    discount: 0,
+                    rating: 0, // TODO: 리뷰 시스템 연동 후 추가
+                    reviewCount: 0, // TODO: 리뷰 시스템 연동 후 추가
+                    studentCount: data.studentCount,
+                    lastUpdated: new Date(data.updatedAt).toLocaleDateString('ko-KR'),
+                    language: '한국어',
+                    level: '초급',
+                    duration: '0시간', // TODO: 전체 duration 계산
+                    features: data.features || [],
+                    curriculum: data.sections?.map((section: any) => ({
+                        sectionId: section.id.toString(),
+                        title: section.title,
+                        lectures: section.lectures?.map((lecture: any) => ({
+                            lectureId: lecture.id.toString(),
+                            title: lecture.title,
+                            duration: formatDuration(lecture.duration),
+                            isFree: lecture.isFree,
+                        })) || [],
+                    })) || [],
+                    reviews: [], // TODO: 리뷰 시스템 연동 후 추가
+                    qna: [], // TODO: Q&A 시스템 연동 후 추가
+                };
+
+                setCourse(formattedCourse);
+                setError(null);
+            } catch (err: any) {
+                console.error('강의 상세 정보를 불러오는데 실패했습니다:', err);
+                setError(err.response?.data?.message || err.message || '강의 정보를 불러올 수 없습니다.');
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        if (courseId) {
+            fetchCourseDetail();
+        }
+    }, [courseId]);
+
+    if (loading) {
+        return (
+            <div className="flex items-center justify-center min-h-screen">
+                <div className="text-center">
+                    <div className="inline-block h-12 w-12 animate-spin rounded-full border-4 border-solid border-primary border-r-transparent mb-4"></div>
+                    <p className="text-gray-600 dark:text-gray-400">강의 정보를 불러오는 중...</p>
+                </div>
+            </div>
+        );
+    }
+
+    if (error || !course) {
+        return (
+            <div className="flex items-center justify-center min-h-screen">
+                <div className="text-center">
+                    <p className="text-red-600 dark:text-red-400 mb-4">{error || '강의를 찾을 수 없습니다.'}</p>
+                    <Link href="/courses" className="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors">
+                        강의 목록으로 돌아가기
+                    </Link>
+                </div>
+            </div>
+        );
+    }
+
+    const mockCourse = {
         courseId: courseId,
         title: '초보자를 위한 완벽한 웹 개발 마스터클래스',
         description:

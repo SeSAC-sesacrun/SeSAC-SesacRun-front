@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import api from '@/lib/axios';
 import {
     DndContext,
     closestCenter,
@@ -153,31 +154,17 @@ export default function CreateCoursePage() {
 
             console.log('Sending request:', requestBody);
 
-            const url = courseId
-                ? `http://localhost:8080/api/courses/${courseId}`
-                : 'http://localhost:8080/api/courses';
-
-            const method = courseId ? 'PUT' : 'POST';
-
-            const response = await fetch(url, {
-                method,
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(requestBody),
-            });
-
-            const result = await response.json();
-            console.log('Response:', result);
-
-            if (!response.ok) {
-                const errorMessage = typeof result.message === 'string'
-                    ? result.message
-                    : typeof result.error === 'string'
-                    ? result.error
-                    : JSON.stringify(result);
-                throw new Error(errorMessage);
+            let response;
+            if (courseId) {
+                // 강의 수정
+                response = await api.put(`/api/courses/${courseId}`, requestBody);
+            } else {
+                // 강의 생성
+                response = await api.post('/api/courses', requestBody);
             }
+
+            const result = response.data;
+            console.log('Response:', result);
 
             if (!courseId && result.data) {
                 // 생성된 경우 courseId를 저장
@@ -212,31 +199,17 @@ export default function CreateCoursePage() {
 
             console.log('Saving section:', requestBody);
 
-            const url = section.sectionId
-                ? `http://localhost:8080/api/courses/${courseId}/sections/${section.sectionId}`
-                : `http://localhost:8080/api/courses/${courseId}/sections`;
-
-            const method = section.sectionId ? 'PUT' : 'POST';
-
-            const response = await fetch(url, {
-                method,
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(requestBody),
-            });
-
-            const result = await response.json();
-            console.log('Section response:', result);
-
-            if (!response.ok) {
-                const errorMessage = typeof result.message === 'string'
-                    ? result.message
-                    : typeof result.error === 'string'
-                    ? result.error
-                    : JSON.stringify(result);
-                throw new Error(errorMessage);
+            let response;
+            if (section.sectionId) {
+                // 섹션 수정
+                response = await api.put(`/api/courses/${courseId}/sections/${section.sectionId}`, requestBody);
+            } else {
+                // 섹션 생성
+                response = await api.post(`/api/courses/${courseId}/sections`, requestBody);
             }
+
+            const result = response.data;
+            console.log('Section response:', result);
 
             if (!section.sectionId && result.data) {
                 // 생성된 경우 sectionId를 저장
@@ -291,31 +264,17 @@ export default function CreateCoursePage() {
 
             console.log('Saving lecture:', requestBody);
 
-            const url = lecture.lectureId
-                ? `http://localhost:8080/api/sections/${section.sectionId}/lectures/${lecture.lectureId}`
-                : `http://localhost:8080/api/sections/${section.sectionId}/lectures`;
-
-            const method = lecture.lectureId ? 'PUT' : 'POST';
-
-            const response = await fetch(url, {
-                method,
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(requestBody),
-            });
-
-            const result = await response.json();
-            console.log('Lecture response:', result);
-
-            if (!response.ok) {
-                const errorMessage = typeof result.message === 'string'
-                    ? result.message
-                    : typeof result.error === 'string'
-                    ? result.error
-                    : JSON.stringify(result);
-                throw new Error(errorMessage);
+            let response;
+            if (lecture.lectureId) {
+                // 렉쳐 수정
+                response = await api.put(`/api/sections/${section.sectionId}/lectures/${lecture.lectureId}`, requestBody);
+            } else {
+                // 렉쳐 생성
+                response = await api.post(`/api/sections/${section.sectionId}/lectures`, requestBody);
             }
+
+            const result = response.data;
+            console.log('Lecture response:', result);
 
             if (!lecture.lectureId && result.data) {
                 // 생성된 경우 lectureId를 저장
