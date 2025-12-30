@@ -3,21 +3,17 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
-import axios from 'axios';
+import api from '@/lib/axios';
 
 export default function CourseDetailPage() {
     const params = useParams();
     const courseId = params.id;
     const [activeTab, setActiveTab] = useState<'intro' | 'curriculum' | 'instructor' | 'reviews' | 'qna'>('intro');
-    const [isInCart, setIsInCart] = useState(false);
     const [showPreviewModal, setShowPreviewModal] = useState(false);
     const [previewLecture, setPreviewLecture] = useState<any>(null);
     const [course, setCourse] = useState<any>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-
-    // 사용자 구매 여부 (실제로는 API에서 확인)
-    const isPurchased = false; // true면 구매한 사용자
 
     // 초를 MM:SS 형식으로 변환
     const formatDuration = (seconds: number): string => {
@@ -30,7 +26,10 @@ export default function CourseDetailPage() {
         const fetchCourseDetail = async () => {
             try {
                 setLoading(true);
-                const response = await axios.get(`http://localhost:8080/api/courses/${courseId}`);
+
+                const response = await api.get(
+                    `/api/courses/${courseId}`
+                );
 
                 // 백엔드 응답: { success: true, data: {...} }
                 const data = response.data.data;
@@ -62,6 +61,7 @@ export default function CourseDetailPage() {
                     level: '초급',
                     duration: '0시간', // TODO: 전체 duration 계산
                     features: data.features || [],
+                    canWatch: data.canWatch || false, // 수강 가능 여부
                     curriculum: data.sections?.map((section: any) => ({
                         sectionId: section.id.toString(),
                         title: section.title,
@@ -70,6 +70,7 @@ export default function CourseDetailPage() {
                             title: lecture.title,
                             duration: formatDuration(lecture.duration),
                             isFree: lecture.isFree,
+                            videoUrl: lecture.videoUrl, // null이면 미리보기 불가
                         })) || [],
                     })) || [],
                     reviews: [], // TODO: 리뷰 시스템 연동 후 추가
@@ -78,6 +79,8 @@ export default function CourseDetailPage() {
 
                 setCourse(formattedCourse);
                 setError(null);
+                console.log('📌 Course Data:', formattedCourse);
+                console.log('📌 canWatch:', formattedCourse.canWatch);
             } catch (err: any) {
                 console.error('강의 상세 정보를 불러오는데 실패했습니다:', err);
                 setError(err.response?.data?.message || err.message || '강의 정보를 불러올 수 없습니다.');
@@ -211,26 +214,65 @@ export default function CourseDetailPage() {
         ],
     };
 
-    const handleAddToCart = () => {
-        setIsInCart(true);
-        alert('장바구니에 담겼습니다!');
+    const handlePurchase = async () => {
+        // 로그인 체크
+        const token = localStorage.getItem('accessToken');
+        if (!token) {
+            alert('로그인이 필요합니다.');
+            window.location.href = '/login';
+            return;
+        }
+
+        try {
+            await api.post(
+                '/api/carts',
+                { courseId: Number(courseId) }
+            );
+            // 성공 시 장바구니 페이지로 이동
+            window.location.href = '/cart';
+        } catch (error: any) {
+            console.error('장바구니 추가 실패:', error);
+            if (error.response?.status === 401) {
+                alert('로그인이 필요합니다.');
+                window.location.href = '/login';
+            } else {
+                alert('장바구니 추가에 실패했습니다.');
+            }
+        }
     };
 
-    const handleGoToCart = () => {
-        window.location.href = '/cart';
-    };
-
-    const handleEnroll = () => {
-        window.location.href = '/cart';
+    const handleWatchCourse = () => {
+        window.location.href = `/watch/${courseId}`;
     };
 
     const handleLectureClick = (lecture: any) => {
-        if (isPurchased) {
+        if (course?.canWatch) {
+            // 수강 가능 시 watch 페이지로 이동
             window.location.href = `/watch/${courseId}?lecture=${lecture.lectureId}`;
-        } else if (lecture.isFree) {
+        } else if (lecture.videoUrl) {
+            // videoUrl이 있으면 미리보기 가능
             setPreviewLecture(lecture);
             setShowPreviewModal(true);
         }
+    };
+
+    // 유튜브 URL에서 비디오 ID 추출
+    const getYoutubeVideoId = (url: string): string | null => {
+        if (!url) return null;
+
+        // https://www.youtube.com/watch?v=VIDEO_ID 형식
+        const watchMatch = url.match(/[?&]v=([^&]+)/);
+        if (watchMatch) return watchMatch[1];
+
+        // https://youtu.be/VIDEO_ID 형식
+        const shortMatch = url.match(/youtu\.be\/([^?]+)/);
+        if (shortMatch) return shortMatch[1];
+
+        // https://www.youtube.com/embed/VIDEO_ID 형식
+        const embedMatch = url.match(/youtube\.com\/embed\/([^?]+)/);
+        if (embedMatch) return embedMatch[1];
+
+        return null;
     };
 
     return (
@@ -313,36 +355,20 @@ export default function CourseDetailPage() {
                                             )}
                                         </div>
                                     </div>
-                                    {isPurchased ? (
+                                    {course?.canWatch ? (
                                         <button
-                                            onClick={() => window.location.href = `/watch/${courseId}`}
-                                            className="w-full bg-primary text-white font-bold py-3 px-6 rounded-lg hover:bg-primary/90 transition-colors mb-3"
+                                            onClick={handleWatchCourse}
+                                            className="w-full bg-blue-600 dark:bg-blue-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors mb-3"
                                         >
-                                            학습하기
+                                            이어보기
                                         </button>
                                     ) : (
-                                        <>
-                                            {isInCart ? (
-                                                <button
-                                                    onClick={handleGoToCart}
-                                                    className="w-full bg-green-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-green-700 transition-colors mb-3"
-                                                >
-                                                    장바구니로 이동
-                                                </button>
-                                            ) : (
-                                                <button
-                                                    onClick={handleAddToCart}
-                                                    className="w-full bg-gray-900 dark:bg-gray-700 text-white font-bold py-3 px-6 rounded-lg hover:bg-gray-800 dark:hover:bg-gray-600 transition-colors mb-3"
-                                                >
-                                                    장바구니 담기
-                                                </button>
-                                            )}
-                                            <button
-    onClick={handleEnroll}
-className="w-full bg-gray-900 dark:bg-gray-700 text-white font-bold py-3 px-6 rounded-lg hover:bg-gray-800 dark:hover:bg-gray-600 transition-colors mb-3">
-    지금 구매하기
-</button>
-                                        </>
+                                        <button
+                                            onClick={handlePurchase}
+                                            className="w-full bg-gray-900 dark:bg-gray-700 text-white font-bold py-3 px-6 rounded-lg hover:bg-gray-800 dark:hover:bg-gray-600 transition-colors mb-3"
+                                        >
+                                            구매하기
+                                        </button>
                                     )}
                                     <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
                                         <h3 className="font-bold text-gray-900 dark:text-white mb-3">이 강의에 포함된 내용</h3>
@@ -432,7 +458,7 @@ className="w-full bg-gray-900 dark:bg-gray-700 text-white font-bold py-3 px-6 ro
                                                             <div
                                                                 key={lecture.lectureId}
                                                                 onClick={() => handleLectureClick(lecture)}
-                                                                className={`p-4 flex items-center justify-between transition-colors ${(isPurchased || lecture.isFree)
+                                                                className={`p-4 flex items-center justify-between transition-colors ${(course?.canWatch || lecture.videoUrl)
                                                                         ? 'hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer'
                                                                         : 'opacity-60 cursor-not-allowed'
                                                                     }`}
@@ -602,37 +628,20 @@ className="w-full bg-gray-900 dark:bg-gray-700 text-white font-bold py-3 px-6 ro
                                         )}
                                     </div>
                                 </div>
-                                {isPurchased ? (
+                                {course?.canWatch ? (
                                     <button
-                                        onClick={() => window.location.href = `/watch/${courseId}`}
-                                        className="w-full bg-primary text-white font-bold py-3 px-6 rounded-lg hover:bg-primary/90 transition-colors mb-3"
+                                        onClick={handleWatchCourse}
+                                        className="w-full bg-blue-600 dark:bg-blue-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors"
                                     >
-                                        학습하기
+                                        이어보기
                                     </button>
                                 ) : (
-                                    <>
-                                        {isInCart ? (
-                                            <button
-                                                onClick={handleGoToCart}
-                                                className="w-full bg-green-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-green-700 transition-colors mb-3"
-                                            >
-                                                장바구니로 이동
-                                            </button>
-                                        ) : (
-                                            <button
-                                                onClick={handleAddToCart}
-                                                className="w-full bg-white dark:bg-gray-700 border-2 border-primary text-primary dark:text-white font-bold py-3 px-6 rounded-lg hover:bg-primary/10 dark:hover:bg-primary/20 transition-colors mb-3"
-                                            >
-                                                장바구니 담기
-                                            </button>
-                                        )}
-                                        <button
-                                            onClick={handleEnroll}
-                                            className="w-full bg-primary text-white font-bold py-3 px-6 rounded-lg hover:bg-primary/90 transition-colors"
-                                        >
-                                            지금 구매하기
-                                        </button>
-                                    </>
+                                    <button
+                                        onClick={handlePurchase}
+                                        className="w-full bg-gray-900 dark:bg-gray-700 text-white font-bold py-3 px-6 rounded-lg hover:bg-gray-800 dark:hover:bg-gray-600 transition-colors"
+                                    >
+                                        구매하기
+                                    </button>
                                 )}
                             </div>
                         </div>
@@ -642,23 +651,50 @@ className="w-full bg-gray-900 dark:bg-gray-700 text-white font-bold py-3 px-6 ro
 
             {/* Preview Modal */}
             {showPreviewModal && previewLecture && (
-                <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4" onClick={() => setShowPreviewModal(false)}>
-                    <div className="bg-white dark:bg-gray-900 rounded-lg max-w-4xl w-full p-6" onClick={(e) => e.stopPropagation()}>
+                <div
+                    className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4"
+                    onClick={() => setShowPreviewModal(false)}
+                >
+                    <div
+                        className="bg-white dark:bg-gray-900 rounded-lg max-w-4xl w-full p-6"
+                        onClick={(e) => e.stopPropagation()}
+                    >
                         <div className="flex items-center justify-between mb-4">
-                            <h3 className="text-xl font-bold text-gray-900 dark:text-white">{previewLecture.title}</h3>
+                            <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+                                {previewLecture.title} - 미리보기
+                            </h3>
                             <button
                                 onClick={() => setShowPreviewModal(false)}
-                                className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                                className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors"
                             >
                                 <span className="material-symbols-outlined text-3xl">close</span>
                             </button>
                         </div>
-                        <div className="aspect-video bg-black rounded-lg flex items-center justify-center">
-                            <span className="text-white">미리보기 영상 플레이어</span>
+
+                        {/* 유튜브 비디오 플레이어 */}
+                        <div className="aspect-video bg-black rounded-lg overflow-hidden">
+                            {previewLecture.videoUrl && getYoutubeVideoId(previewLecture.videoUrl) ? (
+                                <iframe
+                                    width="100%"
+                                    height="100%"
+                                    src={`https://www.youtube.com/embed/${getYoutubeVideoId(previewLecture.videoUrl)}?autoplay=1`}
+                                    title={previewLecture.title}
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                    allowFullScreen
+                                    className="w-full h-full"
+                                ></iframe>
+                            ) : (
+                                <div className="w-full h-full flex items-center justify-center">
+                                    <span className="text-white">비디오를 불러올 수 없습니다.</span>
+                                </div>
+                            )}
                         </div>
-                        <p className="mt-4 text-sm text-gray-600 dark:text-gray-400">
-                            이 강의를 구매하시면 모든 강의를 시청하실 수 있습니다.
-                        </p>
+
+                        <div className="mt-4 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                            <p className="text-sm text-blue-800 dark:text-blue-200">
+                                💡 이 강의를 구매하시면 모든 강의를 시청하실 수 있습니다.
+                            </p>
+                        </div>
                     </div>
                 </div>
             )}
