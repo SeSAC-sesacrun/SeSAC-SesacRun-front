@@ -150,6 +150,59 @@ export default function CommunityDetailPage() {
         }
     };
 
+    // 채팅방 생성 핸들러
+    const handleCreateChat = async () => {
+        try {
+            const accessToken = localStorage.getItem('accessToken');
+
+            if (!accessToken) {
+                alert('로그인이 필요합니다.');
+                router.push('/login');
+                return;
+            }
+
+            const response = await fetch(`http://localhost:8080/api/recruitments/posts/${post.postId}/chat`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`,
+                },
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                if (response.status === 401) {
+                    alert('로그인이 만료되었습니다. 다시 로그인해주세요.');
+                    localStorage.removeItem('accessToken');
+                    router.push('/login');
+                    return;
+                }
+
+                // 백엔드 에러 메시지 표시
+                if (result.error && result.error.message) {
+                    alert(result.error.message);
+                } else {
+                    alert('채팅방 생성에 실패했습니다.');
+                }
+                return;
+            }
+
+            if (result.success && result.data) {
+                // 채팅방 ID와 상대방 정보를 받아서 채팅 페이지로 이동
+                const { roomId, opponentName, postId } = result.data;
+                router.push(`/chat/${roomId}?opponentName=${encodeURIComponent(opponentName)}&postId=${postId}`);
+            } else if (result.error && result.error.message) {
+                // success: false인 경우
+                alert(result.error.message);
+            } else {
+                alert('채팅방 생성에 실패했습니다.');
+            }
+        } catch (error) {
+            console.error('Error creating chat room:', error);
+            alert('채팅방 생성에 실패했습니다. 다시 시도해주세요.');
+        }
+    };
+
     return (
         <main className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12 items-start">
@@ -208,12 +261,15 @@ export default function CommunityDetailPage() {
                                         </button>
                                     </>
                                 )}
-                                <Link href="/chat/1" className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-full h-11 px-6 bg-primary text-white text-sm font-bold leading-normal tracking-[0.015em] shadow-lg shadow-primary/30 hover:bg-primary/90 transition-all duration-300 ease-in-out">
+                                <button
+                                    onClick={handleCreateChat}
+                                    className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-full h-11 px-6 bg-primary text-white text-sm font-bold leading-normal tracking-[0.015em] shadow-lg shadow-primary/30 hover:bg-primary/90 transition-all duration-300 ease-in-out"
+                                >
                                     <span className="material-symbols-outlined text-xl text-black dark:text-white" style={{ fontVariationSettings: "'FILL' 1" }}>
                                         chat_bubble
                                     </span>
                                     <span className="truncate text-black dark:text-white">채팅하기</span>
-                                </Link>
+                                </button>
                             </div>
                         </div>
 
