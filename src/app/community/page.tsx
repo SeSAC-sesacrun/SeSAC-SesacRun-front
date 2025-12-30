@@ -7,10 +7,13 @@ interface Post {
   postId: number;
   title: string;
   content: string;
+  status: string;
   authorName: string;
+  views: number;
   currentMembers: number;
   totalMembers: number;
   createdAt: string;
+  author: boolean;
 }
 
 interface ApiResponse {
@@ -66,7 +69,14 @@ export default function CommunityPage() {
           url.searchParams.append('status', statusParam);
         }
 
-        const response = await fetch(url.toString());
+        // 헤더 구성 (토큰이 있으면 포함)
+        const headers: HeadersInit = {};
+        const accessToken = localStorage.getItem('accessToken');
+        if (accessToken) {
+          headers['Authorization'] = `Bearer ${accessToken}`;
+        }
+
+        const response = await fetch(url.toString(), { headers });
 
         if (!response.ok) {
           throw new Error('Failed to fetch posts');
@@ -171,8 +181,8 @@ export default function CommunityPage() {
             </div>
           ) : posts.length > 0 ? (
             posts.map((post) => {
-              // status는 백엔드에서 제공하지 않으므로 currentMembers와 totalMembers를 비교
-              const isRecruiting = post.currentMembers < post.totalMembers;
+              // 백엔드에서 받은 status 사용
+              const isRecruiting = post.status === 'RECRUITING';
 
               return (
                 <Link
@@ -185,8 +195,8 @@ export default function CommunityPage() {
                       <div className="flex items-center gap-2 mb-2">
                         <span
                           className={`inline-block px-3 py-1 rounded-full text-xs font-bold ${isRecruiting
-                              ? 'bg-green-100 dark:bg-green-500/20 text-green-600 dark:text-green-400'
-                              : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400'
+                            ? 'bg-green-100 dark:bg-green-500/20 text-green-600 dark:text-green-400'
+                            : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400'
                             }`}
                         >
                           {isRecruiting ? '모집중' : '모집완료'}

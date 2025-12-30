@@ -8,11 +8,13 @@ interface PostDetail {
     postId: number;
     title: string;
     content: string;
+    status: string;
     authorName: string;
     views: number;
     currentMembers: number;
     totalMembers: number;
     createdAt: string;
+    author: boolean;
 }
 
 interface ApiResponse {
@@ -32,9 +34,19 @@ export default function CommunityDetailPage() {
         const fetchPostDetail = async () => {
             setLoading(true);
             try {
+                // 헤더 구성 (토큰이 있으면 포함)
+                const headers: HeadersInit = {};
+                const accessToken = localStorage.getItem('accessToken');
+                if (accessToken) {
+                    headers['Authorization'] = `Bearer ${accessToken}`;
+                }
+
                 const response = await fetch(
                     `http://localhost:8080/api/recruitments/posts/${postId}`,
-                    { signal: abortController.signal }
+                    {
+                        signal: abortController.signal,
+                        headers
+                    }
                 );
 
                 if (!response.ok) {
@@ -89,9 +101,9 @@ export default function CommunityDetailPage() {
         );
     }
 
-    // 모집 상태 판단
-    const isRecruiting = post.currentMembers < post.totalMembers;
-    const status = isRecruiting ? '모집중' : '모집완료';
+    // 모집 상태 (백엔드에서 받은 status 사용)
+    const isRecruiting = post.status === 'RECRUITING';
+    const statusText = isRecruiting ? '모집중' : '모집완료';
 
     return (
         <main className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
@@ -132,12 +144,23 @@ export default function CommunityDetailPage() {
                                     </p>
                                 </div>
                             </div>
-                            <Link href="/chat/1" className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-full h-11 px-6 bg-primary text-white text-sm font-bold leading-normal tracking-[0.015em] shadow-lg shadow-primary/30 hover:bg-primary/90 transition-all duration-300 ease-in-out">
-                                <span className="material-symbols-outlined text-xl text-black dark:text-white" style={{ fontVariationSettings: "'FILL' 1" }}>
-                                    chat_bubble
-                                </span>
-                                <span className="truncate text-black dark:text-white">채팅하기</span>
-                            </Link>
+                            <div className="flex gap-2">
+                                {post.author && (
+                                    <Link
+                                        href={`/community/${post.postId}/edit`}
+                                        className="flex min-w-[84px] cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-full h-11 px-6 bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white text-sm font-bold leading-normal tracking-[0.015em] hover:bg-gray-200 dark:hover:bg-gray-700 transition-all duration-300 ease-in-out"
+                                    >
+                                        <span className="material-symbols-outlined text-xl">edit</span>
+                                        <span className="truncate">수정</span>
+                                    </Link>
+                                )}
+                                <Link href="/chat/1" className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-full h-11 px-6 bg-primary text-white text-sm font-bold leading-normal tracking-[0.015em] shadow-lg shadow-primary/30 hover:bg-primary/90 transition-all duration-300 ease-in-out">
+                                    <span className="material-symbols-outlined text-xl text-black dark:text-white" style={{ fontVariationSettings: "'FILL' 1" }}>
+                                        chat_bubble
+                                    </span>
+                                    <span className="truncate text-black dark:text-white">채팅하기</span>
+                                </Link>
+                            </div>
                         </div>
 
                         <div className="prose prose-lg dark:prose-invert max-w-none text-gray-900 dark:text-gray-300 text-base font-normal leading-relaxed pt-2 space-y-4">
@@ -170,7 +193,7 @@ export default function CommunityDetailPage() {
                                 ? 'bg-green-100 dark:bg-green-500/20 text-green-600 dark:text-green-400'
                                 : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400'
                                 }`}>
-                                {status}
+                                {statusText}
                             </span>
                             <div className="flex flex-col gap-1">
                                 <p className="text-sm font-medium text-gray-600 dark:text-gray-400">모집 인원</p>
