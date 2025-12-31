@@ -37,7 +37,7 @@ const Header: React.FC = () => {
                             전체 강의
                         </Link>
                         <Link
-                            href="/my-courses"
+                            href="/profile"
                             className="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-primary"
                         >
                             내 강의실

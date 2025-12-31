@@ -1,12 +1,17 @@
 'use client';
 
 import React, { useState } from 'react';
-import Link from 'next/link';
+import MyCourses from '@/components/profile/MyCourses';
+import MyPurchases from '@/components/profile/MyPurchases';
+import MyQnA from '@/components/profile/MyQnA';
+import MyStudyPosts from '@/components/profile/MyStudyPosts';
+import MyProjectPosts from '@/components/profile/MyProjectPosts';
+import MyMeetings from '@/components/profile/MyMeetings';
+import InstructorCourses from '@/components/profile/InstructorCourses';
 
 export default function MyPage() {
     const [activeTab, setActiveTab] = useState<'courses' | 'posts' | 'meetings' | 'purchases' | 'instructor'>('courses');
     const [postsSubTab, setPostsSubTab] = useState<'qna' | 'study' | 'project'>('qna');
-    const [meetingsFilter, setMeetingsFilter] = useState<'all' | 'organizer' | 'participant'>('all');
 
     // 사용자 정보
     const user = {
@@ -186,89 +191,12 @@ export default function MyPage() {
                     <main className="flex-1">
                         {/* My Courses Tab */}
                         {activeTab === 'courses' && (
-                            <div className="flex flex-col gap-6">
-                                <div className="flex items-center justify-between">
-                                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white">내 강의</h2>
-                                    <Link
-                                        href="/courses"
-                                        className="text-sm font-medium text-primary hover:underline"
-                                    >
-                                        강의 둘러보기
-                                    </Link>
-                                </div>
-                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                                    {myCourses.map((course) => (
-                                        <Link
-                                            key={course.id}
-                                            href={`/watch/${course.id}`}
-                                            className="group flex flex-col gap-4 rounded-xl bg-white dark:bg-gray-900 p-4 shadow-sm border border-gray-200 dark:border-gray-800 hover:shadow-md transition-shadow"
-                                        >
-                                            <div className="relative">
-                                                <div
-                                                    className="w-full bg-center bg-no-repeat aspect-video bg-cover rounded-lg"
-                                                    style={{ backgroundImage: `url('${course.thumbnail}')` }}
-                                                />
-                                                {/* Play Button Overlay */}
-                                                <div className="absolute inset-0 flex items-center justify-center bg-black/20 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity">
-                                                    <div className="flex items-center justify-center size-16 bg-primary rounded-full">
-                                                        <span className="material-symbols-outlined text-white text-3xl" style={{ fontVariationSettings: "'FILL' 1" }}>
-                                                            play_arrow
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className="flex flex-col gap-3">
-                                                <p className="text-base font-bold text-gray-900 dark:text-white">
-                                                    {course.title}
-                                                </p>
-                                                <div className="flex flex-col gap-2">
-                                                    <div className="flex justify-between text-xs font-medium text-gray-500 dark:text-gray-400">
-                                                        <span>진행률</span>
-                                                        <span>{course.progress}%</span>
-                                                    </div>
-                                                    <div className="w-full bg-gray-200 rounded-full h-1.5 dark:bg-gray-700">
-                                                        <div
-                                                            className="bg-primary h-1.5 rounded-full"
-                                                            style={{ width: `${course.progress}%` }}
-                                                        />
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </Link>
-                                    ))}
-                                </div>
-                            </div>
+                            <MyCourses courses={myCourses} />
                         )}
 
                         {/* Purchases Tab */}
                         {activeTab === 'purchases' && (
-                            <div className="flex flex-col gap-6">
-                                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">구매 내역</h2>
-                                <div className="space-y-4">
-                                    {myPurchases.map((purchase) => (
-                                        <div
-                                            key={purchase.id}
-                                            className="flex gap-4 bg-white dark:bg-gray-900 rounded-lg p-4 border border-gray-200 dark:border-gray-800"
-                                        >
-                                            <div
-                                                className="w-32 h-20 bg-center bg-cover rounded-lg flex-shrink-0"
-                                                style={{ backgroundImage: `url('${purchase.thumbnail}')` }}
-                                            />
-                                            <div className="flex-1">
-                                                <h3 className="font-bold text-gray-900 dark:text-white mb-1">
-                                                    {purchase.courseTitle}
-                                                </h3>
-                                                <p className="text-sm text-gray-600 dark:text-gray-400">
-                                                    구매일: {purchase.purchasedAt}
-                                                </p>
-                                                <p className="text-sm font-bold text-primary mt-2">
-                                                    {purchase.price.toLocaleString()}원
-                                                </p>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
+                            <MyPurchases purchases={myPurchases} />
                         )}
 
                         {/* Posts Tab */}
@@ -309,234 +237,29 @@ export default function MyPage() {
 
                                 {/* Q&A List */}
                                 {postsSubTab === 'qna' && (
-                                    <div className="space-y-4">
-                                        {myQnA.map((qna) => (
-                                            <div
-                                                key={qna.id}
-                                                className="bg-white dark:bg-gray-900 rounded-lg p-4 border border-gray-200 dark:border-gray-800"
-                                            >
-                                                <div className="flex items-start justify-between mb-2">
-                                                    <span className="text-xs text-gray-500 dark:text-gray-400">
-                                                        {qna.courseTitle}
-                                                    </span>
-                                                    <span
-                                                        className={`text-xs px-2 py-1 rounded ${qna.answered
-                                                            ? 'bg-green-100 dark:bg-green-500/20 text-green-600 dark:text-green-400'
-                                                            : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400'
-                                                            }`}
-                                                    >
-                                                        {qna.answered ? '답변 완료' : '대기 중'}
-                                                    </span>
-                                                </div>
-                                                <h3 className="font-bold text-gray-900 dark:text-white mb-1">
-                                                    {qna.question}
-                                                </h3>
-                                                <p className="text-xs text-gray-500 dark:text-gray-400">
-                                                    {qna.createdAt}
-                                                </p>
-                                            </div>
-                                        ))}
-                                    </div>
+                                    <MyQnA qnaList={myQnA} />
                                 )}
 
                                 {/* Study Posts List */}
                                 {postsSubTab === 'study' && (
-                                    <div className="space-y-4">
-                                        {myStudyPosts.map((post) => (
-                                            <Link
-                                                key={post.id}
-                                                href={`/community/${post.id}`}
-                                                className="block bg-white dark:bg-gray-900 rounded-lg p-4 border border-gray-200 dark:border-gray-800 hover:shadow-md transition-shadow"
-                                            >
-                                                <div className="flex items-center gap-2 mb-2">
-                                                    <span
-                                                        className={`text-xs px-2 py-1 rounded font-bold ${post.status === 'recruiting'
-                                                            ? 'bg-green-100 dark:bg-green-500/20 text-green-600 dark:text-green-400'
-                                                            : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400'
-                                                            }`}
-                                                    >
-                                                        {post.status === 'recruiting' ? '모집중' : '모집완료'}
-                                                    </span>
-                                                    <span className="text-xs text-gray-500 dark:text-gray-400">
-                                                        {post.currentMembers}/{post.totalMembers}명
-                                                    </span>
-                                                </div>
-                                                <h3 className="font-bold text-gray-900 dark:text-white mb-2">
-                                                    {post.title}
-                                                </h3>
-                                                <p className="text-xs text-gray-500 dark:text-gray-400">
-                                                    조회수 {post.views.toLocaleString()}
-                                                </p>
-                                            </Link>
-                                        ))}
-                                    </div>
+                                    <MyStudyPosts posts={myStudyPosts} />
                                 )}
 
                                 {/* Project Posts List */}
                                 {postsSubTab === 'project' && (
-                                    <div className="space-y-4">
-                                        {myProjectPosts.map((post) => (
-                                            <Link
-                                                key={post.id}
-                                                href={`/community/${post.id}`}
-                                                className="block bg-white dark:bg-gray-900 rounded-lg p-4 border border-gray-200 dark:border-gray-800 hover:shadow-md transition-shadow"
-                                            >
-                                                <div className="flex items-center gap-2 mb-2">
-                                                    <span
-                                                        className={`text-xs px-2 py-1 rounded font-bold ${post.status === 'recruiting'
-                                                            ? 'bg-green-100 dark:bg-green-500/20 text-green-600 dark:text-green-400'
-                                                            : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400'
-                                                            }`}
-                                                    >
-                                                        {post.status === 'recruiting' ? '모집중' : '모집완료'}
-                                                    </span>
-                                                    <span className="text-xs text-gray-500 dark:text-gray-400">
-                                                        {post.currentMembers}/{post.totalMembers}명
-                                                    </span>
-                                                </div>
-                                                <h3 className="font-bold text-gray-900 dark:text-white mb-2">
-                                                    {post.title}
-                                                </h3>
-                                                <p className="text-xs text-gray-500 dark:text-gray-400">
-                                                    조회수 {post.views.toLocaleString()}
-                                                </p>
-                                            </Link>
-                                        ))}
-                                    </div>
+                                    <MyProjectPosts posts={myProjectPosts} />
                                 )}
                             </div>
                         )}
 
                         {/* Meetings Tab */}
                         {activeTab === 'meetings' && (
-                            <div className="flex flex-col gap-6">
-                                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">모임</h2>
-
-                                {/* Filter Buttons */}
-                                <div className="flex gap-2 border-b border-gray-200 dark:border-gray-700">
-                                    <button
-                                        onClick={() => setMeetingsFilter('all')}
-                                        className={`px-4 py-2 text-sm font-medium border-b-2 ${meetingsFilter === 'all'
-                                                ? 'border-primary text-primary'
-                                                : 'border-transparent text-gray-600 dark:text-gray-400'
-                                            }`}
-                                    >
-                                        전체
-                                    </button>
-                                    <button
-                                        onClick={() => setMeetingsFilter('organizer')}
-                                        className={`px-4 py-2 text-sm font-medium border-b-2 ${meetingsFilter === 'organizer'
-                                                ? 'border-primary text-primary'
-                                                : 'border-transparent text-gray-600 dark:text-gray-400'
-                                            }`}
-                                    >
-                                        모집자
-                                    </button>
-                                    <button
-                                        onClick={() => setMeetingsFilter('participant')}
-                                        className={`px-4 py-2 text-sm font-medium border-b-2 ${meetingsFilter === 'participant'
-                                                ? 'border-primary text-primary'
-                                                : 'border-transparent text-gray-600 dark:text-gray-400'
-                                            }`}
-                                    >
-                                        참여자
-                                    </button>
-                                </div>
-
-                                <div className="space-y-4">
-                                    {myMeetings
-                                        .filter(meeting =>
-                                            meetingsFilter === 'all' || meeting.role === meetingsFilter
-                                        )
-                                        .map((meeting) => (
-                                            <div
-                                                key={meeting.id}
-                                                className="bg-white dark:bg-gray-900 rounded-lg p-4 border border-gray-200 dark:border-gray-800"
-                                            >
-                                                <div className="flex items-center gap-2 mb-2">
-                                                    <span
-                                                        className={`text-xs px-2 py-1 rounded font-bold ${meeting.status === 'recruiting'
-                                                            ? 'bg-green-100 dark:bg-green-500/20 text-green-600 dark:text-green-400'
-                                                            : meeting.status === 'approved'
-                                                                ? 'bg-blue-100 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400'
-                                                                : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400'
-                                                            }`}
-                                                    >
-                                                        {meeting.status === 'recruiting'
-                                                            ? '모집중'
-                                                            : meeting.status === 'approved'
-                                                                ? '참여 중'
-                                                                : '완료'}
-                                                    </span>
-                                                    <span className="text-xs text-gray-500 dark:text-gray-400">
-                                                        {meeting.role === 'organizer' ? '모집자' : '참여자'}
-                                                    </span>
-                                                </div>
-                                                <h3 className="font-bold text-gray-900 dark:text-white">
-                                                    {meeting.title}
-                                                </h3>
-                                            </div>
-                                        ))}
-                                </div>
-                            </div>
+                            <MyMeetings meetings={myMeetings} />
                         )}
 
                         {/* Instructor Courses Tab */}
                         {activeTab === 'instructor' && user.role === 'instructor' && (
-                            <div className="flex flex-col gap-6">
-                                <div className="flex items-center justify-between">
-                                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white">운영 중인 강의</h2>
-                                    <Link
-                                        href="/instructor/create-course"
-                                        className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg font-bold hover:bg-primary/90"
-                                    >
-                                        <span className="material-symbols-outlined text-lg">add</span>
-                                        <span>새 강의 만들기</span>
-                                    </Link>
-                                </div>
-                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                                    {instructorCourses.map((course) => (
-                                        <div
-                                            key={course.id}
-                                            className="flex flex-col gap-4 rounded-xl bg-white dark:bg-gray-900 p-4 shadow-sm border border-gray-200 dark:border-gray-800"
-                                        >
-                                            <div
-                                                className="w-full bg-center bg-no-repeat aspect-video bg-cover rounded-lg"
-                                                style={{ backgroundImage: `url('${course.thumbnail}')` }}
-                                            />
-                                            <div className="flex flex-col gap-3">
-                                                <p className="text-base font-bold text-gray-900 dark:text-white">
-                                                    {course.title}
-                                                </p>
-                                                <div className="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400">
-                                                    <span className="flex items-center gap-1">
-                                                        <span className="material-symbols-outlined text-base">person</span>
-                                                        {course.students.toLocaleString()}명
-                                                    </span>
-                                                    <span className="flex items-center gap-1">
-                                                        <span className="material-symbols-outlined text-base text-yellow-500">star</span>
-                                                        {course.rating}
-                                                    </span>
-                                                </div>
-                                                <div className="flex gap-2">
-                                                    <Link
-                                                        href={`/instructor/courses/${course.id}`}
-                                                        className="flex-1 flex items-center justify-center rounded-lg h-9 px-4 bg-primary text-white text-sm font-medium hover:bg-primary/90"
-                                                    >
-                                                        관리
-                                                    </Link>
-                                                    <Link
-                                                        href={`/courses/${course.id}`}
-                                                        className="flex items-center justify-center rounded-lg h-9 px-3 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600"
-                                                    >
-                                                        <span className="material-symbols-outlined text-lg">visibility</span>
-                                                    </Link>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
+                            <InstructorCourses courses={instructorCourses} />
                         )}
                     </main>
                 </div>
