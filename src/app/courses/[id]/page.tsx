@@ -282,13 +282,13 @@ export default function CourseDetailPage() {
       // 성공 시 장바구니 페이지로 이동
       window.location.href = "/cart";
     } catch (error: any) {
-      console.error("장바구니 추가 실패:", error);
       if (error.response?.status === 401) {
         alert("로그인이 필요합니다.");
         window.location.href = "/login";
       } else if (error.response?.status === 409) {
         alert("이미 장바구니에 담긴 강의입니다.");
       } else {
+        console.error("장바구니 추가 실패:", error);
         alert("장바구니 추가에 실패했습니다.");
       }
     }
