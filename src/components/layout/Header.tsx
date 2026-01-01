@@ -2,12 +2,62 @@
 
 import React from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import Button from '../common/Button';
 import Avatar from '../common/Avatar';
 import { useAuth } from '@/contexts/AuthContext';
 
 const Header: React.FC = () => {
     const { isAuthenticated, user, logout } = useAuth();
+    const router = useRouter();
+
+    const handleChatClick = async () => {
+        try {
+            const accessToken = localStorage.getItem('accessToken');
+
+            if (!accessToken) {
+                alert('로그인이 필요합니다.');
+                router.push('/login');
+                return;
+            }
+
+            const response = await fetch('http://localhost:8080/api/chatrooms', {
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`,
+                },
+            });
+
+            if (!response.ok) {
+                if (response.status === 401) {
+                    alert('로그인이 만료되었습니다. 다시 로그인해주세요.');
+                    localStorage.removeItem('accessToken');
+                    router.push('/login');
+                    return;
+                }
+                throw new Error('Failed to fetch chat rooms');
+            }
+
+            const result = await response.json();
+
+            if (result.success && result.data && result.data.length > 0) {
+                // 마지막 메시지 시간 기준으로 정렬 (최신이 위로)
+                const sortedRooms = result.data.sort((a: any, b: any) => {
+                    if (!a.lastMessageTime) return 1;
+                    if (!b.lastMessageTime) return -1;
+                    return new Date(b.lastMessageTime).getTime() - new Date(a.lastMessageTime).getTime();
+                });
+
+                // 첫 번째 채팅방으로 이동
+                const firstRoom = sortedRooms[0];
+                router.push(`/chat/${firstRoom.roomId}?opponentName=${encodeURIComponent(firstRoom.opponentName)}`);
+            } else {
+                alert('채팅방이 없습니다.');
+            }
+        } catch (error) {
+            console.error('Error fetching chat rooms:', error);
+            alert('채팅방 목록을 불러오는데 실패했습니다.');
+        }
+    };
 
     return (
         <header className="sticky top-0 z-50 w-full bg-white dark:bg-gray-900 backdrop-blur-sm border-b border-gray-200 dark:border-gray-700">
@@ -55,20 +105,20 @@ const Header: React.FC = () => {
                         {isAuthenticated && user ? (
                             <>
                                 {/* 채팅 아이콘 */}
-                                <Link
-                                    href="/chat/1"
-                                    className="flex items-center justify-center rounded-full h-10 w-10 bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700"
+                                <button
+                                    onClick={handleChatClick}
+                                    className="flex items-center justify-center rounded-full h-10 w-10 bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
                                 >
                                     <span className="material-symbols-outlined">chat</span>
-                                </Link>
+                                </button>
 
                                 {/* 프로필 아이콘 */}
                                 <Link href="/profile" className="flex items-center gap-3">
                                     <Avatar src={user.avatar} alt={user.name || 'User'} size="md" />
                                 </Link>
-                                
+
                                 {/* 로그아웃 버튼 (임시 추가: 프로필 드롭다운이 아직 없다면) */}
-                                <button 
+                                <button
                                     onClick={logout}
                                     className="text-sm text-gray-500 hover:text-red-500 ml-2"
                                 >

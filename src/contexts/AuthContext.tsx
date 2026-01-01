@@ -34,7 +34,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // 1순위: /api/users/me (명세서에 정의된 엔드포인트)
       const response = await api.get('/api/auth/me');
       if (response.data && response.data.data) {
-        setUser(response.data.data);
+        const userData = response.data.data;
+        setUser(userData);
+
+        // userId를 localStorage에 저장 (채팅에서 사용)
+        if (userData.id) {
+          localStorage.setItem('userId', userData.id.toString());
+        }
       }
     } catch (error) {
       console.error('Failed to fetch user info:', error);
@@ -64,6 +70,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const logout = () => {
     localStorage.removeItem('accessToken');
     localStorage.removeItem('userRole');
+    localStorage.removeItem('userId');
     setUser(null);
     router.push('/login');
     router.refresh();
