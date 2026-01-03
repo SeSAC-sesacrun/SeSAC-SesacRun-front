@@ -106,6 +106,18 @@ export default function CommunityDetailPage() {
     const isRecruiting = post.status === 'RECRUITING';
     const statusText = isRecruiting ? '모집중' : '모집완료';
 
+    // 프로그레스 바 계산
+    const progressPercentage = post.totalMembers > 0
+        ? Math.round((post.currentMembers / post.totalMembers) * 100)
+        : 0;
+
+    console.log('📊 Progress Bar Debug:', {
+        currentMembers: post.currentMembers,
+        totalMembers: post.totalMembers,
+        percentage: progressPercentage,
+        calculation: `${post.currentMembers} / ${post.totalMembers} * 100 = ${progressPercentage}%`
+    });
+
     // 삭제 핸들러
     const handleDelete = async () => {
         if (!confirm('정말로 이 모집 글을 삭제하시겠습니까?')) {
@@ -206,18 +218,18 @@ export default function CommunityDetailPage() {
 
     return (
         <main className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
+            <div className="flex flex-wrap gap-2 mb-8">
+                <Link className="text-gray-600 dark:text-gray-400 text-sm font-medium leading-normal hover:text-primary" href="/community">
+                    커뮤니티
+                </Link>
+                <span className="text-gray-600 dark:text-gray-400 text-sm font-medium leading-normal">/</span>
+                <span className="text-gray-900 dark:text-white text-sm font-medium leading-normal">
+                    모집 글
+                </span>
+            </div>
+
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12 items-start">
                 <div className="lg:col-span-2 flex flex-col gap-8">
-                    <div className="flex flex-wrap gap-2">
-                        <Link className="text-gray-600 dark:text-gray-400 text-sm font-medium leading-normal hover:text-primary" href="/community">
-                            커뮤니티
-                        </Link>
-                        <span className="text-gray-600 dark:text-gray-400 text-sm font-medium leading-normal">/</span>
-                        <span className="text-gray-900 dark:text-white text-sm font-medium leading-normal">
-                            모집 글
-                        </span>
-                    </div>
-
                     <div className="bg-white dark:bg-gray-900 rounded-xl p-6 md:p-8 flex flex-col gap-6">
                         <h1 className="text-gray-900 dark:text-white tracking-tight text-3xl md:text-4xl font-bold leading-tight">
                             {post.title}
@@ -285,21 +297,13 @@ export default function CommunityDetailPage() {
                                 </span>
                                 <span className="truncate">좋아요</span>
                             </button>
-                            <button className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-full h-11 px-4 bg-gray-100 dark:bg-white/10 text-gray-900 dark:text-white text-sm font-bold leading-normal tracking-[0.015em]">
-                                <span className="material-symbols-outlined text-xl">bookmark</span>
-                                <span className="truncate">북마크하기</span>
-                            </button>
-                            <button className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-full h-11 px-4 bg-gray-100 dark:bg-white/10 text-gray-900 dark:text-white text-sm font-bold leading-normal tracking-[0.015em]">
-                                <span className="material-symbols-outlined text-xl">share</span>
-                                <span className="truncate">공유하기</span>
-                            </button>
                         </div>
                     </div>
                 </div>
 
-                <div className="lg:col-span-1 w-full lg:sticky lg:top-24">
+                <div className="lg:col-span-1 w-full">
                     <div className="bg-white dark:bg-gray-900 rounded-xl p-6 flex flex-col gap-6">
-                        <div className="flex flex-col gap-4 border-b border-gray-200 dark:border-gray-800 pb-6">
+                        <div className="flex flex-col gap-4">
                             <span className={`inline-block w-fit text-sm font-bold px-3 py-1 rounded-full ${isRecruiting
                                 ? 'bg-green-100 dark:bg-green-500/20 text-green-600 dark:text-green-400'
                                 : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400'
@@ -313,35 +317,13 @@ export default function CommunityDetailPage() {
                                         현재 {post.currentMembers}명 / 총 {post.totalMembers}명
                                     </p>
                                 </div>
-                                <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mt-1">
+                                <div className="w-full bg-gray-300 dark:bg-gray-600 rounded-full h-3 mt-2">
                                     <div
-                                        className="bg-primary h-2 rounded-full"
-                                        style={{ width: `${(post.currentMembers / post.totalMembers) * 100}%` }}
+                                        className="bg-green-600 dark:bg-green-400 h-3 rounded-full transition-all duration-500 ease-out"
+                                        style={{
+                                            width: `${progressPercentage}%`
+                                        }}
                                     />
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="flex flex-col gap-4">
-                            <h4 className="font-bold text-gray-900 dark:text-white text-lg">
-                                모집 정보
-                            </h4>
-                            <div className="flex flex-col gap-3">
-                                <div className="p-4 bg-gray-50 dark:bg-white/5 rounded-lg">
-                                    <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">작성자</p>
-                                    <p className="text-base font-semibold text-gray-900 dark:text-white">{post.authorName}</p>
-                                </div>
-                                <div className="p-4 bg-gray-50 dark:bg-white/5 rounded-lg">
-                                    <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">작성일</p>
-                                    <p className="text-base font-semibold text-gray-900 dark:text-white">
-                                        {new Date(post.createdAt).toLocaleDateString('ko-KR')}
-                                    </p>
-                                </div>
-                                <div className="p-4 bg-gray-50 dark:bg-white/5 rounded-lg">
-                                    <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">조회수</p>
-                                    <p className="text-base font-semibold text-gray-900 dark:text-white">
-                                        {post.views.toLocaleString()}
-                                    </p>
                                 </div>
                             </div>
                         </div>
