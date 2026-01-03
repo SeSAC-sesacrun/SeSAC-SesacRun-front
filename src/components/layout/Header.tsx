@@ -49,7 +49,8 @@ const Header: React.FC = () => {
 
                 // 첫 번째 채팅방으로 이동
                 const firstRoom = sortedRooms[0];
-                router.push(`/chat/${firstRoom.roomId}?opponentName=${encodeURIComponent(firstRoom.opponentName)}`);
+                const url = `/chat/${firstRoom.roomId}?opponentName=${encodeURIComponent(firstRoom.opponentName)}${firstRoom.postId ? `&postId=${firstRoom.postId}` : ''}`;
+                router.push(url);
             } else {
                 alert('채팅방이 없습니다.');
             }
