@@ -677,14 +677,6 @@ export default function ChatPage() {
                     {/* Chat Header */}
                     <header className="flex-shrink-0 flex items-center justify-between gap-4 p-4 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900/50">
                         <div className="flex items-center gap-4">
-                            <Link
-                                href="/community"
-                                className="flex items-center justify-center size-10 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-                            >
-                                <span className="material-symbols-outlined text-gray-600 dark:text-gray-400">
-                                    arrow_back
-                                </span>
-                            </Link>
                             <div className="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-12 flex items-center justify-center bg-primary/10 dark:bg-primary/20">
                                 <span className="material-symbols-outlined text-primary dark:text-primary/80">
                                     person
