@@ -60,59 +60,54 @@ export default function ChatPage() {
                 if (postResponse.ok) {
                     const postResult = await postResponse.json();
                     if (postResult.success && postResult.data) {
-                        setIsPostAuthor(postResult.data.author);
+                        const isAuthor = postResult.data.author;
+                        setIsPostAuthor(isAuthor);
 
-                        // 2. 멤버 목록 조회
-                        const membersResponse = await fetch(
-                            `http://localhost:8080/api/recruitments/posts/${postId}/members`,
-                            {
-                                headers: {
-                                    'Authorization': `Bearer ${accessToken}`,
-                                },
-                            }
-                        );
-
-                        if (membersResponse.ok) {
-                            const membersResult = await membersResponse.json();
-                            if (membersResult.success && membersResult.data) {
-                                // localStorage에서 userId 가져오기 (AuthContext에서 저장됨)
-                                const storedUserId = localStorage.getItem('userId');
-                                const currentUserId = storedUserId ? parseInt(storedUserId, 10) : 0;
-
-                                console.log('🔍 Debug Info:', {
-                                    isPostAuthor: postResult.data.author,
-                                    currentUserId,
-                                    storedUserId,
-                                    members: membersResult.data,
-                                });
-
-                                if (!currentUserId) {
-                                    console.error('❌ No userId found in localStorage');
-                                    return;
+                        // 2. 멤버 목록 조회 (작성자만 가능)
+                        if (isAuthor) {
+                            const membersResponse = await fetch(
+                                `http://localhost:8080/api/recruitments/posts/${postId}/members`,
+                                {
+                                    headers: {
+                                        'Authorization': `Bearer ${accessToken}`,
+                                    },
                                 }
+                            );
 
-                                if (postResult.data.author) {
-                                    // 작성자인 경우: 상대방(참여자)의 memberId 찾기
-                                    const opponentMember = membersResult.data.find((m: any) => m.userId !== currentUserId);
+                            if (membersResponse.ok) {
+                                const membersResult = await membersResponse.json();
+                                if (membersResult.success && membersResult.data) {
+                                    console.log('📋 Members List:', membersResult.data);
 
-                                    console.log('👤 Opponent Member:', opponentMember);
+                                    // 채팅방 목록에서 현재 채팅방의 opponentId 찾기
+                                    const currentRoom = chatRooms.find(
+                                        room => room.roomId.toString() === chatId
+                                    );
 
-                                    if (opponentMember) {
-                                        setMemberId(opponentMember.id);
-                                        setMemberStatus(opponentMember.status);
-                                        console.log('✅ Set memberId:', opponentMember.id, 'status:', opponentMember.status);
+                                    if (currentRoom?.opponentId) {
+                                        // 멤버 목록에서 상대방 찾기
+                                        const opponentMember = membersResult.data.find(
+                                            (m: any) => m.userId === currentRoom.opponentId
+                                        );
+
+                                        if (opponentMember) {
+                                            setMemberId(opponentMember.id);
+                                            setMemberStatus(opponentMember.status);
+                                            console.log('✅ Found opponent member:', {
+                                                memberId: opponentMember.id,
+                                                userId: opponentMember.userId,
+                                                userName: opponentMember.userName,
+                                                status: opponentMember.status
+                                            });
+                                        } else {
+                                            console.log('ℹ️ 상대방이 아직 신청하지 않았습니다.');
+                                        }
                                     } else {
-                                        console.log('❌ No opponent member found');
-                                    }
-                                } else {
-                                    // 참여자인 경우: 내 memberId 찾기
-                                    const myMember = membersResult.data.find((m: any) => m.userId === currentUserId);
-
-                                    if (myMember) {
-                                        setMemberId(myMember.id);
-                                        setMemberStatus(myMember.status);
+                                        console.warn('⚠️ 채팅방 정보에 opponentId가 없습니다.');
                                     }
                                 }
+                            } else if (membersResponse.status === 403) {
+                                console.warn('⚠️ 멤버 목록 조회 권한이 없습니다.');
                             }
                         }
                     }
@@ -123,7 +118,7 @@ export default function ChatPage() {
         };
 
         fetchPostAndMemberInfo();
-    }, [postId]);
+    }, [postId, chatRooms, chatId]);
 
     // 채팅방 목록 불러오기
     useEffect(() => {
@@ -395,18 +390,49 @@ export default function ChatPage() {
                 return;
             }
 
-            const response = await fetch(`http://localhost:8080/api/recruitments/${postId}/members`, {
+            // 디버깅: 요청 정보 출력
+            const userId = localStorage.getItem('userId');
+            console.log('📤 Apply Request:', {
+                postId,
+                userId,
+                hasToken: !!accessToken,
+                url: `http://localhost:8080/api/recruitments/posts/${postId}/members`
+            });
+
+            const response = await fetch(`http://localhost:8080/api/recruitments/posts/${postId}/members`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${accessToken}`,
                 },
             });
 
-            const result = await response.json();
+            // 응답 body가 있는지 확인
+            const text = await response.text();
+            let result;
+
+            try {
+                result = text ? JSON.parse(text) : {};
+            } catch (e) {
+                console.error('❌ JSON Parse Error:', e);
+                result = {};
+            }
+
+            console.log('📤 Apply Response:', { status: response.status, result });
 
             if (!response.ok) {
                 // 백엔드 에러 메시지 표시
-                alert(result.error?.message || '신청에 실패했습니다.');
+                let errorMsg = '신청에 실패했습니다.';
+
+                if (response.status === 403) {
+                    errorMsg = '권한이 없습니다. 자신의 모집 글에는 신청할 수 없습니다.';
+                } else if (result.error?.message) {
+                    errorMsg = result.error.message;
+                } else if (result.message) {
+                    errorMsg = result.message;
+                }
+
+                console.error('❌ Apply Failed:', errorMsg);
+                alert(errorMsg);
                 return;
             }
 
@@ -415,7 +441,9 @@ export default function ChatPage() {
                 // 상태 새로고침
                 window.location.reload();
             } else {
-                alert(result.error?.message || '신청에 실패했습니다.');
+                const errorMsg = result.error?.message || result.message || '신청에 실패했습니다.';
+                console.error('❌ Apply Failed:', errorMsg);
+                alert(errorMsg);
             }
         } catch (error) {
             console.error('Error applying to recruitment:', error);
@@ -439,7 +467,7 @@ export default function ChatPage() {
             }
 
             const response = await fetch(
-                `http://localhost:8080/api/recruitments/${postId}/members/${memberId}`,
+                `http://localhost:8080/api/recruitments/posts/${postId}/members/${memberId}`,
                 {
                     method: 'PATCH',
                     headers: {
@@ -450,17 +478,44 @@ export default function ChatPage() {
                 }
             );
 
-            if (!response.ok) {
-                throw new Error('Failed to approve');
+            // 응답 body가 있는지 확인
+            const text = await response.text();
+            let result;
+
+            try {
+                result = text ? JSON.parse(text) : {};
+            } catch (e) {
+                console.error('❌ JSON Parse Error:', e);
+                result = {};
             }
 
-            const result = await response.json();
+            console.log('📤 Approve Response:', { status: response.status, result });
+
+            if (!response.ok) {
+                let errorMsg = '승인에 실패했습니다.';
+
+                if (response.status === 403) {
+                    errorMsg = '권한이 없습니다.';
+                } else if (response.status === 404) {
+                    errorMsg = '신청 정보를 찾을 수 없습니다.';
+                } else if (result.error?.message) {
+                    errorMsg = result.error.message;
+                } else if (result.message) {
+                    errorMsg = result.message;
+                }
+
+                console.error('❌ Approve Failed:', errorMsg);
+                alert(errorMsg);
+                return;
+            }
 
             if (result.success) {
                 alert('참여를 승인했습니다!');
                 window.location.reload();
             } else {
-                alert(result.error?.message || '승인에 실패했습니다.');
+                const errorMsg = result.error?.message || result.message || '승인에 실패했습니다.';
+                console.error('❌ Approve Failed:', errorMsg);
+                alert(errorMsg);
             }
         } catch (error) {
             console.error('Error approving member:', error);
@@ -484,7 +539,7 @@ export default function ChatPage() {
             }
 
             const response = await fetch(
-                `http://localhost:8080/api/recruitments/${postId}/members/${memberId}`,
+                `http://localhost:8080/api/recruitments/posts/${postId}/members/${memberId}`,
                 {
                     method: 'PATCH',
                     headers: {
@@ -495,17 +550,44 @@ export default function ChatPage() {
                 }
             );
 
-            if (!response.ok) {
-                throw new Error('Failed to reject');
+            // 응답 body가 있는지 확인
+            const text = await response.text();
+            let result;
+
+            try {
+                result = text ? JSON.parse(text) : {};
+            } catch (e) {
+                console.error('❌ JSON Parse Error:', e);
+                result = {};
             }
 
-            const result = await response.json();
+            console.log('📤 Reject Response:', { status: response.status, result });
+
+            if (!response.ok) {
+                let errorMsg = '거절에 실패했습니다.';
+
+                if (response.status === 403) {
+                    errorMsg = '권한이 없습니다.';
+                } else if (response.status === 404) {
+                    errorMsg = '신청 정보를 찾을 수 없습니다.';
+                } else if (result.error?.message) {
+                    errorMsg = result.error.message;
+                } else if (result.message) {
+                    errorMsg = result.message;
+                }
+
+                console.error('❌ Reject Failed:', errorMsg);
+                alert(errorMsg);
+                return;
+            }
 
             if (result.success) {
                 alert('참여를 거절했습니다.');
                 window.location.reload();
             } else {
-                alert(result.error?.message || '거절에 실패했습니다.');
+                const errorMsg = result.error?.message || result.message || '거절에 실패했습니다.';
+                console.error('❌ Reject Failed:', errorMsg);
+                alert(errorMsg);
             }
         } catch (error) {
             console.error('Error rejecting member:', error);
@@ -638,25 +720,32 @@ export default function ChatPage() {
                         {postId && (
                             <div className="flex gap-2">
                                 {isPostAuthor ? (
-                                    // 모집자: 승인/거절 버튼
-                                    <>
-                                        <button
-                                            onClick={handleApprove}
-                                            disabled={!memberId}
-                                            className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg font-bold hover:bg-green-700 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
-                                        >
-                                            <span className="material-symbols-outlined text-lg">check</span>
-                                            <span>승인</span>
-                                        </button>
-                                        <button
-                                            onClick={handleReject}
-                                            disabled={!memberId}
-                                            className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg font-bold hover:bg-red-700 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
-                                        >
-                                            <span className="material-symbols-outlined text-lg">close</span>
-                                            <span>거절</span>
-                                        </button>
-                                    </>
+                                    // 모집자: 승인/거절 버튼 (memberId가 있을 때만)
+                                    memberId ? (
+                                        <>
+                                            <button
+                                                onClick={handleApprove}
+                                                className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg font-bold hover:bg-green-700 transition-colors"
+                                            >
+                                                <span className="material-symbols-outlined text-lg">check</span>
+                                                <span>승인</span>
+                                            </button>
+                                            <button
+                                                onClick={handleReject}
+                                                className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg font-bold hover:bg-red-700 transition-colors"
+                                            >
+                                                <span className="material-symbols-outlined text-lg">close</span>
+                                                <span>거절</span>
+                                            </button>
+                                        </>
+                                    ) : (
+                                        <div className="flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-gray-800 rounded-lg">
+                                            <span className="material-symbols-outlined text-lg text-gray-400">info</span>
+                                            <span className="text-sm text-gray-600 dark:text-gray-400">
+                                                상대방이 신청하면 승인/거절할 수 있습니다
+                                            </span>
+                                        </div>
+                                    )
                                 ) : (
                                     // 참여자: 신청하기 버튼
                                     <button
