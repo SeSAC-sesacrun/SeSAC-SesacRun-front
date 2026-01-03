@@ -623,7 +623,7 @@ export default function ChatPage() {
                                         </div>
                                     )}
                                 </div>
-                                {postId && (
+                                {postId && !isPostAuthor && (
                                     <Link
                                         href={`/community/${postId}`}
                                         className="text-sm text-primary hover:underline"
