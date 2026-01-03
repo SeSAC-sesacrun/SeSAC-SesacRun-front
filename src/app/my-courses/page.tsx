@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 
-export default function MyPage() {
+export default function MyCoursesPage() {
     const [activeTab, setActiveTab] = useState<'courses' | 'posts' | 'meetings' | 'purchases' | 'instructor'>('courses');
     const [postsSubTab, setPostsSubTab] = useState<'qna' | 'study' | 'project'>('qna');
     const [meetingsFilter, setMeetingsFilter] = useState<'all' | 'organizer' | 'participant'>('all');
@@ -28,6 +28,12 @@ export default function MyPage() {
             title: '데이터 기반 그로스 마케팅 실전',
             progress: 30,
             thumbnail: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800',
+        },
+        {
+            id: '3',
+            title: 'React와 TypeScript로 웹 앱 만들기',
+            progress: 100,
+            thumbnail: 'https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=800',
         },
     ];
 
@@ -101,7 +107,7 @@ export default function MyPage() {
     ];
 
     return (
-        <div className="flex h-full grow flex-col">
+        <div className="flex h-full grow flex-col bg-background-light dark:bg-background-dark">
             <div className="mx-auto flex w-full max-w-7xl flex-1 justify-center p-4 sm:p-6 lg:p-8">
                 <div className="flex w-full flex-col gap-6 md:flex-row md:gap-8">
                     {/* Sidebar */}
@@ -179,6 +185,7 @@ export default function MyPage() {
                                     </button>
                                 )}
                             </div>
+
                         </div>
                     </aside>
 
@@ -417,8 +424,8 @@ export default function MyPage() {
                                     <button
                                         onClick={() => setMeetingsFilter('all')}
                                         className={`px-4 py-2 text-sm font-medium border-b-2 ${meetingsFilter === 'all'
-                                                ? 'border-primary text-primary'
-                                                : 'border-transparent text-gray-600 dark:text-gray-400'
+                                            ? 'border-primary text-primary'
+                                            : 'border-transparent text-gray-600 dark:text-gray-400'
                                             }`}
                                     >
                                         전체
@@ -426,8 +433,8 @@ export default function MyPage() {
                                     <button
                                         onClick={() => setMeetingsFilter('organizer')}
                                         className={`px-4 py-2 text-sm font-medium border-b-2 ${meetingsFilter === 'organizer'
-                                                ? 'border-primary text-primary'
-                                                : 'border-transparent text-gray-600 dark:text-gray-400'
+                                            ? 'border-primary text-primary'
+                                            : 'border-transparent text-gray-600 dark:text-gray-400'
                                             }`}
                                     >
                                         모집자
@@ -435,8 +442,8 @@ export default function MyPage() {
                                     <button
                                         onClick={() => setMeetingsFilter('participant')}
                                         className={`px-4 py-2 text-sm font-medium border-b-2 ${meetingsFilter === 'participant'
-                                                ? 'border-primary text-primary'
-                                                : 'border-transparent text-gray-600 dark:text-gray-400'
+                                            ? 'border-primary text-primary'
+                                            : 'border-transparent text-gray-600 dark:text-gray-400'
                                             }`}
                                     >
                                         참여자

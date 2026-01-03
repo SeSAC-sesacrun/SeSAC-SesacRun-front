@@ -22,18 +22,7 @@ export default function CoursesPage() {
   const [inputValue, setInputValue] = useState(''); // 입력 필드 값
   const [selectedCategory, setSelectedCategory] = useState('전체');
 
-  const categories = ['전체', '프로그래밍', '웹 개발', '데이터 사이언스', '디자인', '마케팅', '비즈니스'];
-
-  // 한글 → 영어 카테고리 매핑
-  const categoryMap: Record<string, string> = {
-    '전체': 'all',
-    '프로그래밍': 'Development',
-    '웹 개발': 'Web',
-    '데이터 사이언스': 'Data Science',
-    '디자인': 'Design',
-    '마케팅': 'Marketing',
-    '비즈니스': 'Business',
-  };
+  const categories = ['전체', '프로그래밍', '데이터 사이언스', '디자인', '마케팅', '비즈니스'];
 
   // 검색 실행 함수
   const handleSearch = () => {
@@ -53,9 +42,7 @@ export default function CoursesPage() {
       }
       // 카테고리가 '전체'가 아니면 카테고리 API 호출
       else if (category !== '전체') {
-        // 한글 카테고리를 영어로 변환
-        const englishCategory = categoryMap[category] || category;
-        response = await axios.get(`http://localhost:8080/api/courses/category/${encodeURIComponent(englishCategory)}`);
+        response = await axios.get(`http://localhost:8080/api/courses/category/${encodeURIComponent(category)}`);
       }
       // 그 외에는 전체 강의 조회
       else {

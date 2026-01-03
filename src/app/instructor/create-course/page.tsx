@@ -21,13 +21,6 @@ import {
     useSortable,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import dynamic from 'next/dynamic';
-
-// CKEditor를 동적으로 import (SSR 방지)
-const CKEditor = dynamic(() => import('@/components/editor/CKEditor'), {
-    ssr: false,
-    loading: () => <div className="border border-gray-300 dark:border-gray-700 rounded-lg min-h-[300px] flex items-center justify-center">에디터 로딩 중...</div>
-});
 
 interface Lecture {
     id: number;
@@ -149,15 +142,12 @@ export default function CreateCoursePage() {
     // Course 저장 함수
     const handleSaveCourse = async () => {
         try {
-            // 한글 카테고리를 영어로 변환
-            const englishCategory = categoryMap[category] || category;
-
             const requestBody = {
                 title,
                 description,
                 detailedDescription,
                 thumbnail,
-                category: englishCategory,
+                category,
                 price: parseInt(price) || 0,
                 features,
             };
@@ -196,7 +186,7 @@ export default function CreateCoursePage() {
     // Section 저장 함수
     const handleSaveSection = async (sectionIndex: number) => {
         if (!courseId) {
-            alert('먼저 코스를 생성해주세요!');
+            alert('먼저 코스를 저장해주세요!');
             return;
         }
 
@@ -241,7 +231,7 @@ export default function CreateCoursePage() {
         const section = sections[sectionIndex];
 
         if (!section.sectionId) {
-            alert('먼저 섹션을 생성해주세요!');
+            alert('먼저 섹션을 저장해주세요!');
             return;
         }
 
@@ -459,16 +449,11 @@ export default function CreateCoursePage() {
         }
     };
 
-    // HTML 빈 값 체크 함수
-    const isEmptyHtml = (html: string): boolean => {
-        return html.replace(/<[^>]*>/g, '').trim().length === 0;
-    };
-
     // 강의 제출 전 검증 함수
     const validateCourse = (): { isValid: boolean; message: string } => {
         // 코스 기본 정보 검증
         if (!courseId) {
-            return { isValid: false, message: '먼저 코스를 생성해주세요.' };
+            return { isValid: false, message: '먼저 코스를 저장해주세요.' };
         }
         if (!title.trim()) {
             return { isValid: false, message: '강의 제목을 입력해주세요.' };
@@ -476,7 +461,7 @@ export default function CreateCoursePage() {
         if (!description.trim()) {
             return { isValid: false, message: '간단 소개를 입력해주세요.' };
         }
-        if (isEmptyHtml(detailedDescription)) {
+        if (!detailedDescription.trim()) {
             return { isValid: false, message: '상세 설명을 입력해주세요.' };
         }
         if (!thumbnail.trim()) {
@@ -498,7 +483,7 @@ export default function CreateCoursePage() {
             const section = sections[i];
 
             if (!section.sectionId) {
-                return { isValid: false, message: `섹션 ${i + 1}을(를) 생성해주세요.` };
+                return { isValid: false, message: `섹션 ${i + 1}을(를) 저장해주세요.` };
             }
             if (!section.title.trim()) {
                 return { isValid: false, message: `섹션 ${i + 1}의 제목을 입력해주세요.` };
@@ -512,7 +497,7 @@ export default function CreateCoursePage() {
                 const lecture = section.lectures[j];
 
                 if (!lecture.lectureId) {
-                    return { isValid: false, message: `섹션 ${i + 1}의 강의 ${j + 1}을(를) 생성해주세요.` };
+                    return { isValid: false, message: `섹션 ${i + 1}의 강의 ${j + 1}을(를) 저장해주세요.` };
                 }
                 if (!lecture.title.trim()) {
                     return { isValid: false, message: `섹션 ${i + 1}의 강의 ${j + 1} 제목을 입력해주세요.` };
@@ -544,18 +529,7 @@ export default function CreateCoursePage() {
         router.push('/');
     };
 
-    const categories = ['프로그래밍', '웹 개발', '데이터 사이언스', '디자인', '마케팅', '비즈니스', '기타'];
-
-    // 한글 → 영어 카테고리 매핑
-    const categoryMap: Record<string, string> = {
-        '프로그래밍': 'Development',
-        '웹 개발': 'Web',
-        '데이터 사이언스': 'Data Science',
-        '디자인': 'Design',
-        '마케팅': 'Marketing',
-        '비즈니스': 'Business',
-        '기타': 'Other',
-    };
+    const categories = ['프로그래밍', '데이터 사이언스', '디자인', '마케팅', '비즈니스', '기타'];
 
     return (
         <main className="flex-1">
@@ -598,7 +572,7 @@ export default function CreateCoursePage() {
                                 onClick={handleSaveCourse}
                                 className="px-6 py-2 bg-blue-600 text-white rounded-lg font-bold hover:bg-blue-700 transition-colors"
                             >
-                                {courseId ? '코스 업데이트' : '코스 생성'}
+                                {courseId ? '업데이트' : '생성'}
                             </button>
                         </div>
 
@@ -637,10 +611,13 @@ export default function CreateCoursePage() {
                             <label className="block text-sm font-bold text-gray-900 dark:text-white mb-3">
                                 상세 설명 <span className="text-red-500">*</span>
                             </label>
-                            <CKEditor
-                                editorKey={courseId ? `update-${courseId}` : 'create'}
+                            <textarea
                                 value={detailedDescription}
-                                onChange={setDetailedDescription}
+                                onChange={(e) => setDetailedDescription(e.target.value)}
+                                placeholder="강의에 대한 상세한 설명을 작성해주세요..."
+                                rows={6}
+                                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
+                                required
                             />
                         </div>
 
@@ -832,7 +809,7 @@ export default function CreateCoursePage() {
                                             onClick={() => handleSaveSection(sectionIndex)}
                                             className="px-4 py-2 bg-green-600 text-white rounded-lg font-bold hover:bg-green-700"
                                         >
-                                            {section.sectionId ? '섹션 업데이트' : '섹션 생성'}
+                                            {section.sectionId ? '업데이트' : '생성'}
                                         </button>
                                         <button
                                             type="button"
@@ -925,38 +902,28 @@ export default function CreateCoursePage() {
                                                     />
                                                 </div>
                                                 <div className="flex gap-2 items-center">
-                                                    {/* 공개/비공개 토글 */}
-                                                    <div className="flex items-center gap-2">
-                                                        <span className="text-xs text-gray-600 dark:text-gray-400">
-                                                            {lecture.isFree ? '공개' : '비공개'}
-                                                        </span>
-                                                        <button
-                                                            type="button"
-                                                            onClick={() => {
-                                                                const newSections = [...sections];
-                                                                newSections[sectionIndex].lectures[lectureIndex].isFree = !lecture.isFree;
-                                                                setSections(newSections);
-                                                            }}
-                                                            className={`relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none ${
-                                                                lecture.isFree
-                                                                    ? 'bg-green-500'
-                                                                    : 'bg-gray-300 dark:bg-gray-600'
-                                                            }`}
-                                                            title={lecture.isFree ? '공개 강의 (클릭하여 비공개로 변경)' : '비공개 강의 (클릭하여 공개로 변경)'}
-                                                        >
-                                                            <span
-                                                                className={`inline-block w-4 h-4 transform bg-white rounded-full transition-transform ${
-                                                                    lecture.isFree ? 'translate-x-6' : 'translate-x-1'
-                                                                }`}
-                                                            />
-                                                        </button>
-                                                    </div>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => {
+                                                            const newSections = [...sections];
+                                                            newSections[sectionIndex].lectures[lectureIndex].isFree = !lecture.isFree;
+                                                            setSections(newSections);
+                                                        }}
+                                                        className={`px-3 py-1 rounded-lg text-xs font-bold transition-colors ${
+                                                            lecture.isFree
+                                                                ? 'bg-green-100 text-green-700 border-2 border-green-500 dark:bg-green-900 dark:text-green-300'
+                                                                : 'bg-gray-100 text-gray-600 border-2 border-gray-300 dark:bg-gray-700 dark:text-gray-400 dark:border-gray-600'
+                                                        }`}
+                                                        title={lecture.isFree ? '무료 강의 (클릭하여 유료로 변경)' : '유료 강의 (클릭하여 무료로 변경)'}
+                                                    >
+                                                        {lecture.isFree ? '🎁 무료' : '💰 유료'}
+                                                    </button>
                                                     <button
                                                         type="button"
                                                         onClick={() => handleSaveLecture(sectionIndex, lectureIndex)}
                                                         className="ml-auto px-4 py-1 bg-blue-600 text-white rounded-lg text-sm font-bold hover:bg-blue-700"
                                                     >
-                                                        {lecture.lectureId ? '강의 업데이트' : '강의 생성'}
+                                                        {lecture.lectureId ? '업데이트' : '생성'}
                                                     </button>
                                                     <button
                                                         type="button"
@@ -1036,7 +1003,7 @@ export default function CreateCoursePage() {
                                                 onClick={() => handleSaveSection(sectionIndex)}
                                                 className="px-4 py-2 bg-green-600 text-white rounded-lg font-bold hover:bg-green-700"
                                             >
-                                                {section.sectionId ? '섹션 업데이트' : '섹션 생성'}
+                                                {section.sectionId ? '업데이트' : '생성'}
                                             </button>
                                             <button
                                                 type="button"

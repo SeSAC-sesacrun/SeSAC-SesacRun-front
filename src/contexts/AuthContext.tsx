@@ -34,7 +34,37 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // 1순위: /api/users/me (명세서에 정의된 엔드포인트)
       const response = await api.get('/api/auth/me');
       if (response.data && response.data.data) {
-        setUser(response.data.data);
+        const userData = response.data.data;
+
+        // 백엔드가 문자열로 응답하는 경우 처리
+        if (typeof userData === 'string') {
+          // "인증 성공! 이메일: user1@test.com, 권한: USER, ID: 2"에서 추출
+          const emailMatch = userData.match(/이메일:\s*([^,]+)/);
+          const roleMatch = userData.match(/권한:\s*([^,]+)/);
+          const idMatch = userData.match(/ID:\s*(\d+)/);
+
+          const parsedUser = {
+            id: idMatch ? parseInt(idMatch[1], 10) : undefined,
+            email: emailMatch ? emailMatch[1].trim() : '',
+            role: roleMatch ? roleMatch[1].trim() : '',
+          };
+
+          setUser(parsedUser);
+
+          // userId를 localStorage에 저장 (채팅에서 사용)
+          if (parsedUser.id) {
+            localStorage.setItem('userId', parsedUser.id.toString());
+            console.log('✅ Saved userId to localStorage:', parsedUser.id);
+          }
+        } else {
+          // 객체로 응답하는 경우 (정상)
+          setUser(userData);
+
+          // userId를 localStorage에 저장 (채팅에서 사용)
+          if (userData.id) {
+            localStorage.setItem('userId', userData.id.toString());
+          }
+        }
       }
     } catch (error) {
       console.error('Failed to fetch user info:', error);
@@ -64,6 +94,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const logout = () => {
     localStorage.removeItem('accessToken');
     localStorage.removeItem('userRole');
+    localStorage.removeItem('userId');
     setUser(null);
     router.push('/login');
     router.refresh();
