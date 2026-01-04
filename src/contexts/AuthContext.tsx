@@ -32,7 +32,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       // API 명세를 기반으로 사용자 정보 조회 시도
       // 1순위: /api/users/me (명세서에 정의된 엔드포인트)
-      const response = await api.get('/api/auth/me');
+      const response = await api.get('/api/users/me');
       if (response.data && response.data.data) {
         const userData = response.data.data;
 
