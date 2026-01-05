@@ -36,6 +36,7 @@ export default function ChatPage() {
     const [memberStatus, setMemberStatus] = useState<string | null>(null); // 참여 상태
     const stompClientRef = useRef<Client | null>(null);
     const messagesEndRef = useRef<HTMLDivElement>(null);
+    const fetchedPostIds = useRef<Set<string>>(new Set()); // 이미 조회한 postId 추적
 
     // 현재 채팅방 정보 가져오기
     const currentRoom = chatRooms.find(room => room.roomId.toString() === chatId);
@@ -46,6 +47,11 @@ export default function ChatPage() {
     useEffect(() => {
         const fetchPostAndMemberInfo = async () => {
             if (!postId) return;
+
+            // 이미 조회한 postId면 스킵
+            if (fetchedPostIds.current.has(postId)) {
+                return;
+            }
 
             try {
                 const accessToken = localStorage.getItem('accessToken');
@@ -63,6 +69,9 @@ export default function ChatPage() {
                     if (postResult.success && postResult.data) {
                         const isAuthor = postResult.data.author;
                         setIsPostAuthor(isAuthor);
+
+                        // 조회 완료 표시
+                        fetchedPostIds.current.add(postId);
 
                         // 2. 멤버 목록 조회 (작성자만 가능)
                         if (isAuthor) {
@@ -119,7 +128,7 @@ export default function ChatPage() {
         };
 
         fetchPostAndMemberInfo();
-    }, [postId, chatRooms, chatId]);
+    }, [postId, chatId]); // chatRooms 제거
 
     // 채팅방 목록 불러오기
     useEffect(() => {
@@ -194,9 +203,14 @@ export default function ChatPage() {
                 const result = await response.json();
 
                 if (result.success && result.data && result.data.content) {
-                    // 사용자 ID 가져오기
-                    const storedUserId = localStorage.getItem('userId');
-                    const currentUserId = storedUserId ? parseInt(storedUserId, 10) : null;
+                    // 사용자 ID를 JWT에서 추출
+                    let currentUserId: number | null = null;
+                    try {
+                        const payload = JSON.parse(atob(accessToken.split('.')[1]));
+                        currentUserId = payload.userId || payload.sub;
+                    } catch (e) {
+                        console.error('Failed to parse JWT:', e);
+                    }
 
                     // 메시지를 ChatMessage 형식으로 변환
                     const loadedMessages: ChatMessage[] = result.data.content.map((msg: any) => {
@@ -237,24 +251,15 @@ export default function ChatPage() {
             return;
         }
 
-        // 사용자 ID 가져오기
+        // 사용자 ID를 JWT에서 추출
         let currentUserId: number | null = null;
-
-        // 1. localStorage에서 직접 가져오기 (로그인 시 저장된 경우)
-        const storedUserId = localStorage.getItem('userId');
-        if (storedUserId) {
-            currentUserId = parseInt(storedUserId, 10);
-            console.log('👤 Current User ID (from localStorage):', currentUserId);
-        } else {
-            // 2. JWT 토큰에서 추출 시도
-            try {
-                const payload = JSON.parse(atob(accessToken.split('.')[1]));
-                console.log('🔍 JWT Payload:', payload);
-                currentUserId = payload.userId || payload.id;
-                console.log('👤 Current User ID (from JWT):', currentUserId);
-            } catch (e) {
-                console.error('Failed to decode token:', e);
-            }
+        try {
+            const payload = JSON.parse(atob(accessToken.split('.')[1]));
+            console.log('🔍 JWT Payload:', payload);
+            currentUserId = payload.userId || payload.sub;
+            console.log('👤 Current User ID (from JWT):', currentUserId);
+        } catch (e) {
+            console.error('Failed to parse JWT:', e);
         }
 
         // STOMP 클라이언트 생성 (SockJS 사용)
@@ -392,10 +397,8 @@ export default function ChatPage() {
             }
 
             // 디버깅: 요청 정보 출력
-            const userId = localStorage.getItem('userId');
             console.log('📤 Apply Request:', {
                 postId,
-                userId,
                 hasToken: !!accessToken,
                 url: `http://localhost:8080/api/recruitments/posts/${postId}/members`
             });
