@@ -512,7 +512,7 @@ export default function ChatPage() {
 
             if (result.success) {
                 alert('참여를 승인했습니다!');
-                window.location.reload();
+                setMemberStatus('APPROVED'); // 상태 업데이트
             } else {
                 const errorMsg = result.error?.message || result.message || '승인에 실패했습니다.';
                 console.error('❌ Approve Failed:', errorMsg);
@@ -584,7 +584,7 @@ export default function ChatPage() {
 
             if (result.success) {
                 alert('참여를 거절했습니다.');
-                window.location.reload();
+                setMemberStatus('REJECTED'); // 상태 업데이트
             } else {
                 const errorMsg = result.error?.message || result.message || '거절에 실패했습니다.';
                 console.error('❌ Reject Failed:', errorMsg);
@@ -713,24 +713,39 @@ export default function ChatPage() {
                         {postId && (
                             <div className="flex gap-2">
                                 {isPostAuthor ? (
-                                    // 모집자: 승인/거절 버튼 (memberId가 있을 때만)
+                                    // 모집자: 승인/거절 버튼 또는 상태 표시
                                     memberId ? (
-                                        <>
-                                            <button
-                                                onClick={handleApprove}
-                                                className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg font-bold hover:bg-green-700 transition-colors"
-                                            >
-                                                <span className="material-symbols-outlined text-lg">check</span>
-                                                <span>승인</span>
-                                            </button>
-                                            <button
-                                                onClick={handleReject}
-                                                className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg font-bold hover:bg-red-700 transition-colors"
-                                            >
-                                                <span className="material-symbols-outlined text-lg">close</span>
-                                                <span>거절</span>
-                                            </button>
-                                        </>
+                                        memberStatus === 'PENDING' ? (
+                                            // 대기 중 → 승인/거절 버튼
+                                            <>
+                                                <button
+                                                    onClick={handleApprove}
+                                                    className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg font-bold hover:bg-green-700 transition-colors"
+                                                >
+                                                    <span className="material-symbols-outlined text-lg">check</span>
+                                                    <span>승인</span>
+                                                </button>
+                                                <button
+                                                    onClick={handleReject}
+                                                    className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg font-bold hover:bg-red-700 transition-colors"
+                                                >
+                                                    <span className="material-symbols-outlined text-lg">close</span>
+                                                    <span>거절</span>
+                                                </button>
+                                            </>
+                                        ) : memberStatus === 'APPROVED' ? (
+                                            // 승인됨 → 상태 표시
+                                            <div className="flex items-center gap-2 px-4 py-2 bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 rounded-lg">
+                                                <span className="material-symbols-outlined text-lg">check_circle</span>
+                                                <span className="font-bold">승인 완료</span>
+                                            </div>
+                                        ) : memberStatus === 'REJECTED' ? (
+                                            // 거절됨 → 상태 표시
+                                            <div className="flex items-center gap-2 px-4 py-2 bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-lg">
+                                                <span className="material-symbols-outlined text-lg">cancel</span>
+                                                <span className="font-bold">거절됨</span>
+                                            </div>
+                                        ) : null
                                     ) : (
                                         <div className="flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-gray-800 rounded-lg">
                                             <span className="material-symbols-outlined text-lg text-gray-400">info</span>
