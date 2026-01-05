@@ -113,6 +113,14 @@ const Header: React.FC = () => {
                                     <span className="material-symbols-outlined">chat</span>
                                 </button>
 
+                                {/* 장바구니 아이콘 */}
+                                <Link
+                                    href="/cart"
+                                    className="flex items-center justify-center rounded-full h-10 w-10 bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                                >
+                                    <span className="material-symbols-outlined">shopping_cart</span>
+                                </Link>
+
                                 {/* 프로필 아이콘 */}
                                 <Link href="/profile" className="flex items-center gap-3">
                                     <Avatar src={user.avatar} alt={user.name || 'User'} size="md" />

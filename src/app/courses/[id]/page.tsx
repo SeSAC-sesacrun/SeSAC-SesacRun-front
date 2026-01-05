@@ -14,6 +14,7 @@ export default function CourseDetailPage() {
     const [course, setCourse] = useState<any>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [isInCart, setIsInCart] = useState(false);
 
     // 초를 MM:SS 형식으로 변환
     const formatDuration = (seconds: number): string => {
@@ -224,21 +225,28 @@ export default function CourseDetailPage() {
         }
 
         try {
-            await api.post(
-                '/api/carts',
-                { courseId: Number(courseId) }
-            );
-            // 성공 시 장바구니 페이지로 이동
-            window.location.href = '/cart';
+            await api.post('/api/carts', { courseId: Number(courseId) });
+            // 성공 시 장바구니 상태 업데이트
+            setIsInCart(true);
+            alert('장바구니에 추가되었습니다.');
         } catch (error: any) {
-            console.error('장바구니 추가 실패:', error);
             if (error.response?.status === 401) {
                 alert('로그인이 필요합니다.');
                 window.location.href = '/login';
+            } else if (error.response?.status === 409) {
+                // 이미 장바구니에 있는 경우
+                setIsInCart(true);
+                alert(error.response?.data?.error?.message || '이미 장바구니에 담긴 강의입니다.');
+                console.log(error);
             } else {
+                console.error('장바구니 추가 실패:', error);
                 alert('장바구니 추가에 실패했습니다.');
             }
         }
+    };
+
+    const handleGoToCart = () => {
+        window.location.href = '/cart';
     };
 
     const handleWatchCourse = () => {
@@ -362,12 +370,19 @@ export default function CourseDetailPage() {
                                         >
                                             이어보기
                                         </button>
+                                    ) : isInCart ? (
+                                        <button
+                                            onClick={handleGoToCart}
+                                            className="w-full bg-green-600 dark:bg-green-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-green-700 dark:hover:bg-green-600 transition-colors mb-3"
+                                        >
+                                            장바구니로 이동
+                                        </button>
                                     ) : (
                                         <button
                                             onClick={handlePurchase}
                                             className="w-full bg-gray-900 dark:bg-gray-700 text-white font-bold py-3 px-6 rounded-lg hover:bg-gray-800 dark:hover:bg-gray-600 transition-colors mb-3"
                                         >
-                                            구매하기
+                                            장바구니에 담기
                                         </button>
                                     )}
                                     <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
@@ -438,11 +453,10 @@ export default function CourseDetailPage() {
                                 <div className="p-6">
                                     {/* Intro Tab */}
                                     {activeTab === 'intro' && (
-                                        <div className="prose dark:prose-invert max-w-none">
-                                            <div className="whitespace-pre-line text-gray-700 dark:text-gray-300">
-                                                {course.detailedDescription}
-                                            </div>
-                                        </div>
+                                        <div
+                                            className="prose ck-content max-w-none text-gray-900 dark:text-white"
+                                            dangerouslySetInnerHTML={{ __html: course.detailedDescription }}
+                                        />
                                     )}
 
                                     {/* Curriculum Tab */}
@@ -635,12 +649,19 @@ export default function CourseDetailPage() {
                                     >
                                         이어보기
                                     </button>
+                                ) : isInCart ? (
+                                    <button
+                                        onClick={handleGoToCart}
+                                        className="w-full bg-green-600 dark:bg-green-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-green-700 dark:hover:bg-green-600 transition-colors"
+                                    >
+                                        장바구니로 이동
+                                    </button>
                                 ) : (
                                     <button
                                         onClick={handlePurchase}
                                         className="w-full bg-gray-900 dark:bg-gray-700 text-white font-bold py-3 px-6 rounded-lg hover:bg-gray-800 dark:hover:bg-gray-600 transition-colors"
                                     >
-                                        구매하기
+                                        장바구니에 담기
                                     </button>
                                 )}
                             </div>

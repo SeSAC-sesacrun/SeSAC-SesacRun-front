@@ -57,6 +57,12 @@ export default function MyPage() {
     const [posts, setPosts] = useState<MyPostResDto[]>([]);
     const [meetings, setMeetings] = useState<MyMeetingResDto[]>([]);
     const [loading, setLoading] = useState(true);
+    const [instructorCourses, setInstructorCourses] = useState<any[]>([]);
+    const [instructorCoursesLoading, setInstructorCoursesLoading] = useState(false);
+    const [instructorCoursesError, setInstructorCoursesError] = useState<string | null>(null);
+    const [enrolledCourses, setEnrolledCourses] = useState<any[]>([]);
+    const [enrolledCoursesLoading, setEnrolledCoursesLoading] = useState(false);
+    const [enrolledCoursesError, setEnrolledCoursesError] = useState<string | null>(null);
 
     // --- Fetch Data ---
     useEffect(() => {
@@ -101,31 +107,120 @@ export default function MyPage() {
         }
     }, []);
 
-    // --- Dummy Data for Courses (User provided API only for others) ---
-    const myCourses = [
-        {
-            id: '1',
-            title: '초보자를 위한 UI/UX 디자인 시작하기',
-            progress: 75,
-            thumbnail: 'https://images.unsplash.com/photo-1561070791-2526d30994b5?w=800',
-        },
-        {
-            id: '2',
-            title: '데이터 기반 그로스 마케팅 실전',
-            progress: 30,
-            thumbnail: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800',
-        },
-    ];
+    // 강의 삭제 핸들러
+    const handleDeleteCourse = async (courseId: string, courseTitle: string) => {
+        if (!confirm(`"${courseTitle}" 강의를 정말 삭제하시겠습니까?\n\n⚠️ 이 작업은 되돌릴 수 없습니다.\n⚠️ 모든 섹션, 강의, 관련 데이터가 함께 삭제됩니다.`)) {
+            return;
+        }
 
-    const instructorCourses = [
-        {
-            id: '1',
-            title: 'React 완벽 가이드',
-            students: 1234,
-            rating: 4.8,
-            thumbnail: 'https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=800',
-        },
-    ];
+        try {
+            console.log('Deleting course:', courseId);
+            const response = await api.delete(`/api/courses/${courseId}`);
+            console.log('Delete response:', response);
+
+            // 성공 시 state에서 제거
+            setInstructorCourses(prev => prev.filter(course => course.id !== courseId));
+            alert('✅ 강의가 성공적으로 삭제되었습니다.');
+        } catch (error: any) {
+            console.error('강의 삭제 실패:', error);
+            console.error('Error details:', {
+                status: error.response?.status,
+                data: error.response?.data,
+                message: error.message
+            });
+
+            let errorMessage = '강의 삭제에 실패했습니다.';
+
+            if (error.response?.status === 500) {
+                errorMessage = '⚠️ 서버 오류가 발생했습니다.\n\n가능한 원인:\n- 강의에 수강생이 있는 경우\n- 주문/장바구니에 포함된 경우\n\n관리자에게 문의하거나 백엔드 로그를 확인해주세요.';
+            } else if (error.response?.status === 403) {
+                errorMessage = '⚠️ 권한이 없습니다.\n본인이 생성한 강의만 삭제할 수 있습니다.';
+            } else if (error.response?.status === 404) {
+                errorMessage = '⚠️ 강의를 찾을 수 없습니다.\n이미 삭제되었을 수 있습니다.';
+            } else if (error.response?.data?.message) {
+                errorMessage = `⚠️ ${error.response.data.message}`;
+            }
+
+            alert(errorMessage);
+        }
+    };
+
+    // 운영 중인 강의 조회 API
+    useEffect(() => {
+        const fetchInstructorCourses = async () => {
+            if (activeTab !== 'instructor' || profile?.role !== 'INSTRUCTOR') return;
+
+            try {
+                setInstructorCoursesLoading(true);
+                setInstructorCoursesError(null);
+
+                const response = await api.get('/api/courses/my');
+                console.log('API Response:', response.data);
+
+                // 백엔드는 Page<CourseResponse>를 반환
+                // { success: true, data: { content: [...], totalElements: 10, ... } }
+                const pageData = response.data.data;
+                const courseList = pageData?.content || [];
+
+                // 백엔드 데이터를 프론트엔드 형식으로 변환
+                const formattedCourses = courseList.map((course: any) => ({
+                    id: course.id.toString(),
+                    title: course.title,
+                    students: course.studentCount || 0,
+                    price: course.price || 0,
+                    status: course.status || 'DRAFT',
+                    thumbnail: course.thumbnail || 'https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=800',
+                    category: course.category || '',
+                }));
+
+                setInstructorCourses(formattedCourses);
+            } catch (error: any) {
+                console.error('운영 중인 강의 조회 실패:', error);
+                setInstructorCoursesError(error.response?.data?.message || '강의 목록을 불러올 수 없습니다.');
+            } finally {
+                setInstructorCoursesLoading(false);
+            }
+        };
+
+        fetchInstructorCourses();
+    }, [activeTab, profile?.role]);
+
+    // 수강 중인 강의 조회 API (학생용)
+    useEffect(() => {
+        const fetchEnrolledCourses = async () => {
+            if (activeTab !== 'courses') return;
+
+            try {
+                setEnrolledCoursesLoading(true);
+                setEnrolledCoursesError(null);
+
+                const response = await api.get('/api/courses/enrolled');
+                console.log('Enrolled Courses API Response:', response.data);
+
+                // 백엔드는 Page<CourseResponse>를 반환
+                // { success: true, data: { content: [...], totalElements: 10, ... } }
+                const pageData = response.data.data;
+                const courseList = pageData?.content || [];
+
+                // 백엔드 데이터를 프론트엔드 형식으로 변환
+                const formattedCourses = courseList.map((course: any) => ({
+                    id: course.id.toString(),
+                    title: course.title,
+                    progress: 0, // TODO: 진도율 API 연동 후 추가
+                    thumbnail: course.thumbnail || 'https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=800',
+                }));
+
+                setEnrolledCourses(formattedCourses);
+            } catch (error: any) {
+                console.error('수강 중인 강의 조회 실패:', error);
+                setEnrolledCoursesError(error.response?.data?.message || '강의 목록을 불러올 수 없습니다.');
+            } finally {
+                setEnrolledCoursesLoading(false);
+            }
+        };
+
+        fetchEnrolledCourses();
+    }, [activeTab]);
 
     if (loading) {
         return <div className="flex h-screen items-center justify-center">Loading...</div>;
@@ -229,47 +324,83 @@ export default function MyPage() {
                                         강의 둘러보기
                                     </Link>
                                 </div>
-                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                                    {myCourses.map((course) => (
-                                        <Link
-                                            key={course.id}
-                                            href={`/watch/${course.id}`}
-                                            className="group flex flex-col gap-4 rounded-xl bg-white dark:bg-gray-900 p-4 shadow-sm border border-gray-200 dark:border-gray-800 hover:shadow-md transition-shadow"
-                                        >
-                                            <div className="relative">
-                                                <div
-                                                    className="w-full bg-center bg-no-repeat aspect-video bg-cover rounded-lg"
-                                                    style={{ backgroundImage: `url('${course.thumbnail}')` }}
-                                                />
-                                                {/* Play Button Overlay */}
-                                                <div className="absolute inset-0 flex items-center justify-center bg-black/20 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity">
-                                                    <div className="flex items-center justify-center size-16 bg-primary rounded-full">
-                                                        <span className="material-symbols-outlined text-white text-3xl" style={{ fontVariationSettings: "'FILL' 1" }}>
-                                                            play_arrow
-                                                        </span>
-                                                    </div>
-                                                </div>
+
+                                {/* 로딩 상태 */}
+                                {enrolledCoursesLoading && (
+                                    <div className="flex items-center justify-center py-12">
+                                        <div className="text-center">
+                                            <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-primary border-r-transparent mb-4"></div>
+                                            <p className="text-gray-600 dark:text-gray-400">강의 목록을 불러오는 중...</p>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* 에러 상태 */}
+                                {enrolledCoursesError && !enrolledCoursesLoading && (
+                                    <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
+                                        <p className="text-red-600 dark:text-red-400">{enrolledCoursesError}</p>
+                                    </div>
+                                )}
+
+                                {/* 강의 목록 */}
+                                {!enrolledCoursesLoading && !enrolledCoursesError && (
+                                    <>
+                                        {enrolledCourses.length === 0 ? (
+                                            <div className="bg-white dark:bg-gray-900 rounded-lg p-12 text-center border border-gray-200 dark:border-gray-800">
+                                                <span className="material-symbols-outlined text-6xl text-gray-300 dark:text-gray-600 mb-4">school</span>
+                                                <p className="text-gray-600 dark:text-gray-400 mb-4">아직 수강 중인 강의가 없습니다.</p>
+                                                <Link
+                                                    href="/courses"
+                                                    className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg font-bold hover:bg-primary/90"
+                                                >
+                                                    <span>강의 둘러보기</span>
+                                                </Link>
                                             </div>
-                                            <div className="flex flex-col gap-3">
-                                                <p className="text-base font-bold text-gray-900 dark:text-white">
-                                                    {course.title}
-                                                </p>
-                                                <div className="flex flex-col gap-2">
-                                                    <div className="flex justify-between text-xs font-medium text-gray-500 dark:text-gray-400">
-                                                        <span>진행률</span>
-                                                        <span>{course.progress}%</span>
-                                                    </div>
-                                                    <div className="w-full bg-gray-200 rounded-full h-1.5 dark:bg-gray-700">
-                                                        <div
-                                                            className="bg-primary h-1.5 rounded-full"
-                                                            style={{ width: `${course.progress}%` }}
-                                                        />
-                                                    </div>
-                                                </div>
+                                        ) : (
+                                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                                                {enrolledCourses.map((course) => (
+                                                    <Link
+                                                        key={course.id}
+                                                        href={`/watch/${course.id}`}
+                                                        className="group flex flex-col gap-4 rounded-xl bg-white dark:bg-gray-900 p-4 shadow-sm border border-gray-200 dark:border-gray-800 hover:shadow-md transition-shadow"
+                                                    >
+                                                        <div className="relative">
+                                                            <div
+                                                                className="w-full bg-center bg-no-repeat aspect-video bg-cover rounded-lg"
+                                                                style={{ backgroundImage: `url('${course.thumbnail}')` }}
+                                                            />
+                                                            {/* Play Button Overlay */}
+                                                            <div className="absolute inset-0 flex items-center justify-center bg-black/20 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity">
+                                                                <div className="flex items-center justify-center size-16 bg-primary rounded-full">
+                                                                    <span className="material-symbols-outlined text-white text-3xl" style={{ fontVariationSettings: "'FILL' 1" }}>
+                                                                        play_arrow
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div className="flex flex-col gap-3">
+                                                            <p className="text-base font-bold text-gray-900 dark:text-white">
+                                                                {course.title}
+                                                            </p>
+                                                            <div className="flex flex-col gap-2">
+                                                                <div className="flex justify-between text-xs font-medium text-gray-500 dark:text-gray-400">
+                                                                    <span>진행률</span>
+                                                                    <span>{course.progress}%</span>
+                                                                </div>
+                                                                <div className="w-full bg-gray-200 rounded-full h-1.5 dark:bg-gray-700">
+                                                                    <div
+                                                                        className="bg-primary h-1.5 rounded-full"
+                                                                        style={{ width: `${course.progress}%` }}
+                                                                    />
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </Link>
+                                                ))}
                                             </div>
-                                        </Link>
-                                    ))}
-                                </div>
+                                        )}
+                                    </>
+                                )}
                             </div>
                         )}
 
@@ -493,48 +624,144 @@ export default function MyPage() {
                                         <span>새 강의 만들기</span>
                                     </Link>
                                 </div>
-                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                                    {instructorCourses.map((course) => (
-                                        <div
-                                            key={course.id}
-                                            className="flex flex-col gap-4 rounded-xl bg-white dark:bg-gray-900 p-4 shadow-sm border border-gray-200 dark:border-gray-800"
-                                        >
-                                            <div
-                                                className="w-full bg-center bg-no-repeat aspect-video bg-cover rounded-lg"
-                                                style={{ backgroundImage: `url('${course.thumbnail}')` }}
-                                            />
-                                            <div className="flex flex-col gap-3">
-                                                <p className="text-base font-bold text-gray-900 dark:text-white">
-                                                    {course.title}
-                                                </p>
-                                                <div className="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400">
-                                                    <span className="flex items-center gap-1">
-                                                        <span className="material-symbols-outlined text-base">person</span>
-                                                        {course.students.toLocaleString()}명
-                                                    </span>
-                                                    <span className="flex items-center gap-1">
-                                                        <span className="material-symbols-outlined text-base text-yellow-500">star</span>
-                                                        {course.rating}
-                                                    </span>
-                                                </div>
-                                                <div className="flex gap-2">
-                                                    <Link
-                                                        href={`/instructor/courses/${course.id}`}
-                                                        className="flex-1 flex items-center justify-center rounded-lg h-9 px-4 bg-primary text-white text-sm font-medium hover:bg-primary/90"
-                                                    >
-                                                        관리
-                                                    </Link>
-                                                    <Link
-                                                        href={`/courses/${course.id}`}
-                                                        className="flex items-center justify-center rounded-lg h-9 px-3 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600"
-                                                    >
-                                                        <span className="material-symbols-outlined text-lg">visibility</span>
-                                                    </Link>
+
+                                {/* 로딩 상태 */}
+                                {instructorCoursesLoading && (
+                                    <div className="flex items-center justify-center py-12">
+                                        <div className="text-center">
+                                            <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-primary border-r-transparent mb-4"></div>
+                                            <p className="text-gray-600 dark:text-gray-400">강의 목록을 불러오는 중...</p>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* 에러 상태 */}
+                                {instructorCoursesError && !instructorCoursesLoading && (
+                                    <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
+                                        <p className="text-red-600 dark:text-red-400">{instructorCoursesError}</p>
+                                    </div>
+                                )}
+
+                                {/* 강의 목록 */}
+                                {!instructorCoursesLoading && !instructorCoursesError && (
+                                    <>
+                                        {instructorCourses.length === 0 ? (
+                                            <div className="bg-white dark:bg-gray-900 rounded-lg p-12 text-center border border-gray-200 dark:border-gray-800">
+                                                <span className="material-symbols-outlined text-6xl text-gray-300 dark:text-gray-600 mb-4">school</span>
+                                                <p className="text-gray-600 dark:text-gray-400 mb-4">아직 생성한 강의가 없습니다.</p>
+                                                <Link
+                                                    href="/instructor/create-course"
+                                                    className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg font-bold hover:bg-primary/90"
+                                                >
+                                                    <span className="material-symbols-outlined text-lg">add</span>
+                                                    <span>첫 강의 만들기</span>
+                                                </Link>
+                                            </div>
+                                        ) : (
+                                            <div className="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800 overflow-hidden">
+                                                <div className="overflow-x-auto">
+                                                    <table className="w-full">
+                                                        <thead className="bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+                                                            <tr>
+                                                                <th className="px-4 py-3 text-left text-xs font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
+                                                                    아이콘
+                                                                </th>
+                                                                <th className="px-4 py-3 text-left text-xs font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
+                                                                    강의명
+                                                                </th>
+                                                                <th className="px-4 py-3 text-center text-xs font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
+                                                                    총 수강생
+                                                                </th>
+                                                                <th className="px-4 py-3 text-right text-xs font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
+                                                                    가격
+                                                                </th>
+                                                                <th className="px-4 py-3 text-right text-xs font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
+                                                                    총 수익
+                                                                </th>
+                                                                <th className="px-4 py-3 text-center text-xs font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
+                                                                    상태
+                                                                </th>
+                                                                <th className="px-4 py-3 text-center text-xs font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
+                                                                    관리
+                                                                </th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+                                                            {instructorCourses.map((course) => {
+                                                                const revenue = course.price * course.students;
+                                                                const statusText = course.status === 'PUBLISHED' ? '미작성' : course.status === 'DRAFT' ? '작성중' : '미작성';
+                                                                const statusColor = course.status === 'PUBLISHED'
+                                                                    ? 'bg-green-100 dark:bg-green-500/20 text-green-600 dark:text-green-400'
+                                                                    : 'bg-yellow-100 dark:bg-yellow-500/20 text-yellow-600 dark:text-yellow-400';
+
+                                                                return (
+                                                                    <tr key={course.id} className="hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                                                                        <td className="px-4 py-4">
+                                                                            <div
+                                                                                className="w-12 h-12 bg-center bg-cover rounded"
+                                                                                style={{ backgroundImage: `url('${course.thumbnail}')` }}
+                                                                            />
+                                                                        </td>
+                                                                        <td className="px-4 py-4">
+                                                                            <p className="text-sm font-medium text-gray-900 dark:text-white line-clamp-2">
+                                                                                {course.title}
+                                                                            </p>
+                                                                        </td>
+                                                                        <td className="px-4 py-4 text-center">
+                                                                            <span className="text-sm text-gray-900 dark:text-white">
+                                                                                {course.students.toLocaleString()}
+                                                                            </span>
+                                                                        </td>
+                                                                        <td className="px-4 py-4 text-right">
+                                                                            <span className="text-sm font-medium text-gray-900 dark:text-white">
+                                                                                ₩{course.price.toLocaleString()}
+                                                                            </span>
+                                                                        </td>
+                                                                        <td className="px-4 py-4 text-right">
+                                                                            <span className="text-sm font-bold text-primary">
+                                                                                ₩{revenue.toLocaleString()}
+                                                                            </span>
+                                                                        </td>
+                                                                        <td className="px-4 py-4 text-center">
+                                                                            <span className={`inline-block px-3 py-1 text-xs font-bold rounded-full ${statusColor}`}>
+                                                                                {statusText}
+                                                                            </span>
+                                                                        </td>
+                                                                        <td className="px-4 py-4">
+                                                                            <div className="flex items-center justify-center gap-2">
+                                                                                <div className="flex flex-col gap-2">
+                                                                                    <Link
+                                                                                        href={`/instructor/create-course?id=${course.id}`}
+                                                                                        className="px-3 py-1.5 bg-blue-600 text-white text-xs font-bold rounded hover:bg-blue-700 transition-colors shadow-sm whitespace-nowrap"
+                                                                                    >
+                                                                                        강의 수정
+                                                                                    </Link>
+                                                                                    <button
+                                                                                        onClick={() => handleDeleteCourse(course.id, course.title)}
+                                                                                        className="px-3 py-1.5 bg-red-600 text-white text-xs font-bold rounded hover:bg-red-700 transition-colors shadow-sm whitespace-nowrap"
+                                                                                    >
+                                                                                        강의 삭제
+                                                                                    </button>
+                                                                                </div>
+                                                                                <Link
+                                                                                    href={`/courses/${course.id}`}
+                                                                                    className="p-1.5 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 rounded transition-colors"
+                                                                                    title="미리보기"
+                                                                                >
+                                                                                    <span className="material-symbols-outlined text-lg">visibility</span>
+                                                                                </Link>
+                                                                            </div>
+                                                                        </td>
+                                                                    </tr>
+                                                                );
+                                                            })}
+                                                        </tbody>
+                                                    </table>
                                                 </div>
                                             </div>
-                                        </div>
-                                    ))}
-                                </div>
+                                        )}
+                                    </>
+                                )}
                             </div>
                         )}
                     </main>
