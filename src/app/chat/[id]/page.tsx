@@ -37,9 +37,10 @@ export default function ChatPage() {
     const stompClientRef = useRef<Client | null>(null);
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
-    // URL 쿼리 파라미터에서 상대방 정보 가져오기
-    const opponentName = searchParams.get('opponentName') || '상대방';
-    const postId = searchParams.get('postId');
+    // 현재 채팅방 정보 가져오기
+    const currentRoom = chatRooms.find(room => room.roomId.toString() === chatId);
+    const opponentName = currentRoom?.opponentName || '상대방';
+    const postId = currentRoom?.postId?.toString() || null;
 
     // 모집 글 정보 및 참여 상태 조회
     useEffect(() => {
@@ -615,7 +616,7 @@ export default function ChatPage() {
                                     return (
                                         <Link
                                             key={room.roomId}
-                                            href={`/chat/${room.roomId}?opponentName=${encodeURIComponent(room.opponentName)}${room.postId ? `&postId=${room.postId}` : ''}`}
+                                            href={`/chat/${room.roomId}`}
                                             className={`flex items-center gap-4 px-4 min-h-[80px] py-3 justify-between ${isActive
                                                 ? 'bg-primary/10 dark:bg-primary/20 border-r-4 border-primary'
                                                 : 'border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800/50'

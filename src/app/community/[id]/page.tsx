@@ -200,10 +200,9 @@ export default function CommunityDetailPage() {
             }
 
             if (result.success && result.data) {
-                // 채팅방 ID와 상대방 정보를 받아서 채팅 페이지로 이동
-                const { roomId, opponentName, postId, opponentId } = result.data;
-                const url = `/chat/${roomId}?opponentName=${encodeURIComponent(opponentName)}&postId=${postId}${opponentId ? `&opponentId=${opponentId}` : ''}`;
-                router.push(url);
+                // 채팅방 ID로 이동 (쿼리 파라미터 불필요)
+                const { roomId } = result.data;
+                router.push(`/chat/${roomId}`);
             } else if (result.error && result.error.message) {
                 // success: false인 경우
                 alert(result.error.message);
