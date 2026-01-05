@@ -36,15 +36,22 @@ export default function ChatPage() {
     const [memberStatus, setMemberStatus] = useState<string | null>(null); // 참여 상태
     const stompClientRef = useRef<Client | null>(null);
     const messagesEndRef = useRef<HTMLDivElement>(null);
+    const fetchedPostIds = useRef<Set<string>>(new Set()); // 이미 조회한 postId 추적
 
-    // URL 쿼리 파라미터에서 상대방 정보 가져오기
-    const opponentName = searchParams.get('opponentName') || '상대방';
-    const postId = searchParams.get('postId');
+    // 현재 채팅방 정보 가져오기
+    const currentRoom = chatRooms.find(room => room.roomId.toString() === chatId);
+    const opponentName = currentRoom?.opponentName || '상대방';
+    const postId = currentRoom?.postId?.toString() || null;
 
     // 모집 글 정보 및 참여 상태 조회
     useEffect(() => {
         const fetchPostAndMemberInfo = async () => {
             if (!postId) return;
+
+            // 이미 조회한 postId면 스킵
+            if (fetchedPostIds.current.has(postId)) {
+                return;
+            }
 
             try {
                 const accessToken = localStorage.getItem('accessToken');
@@ -62,6 +69,9 @@ export default function ChatPage() {
                     if (postResult.success && postResult.data) {
                         const isAuthor = postResult.data.author;
                         setIsPostAuthor(isAuthor);
+
+                        // 조회 완료 표시
+                        fetchedPostIds.current.add(postId);
 
                         // 2. 멤버 목록 조회 (작성자만 가능)
                         if (isAuthor) {
@@ -118,7 +128,7 @@ export default function ChatPage() {
         };
 
         fetchPostAndMemberInfo();
-    }, [postId, chatRooms, chatId]);
+    }, [postId, chatId]); // chatRooms 제거
 
     // 채팅방 목록 불러오기
     useEffect(() => {
@@ -193,9 +203,14 @@ export default function ChatPage() {
                 const result = await response.json();
 
                 if (result.success && result.data && result.data.content) {
-                    // 사용자 ID 가져오기
-                    const storedUserId = localStorage.getItem('userId');
-                    const currentUserId = storedUserId ? parseInt(storedUserId, 10) : null;
+                    // 사용자 ID를 JWT에서 추출
+                    let currentUserId: number | null = null;
+                    try {
+                        const payload = JSON.parse(atob(accessToken.split('.')[1]));
+                        currentUserId = payload.userId || payload.sub;
+                    } catch (e) {
+                        console.error('Failed to parse JWT:', e);
+                    }
 
                     // 메시지를 ChatMessage 형식으로 변환
                     const loadedMessages: ChatMessage[] = result.data.content.map((msg: any) => {
@@ -236,24 +251,15 @@ export default function ChatPage() {
             return;
         }
 
-        // 사용자 ID 가져오기
+        // 사용자 ID를 JWT에서 추출
         let currentUserId: number | null = null;
-
-        // 1. localStorage에서 직접 가져오기 (로그인 시 저장된 경우)
-        const storedUserId = localStorage.getItem('userId');
-        if (storedUserId) {
-            currentUserId = parseInt(storedUserId, 10);
-            console.log('👤 Current User ID (from localStorage):', currentUserId);
-        } else {
-            // 2. JWT 토큰에서 추출 시도
-            try {
-                const payload = JSON.parse(atob(accessToken.split('.')[1]));
-                console.log('🔍 JWT Payload:', payload);
-                currentUserId = payload.userId || payload.id;
-                console.log('👤 Current User ID (from JWT):', currentUserId);
-            } catch (e) {
-                console.error('Failed to decode token:', e);
-            }
+        try {
+            const payload = JSON.parse(atob(accessToken.split('.')[1]));
+            console.log('🔍 JWT Payload:', payload);
+            currentUserId = payload.userId || payload.sub;
+            console.log('👤 Current User ID (from JWT):', currentUserId);
+        } catch (e) {
+            console.error('Failed to parse JWT:', e);
         }
 
         // STOMP 클라이언트 생성 (SockJS 사용)
@@ -391,10 +397,8 @@ export default function ChatPage() {
             }
 
             // 디버깅: 요청 정보 출력
-            const userId = localStorage.getItem('userId');
             console.log('📤 Apply Request:', {
                 postId,
-                userId,
                 hasToken: !!accessToken,
                 url: `http://localhost:8080/api/recruitments/posts/${postId}/members`
             });
@@ -511,7 +515,7 @@ export default function ChatPage() {
 
             if (result.success) {
                 alert('참여를 승인했습니다!');
-                window.location.reload();
+                setMemberStatus('APPROVED'); // 상태 업데이트
             } else {
                 const errorMsg = result.error?.message || result.message || '승인에 실패했습니다.';
                 console.error('❌ Approve Failed:', errorMsg);
@@ -583,7 +587,7 @@ export default function ChatPage() {
 
             if (result.success) {
                 alert('참여를 거절했습니다.');
-                window.location.reload();
+                setMemberStatus('REJECTED'); // 상태 업데이트
             } else {
                 const errorMsg = result.error?.message || result.message || '거절에 실패했습니다.';
                 console.error('❌ Reject Failed:', errorMsg);
@@ -615,7 +619,7 @@ export default function ChatPage() {
                                     return (
                                         <Link
                                             key={room.roomId}
-                                            href={`/chat/${room.roomId}?opponentName=${encodeURIComponent(room.opponentName)}${room.postId ? `&postId=${room.postId}` : ''}`}
+                                            href={`/chat/${room.roomId}`}
                                             className={`flex items-center gap-4 px-4 min-h-[80px] py-3 justify-between ${isActive
                                                 ? 'bg-primary/10 dark:bg-primary/20 border-r-4 border-primary'
                                                 : 'border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800/50'
@@ -712,24 +716,39 @@ export default function ChatPage() {
                         {postId && (
                             <div className="flex gap-2">
                                 {isPostAuthor ? (
-                                    // 모집자: 승인/거절 버튼 (memberId가 있을 때만)
+                                    // 모집자: 승인/거절 버튼 또는 상태 표시
                                     memberId ? (
-                                        <>
-                                            <button
-                                                onClick={handleApprove}
-                                                className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg font-bold hover:bg-green-700 transition-colors"
-                                            >
-                                                <span className="material-symbols-outlined text-lg">check</span>
-                                                <span>승인</span>
-                                            </button>
-                                            <button
-                                                onClick={handleReject}
-                                                className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg font-bold hover:bg-red-700 transition-colors"
-                                            >
-                                                <span className="material-symbols-outlined text-lg">close</span>
-                                                <span>거절</span>
-                                            </button>
-                                        </>
+                                        memberStatus === 'PENDING' ? (
+                                            // 대기 중 → 승인/거절 버튼
+                                            <>
+                                                <button
+                                                    onClick={handleApprove}
+                                                    className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg font-bold hover:bg-green-700 transition-colors"
+                                                >
+                                                    <span className="material-symbols-outlined text-lg">check</span>
+                                                    <span>승인</span>
+                                                </button>
+                                                <button
+                                                    onClick={handleReject}
+                                                    className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg font-bold hover:bg-red-700 transition-colors"
+                                                >
+                                                    <span className="material-symbols-outlined text-lg">close</span>
+                                                    <span>거절</span>
+                                                </button>
+                                            </>
+                                        ) : memberStatus === 'APPROVED' ? (
+                                            // 승인됨 → 상태 표시
+                                            <div className="flex items-center gap-2 px-4 py-2 bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 rounded-lg">
+                                                <span className="material-symbols-outlined text-lg">check_circle</span>
+                                                <span className="font-bold">승인 완료</span>
+                                            </div>
+                                        ) : memberStatus === 'REJECTED' ? (
+                                            // 거절됨 → 상태 표시
+                                            <div className="flex items-center gap-2 px-4 py-2 bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-lg">
+                                                <span className="material-symbols-outlined text-lg">cancel</span>
+                                                <span className="font-bold">거절됨</span>
+                                            </div>
+                                        ) : null
                                     ) : (
                                         <div className="flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-gray-800 rounded-lg">
                                             <span className="material-symbols-outlined text-lg text-gray-400">info</span>

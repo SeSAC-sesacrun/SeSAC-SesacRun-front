@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 
@@ -25,14 +25,22 @@ interface ApiResponse {
 export default function CommunityDetailPage() {
     const params = useParams();
     const router = useRouter();
-    const postId = params.id;
+    const postId = params.id as string;
     const [post, setPost] = useState<PostDetail | null>(null);
     const [loading, setLoading] = useState(true);
+    const hasIncrementedView = useRef(false); // 조회수 중복 방지
 
+    // 게시글 상세 정보 불러오기
     useEffect(() => {
         const abortController = new AbortController();
 
         const fetchPostDetail = async () => {
+            // 이미 조회수를 증가시켰다면 스킵
+            if (hasIncrementedView.current) {
+                setLoading(false);
+                return;
+            }
+
             setLoading(true);
             try {
                 // 헤더 구성 (토큰이 있으면 포함)
@@ -58,6 +66,7 @@ export default function CommunityDetailPage() {
 
                 if (result.success && result.data) {
                     setPost(result.data);
+                    hasIncrementedView.current = true; // 조회수 증가 완료 표시
                 }
             } catch (error) {
                 // AbortError는 무시 (정상적인 취소)
@@ -200,10 +209,9 @@ export default function CommunityDetailPage() {
             }
 
             if (result.success && result.data) {
-                // 채팅방 ID와 상대방 정보를 받아서 채팅 페이지로 이동
-                const { roomId, opponentName, postId, opponentId } = result.data;
-                const url = `/chat/${roomId}?opponentName=${encodeURIComponent(opponentName)}&postId=${postId}${opponentId ? `&opponentId=${opponentId}` : ''}`;
-                router.push(url);
+                // 채팅방 ID로 이동 (쿼리 파라미터 불필요)
+                const { roomId } = result.data;
+                router.push(`/chat/${roomId}`);
             } else if (result.error && result.error.message) {
                 // success: false인 경우
                 alert(result.error.message);
@@ -288,15 +296,6 @@ export default function CommunityDetailPage() {
 
                         <div className="prose prose-lg dark:prose-invert max-w-none text-gray-900 dark:text-gray-300 text-base font-normal leading-relaxed pt-2 space-y-4">
                             <p style={{ whiteSpace: 'pre-wrap' }}>{post.content}</p>
-                        </div>
-
-                        <div className="flex items-center gap-2 pt-4 border-t border-gray-200 dark:border-gray-800">
-                            <button className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-full h-11 px-4 bg-primary/10 text-primary dark:bg-primary/20 dark:text-white/80 text-sm font-bold leading-normal tracking-[0.015em]">
-                                <span className="material-symbols-outlined text-xl" style={{ fontVariationSettings: "'FILL' 1" }}>
-                                    thumb_up
-                                </span>
-                                <span className="truncate">좋아요</span>
-                            </button>
                         </div>
                     </div>
                 </div>
