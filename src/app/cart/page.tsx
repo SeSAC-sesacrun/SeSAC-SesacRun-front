@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import Script from "next/script";
 
 import api from "@/lib/axios";
+import { useAuth } from "@/contexts/AuthContext";
 
 // PortOne SDK 타입 정의 (TypeScript 환경이므로)
 declare global {
@@ -26,6 +27,7 @@ interface CartItem {
 
 export default function CartPage() {
   const router = useRouter();
+  const { user } = useAuth();
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [totalPrice, setTotalPrice] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -185,8 +187,8 @@ export default function CartPage() {
                 ? `${cartItems[0].courseTitle} 외 ${cartItems.length - 1}건`
                 : "강의 결제",
             amount: totalPrice,
-            // todo : 사용자 정보 추가
-            buyer_email: "test@test.com",
+            buyer_name: user?.name || "비회원",
+            buyer_email: user?.email || "test@test.com",
           },
           async (rsp: any) => {
             if (rsp.success) {
