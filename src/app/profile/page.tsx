@@ -83,6 +83,9 @@ export default function MyPage() {
   const [enrolledCoursesError, setEnrolledCoursesError] = useState<
     string | null
   >(null);
+  const [enrolledCoursesSort, setEnrolledCoursesSort] = useState<
+    "recent" | "title"
+  >("recent");
 
   // --- Fetch Data ---
   useEffect(() => {
@@ -245,7 +248,16 @@ export default function MyPage() {
         setEnrolledCoursesLoading(true);
         setEnrolledCoursesError(null);
 
-        const response = await api.get("/api/courses/enrolled");
+        // 정렬 파라미터 설정
+        // createdAt: Enrollment의 수강신청 날짜
+        // course.title: Course 엔티티의 제목 (JOIN된 엔티티 필드)
+        const sortParam =
+          enrolledCoursesSort === "recent"
+            ? "createdAt,desc"
+            : "course.title,asc";
+        const response = await api.get(
+          `/api/courses/enrolled?sort=${sortParam}`
+        );
         console.log("Enrolled Courses API Response:", response.data);
 
         // 백엔드는 Page<CourseResponse>를 반환
@@ -254,8 +266,9 @@ export default function MyPage() {
         const courseList = pageData?.content || [];
 
         // 백엔드 데이터를 프론트엔드 형식으로 변환
+        // EnrolledCourseResponse: courseId, title, thumbnail, enrollmentId, enrolledAt, price, instructorId, instructorName
         const formattedCourses = courseList.map((course: any) => ({
-          id: course.id.toString(),
+          id: course.courseId.toString(),
           title: course.title,
           progress: 0, // TODO: 진도율 API 연동 후 추가
           thumbnail:
@@ -275,7 +288,7 @@ export default function MyPage() {
     };
 
     fetchEnrolledCourses();
-  }, [activeTab]);
+  }, [activeTab, enrolledCoursesSort]);
 
   if (loading) {
     return (
@@ -402,12 +415,26 @@ export default function MyPage() {
                   <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
                     내 강의
                   </h2>
-                  <Link
-                    href="/courses"
-                    className="text-sm font-medium text-primary hover:underline"
-                  >
-                    강의 둘러보기
-                  </Link>
+                  <div className="flex items-center gap-4">
+                    <select
+                      value={enrolledCoursesSort}
+                      onChange={(e) =>
+                        setEnrolledCoursesSort(
+                          e.target.value as "recent" | "title"
+                        )
+                      }
+                      className="px-3 py-1.5 text-sm font-medium border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary"
+                    >
+                      <option value="recent">최근 신청순</option>
+                      <option value="title">제목순</option>
+                    </select>
+                    <Link
+                      href="/courses"
+                      className="text-sm font-medium text-primary hover:underline"
+                    >
+                      강의 둘러보기
+                    </Link>
+                  </div>
                 </div>
 
                 {/* 로딩 상태 */}
