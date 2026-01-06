@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import api from "@/lib/axios";
 import { useAuth } from "@/contexts/AuthContext";
@@ -87,6 +87,19 @@ export default function MyPage() {
     "recent" | "title"
   >("recent");
 
+  // --- Data Fetching Functions ---
+
+  const fetchPurchases = useCallback(async () => {
+    try {
+      const purchasesRes = await api.get("/api/orders/purchases");
+      if (purchasesRes.data.success) {
+        setPurchases(purchasesRes.data.data);
+      }
+    } catch (error) {
+      console.error("Failed to fetch purchases", error);
+    }
+  }, []);
+
   // --- Fetch Data ---
   useEffect(() => {
     const fetchAllData = async () => {
@@ -99,11 +112,7 @@ export default function MyPage() {
         }
 
         // 2. Purchases
-        //const purchasesRes = await api.get("/api/users/me/purchases");
-        const purchasesRes = await api.get("/api/orders/purchases");
-        if (purchasesRes.data.success) {
-          setPurchases(purchasesRes.data.data);
-        }
+        await fetchPurchases();
 
         // 3. Posts
         const postsRes = await api.get("/api/users/me/posts");
@@ -129,7 +138,7 @@ export default function MyPage() {
     if (token) {
       fetchAllData();
     }
-  }, []);
+  }, [fetchPurchases]);
 
   const handlePurchaseClick = (orderId: number) => {
     setSelectedOrderId(orderId);
@@ -139,6 +148,11 @@ export default function MyPage() {
   const handleBackToList = () => {
     setSelectedOrderId(null);
     setPurchaseViewMode("list");
+  };
+
+  const refreshPurchasesAndGoBack = async () => {
+    await fetchPurchases();
+    handleBackToList();
   };
 
   // 사이드바 탭 변경 시 구매내역 뷰 초기화
@@ -591,7 +605,7 @@ export default function MyPage() {
                                     purchase.status === "COMPLETED"
                                       ? "결제 완료"
                                       : purchase.status === "REFUND"
-                                      ? "환불됨"
+                                      ? "결제 취소"
                                       : purchase.status === "CREATED"
                                       ? "결제 대기중"
                                       : "알 수 없음" // 예상치 못한 상태
@@ -616,6 +630,7 @@ export default function MyPage() {
                   <PurchaseDetail
                     orderId={selectedOrderId!}
                     onBackToList={handleBackToList}
+                    onActionSuccess={refreshPurchasesAndGoBack}
                   />
                 )}
               </div>
