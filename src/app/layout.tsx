@@ -5,7 +5,7 @@ import Footer from "@/components/layout/Footer";
 import { Providers } from "@/components/providers/Providers";
 
 export const metadata: Metadata = {
-  title: "CourseHub - 온라인 강의 플랫폼",
+  title: "SeSAC Run - 온라인 강의 플랫폼",
   description: "최고의 전문가들이 만든 다양한 강의를 통해 새로운 기술을 배우고 커리어를 발전시켜 보세요.",
   icons: {
     icon: "/favicon.ico",

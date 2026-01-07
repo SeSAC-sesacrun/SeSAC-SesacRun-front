@@ -75,7 +75,7 @@ const Header: React.FC = () => {
                                     />
                                 </svg>
                             </div>
-                            <h2 className="text-xl font-bold tracking-tighter">CourseHub</h2>
+                            <h2 className="text-xl font-bold tracking-tighter">SeSAC Run</h2>
                         </Link>
                     </div>
 
@@ -87,12 +87,7 @@ const Header: React.FC = () => {
                         >
                             전체 강의
                         </Link>
-                        <Link
-                            href="/my-courses"
-                            className="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-primary"
-                        >
-                            내 강의실
-                        </Link>
+
                         <Link
                             href="/community"
                             className="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-primary"

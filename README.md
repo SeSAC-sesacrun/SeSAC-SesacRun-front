@@ -1,4 +1,4 @@
-# CourseHub - 온라인 강의 플랫폼
+# SeSAC Run - 온라인 강의 플랫폼
 
 인프런 스타일의 온라인 교육 플랫폼입니다. Next.js, TypeScript, Tailwind CSS를 사용하여 구축되었습니다.
 

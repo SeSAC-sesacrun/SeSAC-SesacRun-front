@@ -80,40 +80,6 @@ export default function CoursesPage() {
     fetchCourses(selectedCategory, searchQuery);
   }, [selectedCategory, searchQuery]);
 
-  if (loading) {
-    return (
-      <main className="flex-1">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-16">
-          <div className="flex items-center justify-center min-h-[400px]">
-            <div className="text-center">
-              <div className="inline-block h-12 w-12 animate-spin rounded-full border-4 border-solid border-primary border-r-transparent mb-4"></div>
-              <p className="text-gray-600 dark:text-gray-400">강의 목록을 불러오는 중...</p>
-            </div>
-          </div>
-        </div>
-      </main>
-    );
-  }
-
-  if (error) {
-    return (
-      <main className="flex-1">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-16">
-          <div className="flex items-center justify-center min-h-[400px]">
-            <div className="text-center">
-              <p className="text-red-600 dark:text-red-400 mb-4">{error}</p>
-              <button
-                onClick={() => window.location.reload()}
-                className="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
-              >
-                다시 시도
-              </button>
-            </div>
-          </div>
-        </div>
-      </main>
-    );
-  }
 
   return (
     <main className="flex-1">
@@ -159,37 +125,79 @@ export default function CoursesPage() {
           </div>
         </div>
 
-        {/* 인기 강의 캐러셀 - 카테고리/검색 필터와 독립적 */}
-        <div className="mt-12">
-          <PopularCoursesCarousel />
-        </div>
+        {/* 인기 강의 캐러셀 - 검색어가 없을 때만 표시 */}
+        {!searchQuery && (
+          <div className="mt-12">
+            <PopularCoursesCarousel />
+          </div>
+        )}
 
         <section className="mt-12">
-          <h2 className="text-gray-900 dark:text-white text-2xl md:text-3xl font-bold tracking-tight">
-            카테고리별로 찾아보기
-          </h2>
-          <div className="flex gap-3 p-3 flex-wrap mt-4 -ml-3">
-            {categories.map((category, index) => (
-              <div
-                key={index}
+          {/* 헤더 섹션: 검색어가 있으면 '검색 결과' 표시, 없으면 '카테고리별' 표시 */}
+          {searchQuery ? (
+            <div className="mb-6">
+              <h2 className="text-gray-900 dark:text-white text-2xl md:text-3xl font-bold tracking-tight">
+                &lsquo;{searchQuery}&rsquo; 검색 결과
+              </h2>
+              <button
                 onClick={() => {
-                  setSelectedCategory(category);
-                  setSearchQuery(''); // 카테고리 선택 시 검색어 초기화
-                  setInputValue(''); // 입력 필드도 초기화
+                  setSearchQuery('');
+                  setInputValue('');
+                  setSelectedCategory('전체');
                 }}
-                className={`flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full px-4 cursor-pointer transition-colors ${
-                  selectedCategory === category
-                    ? 'bg-primary text-black dark:text-white'
-                    : 'bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700'
-                }`}
+                className="mt-2 text-primary hover:text-primary/80 text-sm font-medium transition-colors"
               >
-                <p className={`text-sm ${selectedCategory === category ? 'font-bold' : 'font-medium'}`}>
-                  {category}
-                </p>
+                &larr; 전체 강의 목록으로 돌아가기
+              </button>
+            </div>
+          ) : (
+            <>
+              <h2 className="text-gray-900 dark:text-white text-2xl md:text-3xl font-bold tracking-tight">
+                카테고리별로 찾아보기
+              </h2>
+              <div className="flex gap-3 p-3 flex-wrap mt-4 -ml-3">
+                {categories.map((category, index) => (
+                  <div
+                    key={index}
+                    onClick={() => {
+                      setSelectedCategory(category);
+                      setSearchQuery(''); // 카테고리 선택 시 검색어 초기화
+                      setInputValue(''); // 입력 필드도 초기화
+                    }}
+                    className={`flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full px-4 cursor-pointer transition-colors ${
+                      selectedCategory === category
+                        ? 'bg-primary text-black dark:text-white'
+                        : 'bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700'
+                    }`}
+                  >
+                    <p className={`text-sm ${selectedCategory === category ? 'font-bold' : 'font-medium'}`}>
+                      {category}
+                    </p>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-          {allCourses.length > 0 ? (
+            </>
+          )}
+          {loading ? (
+            <div className="flex items-center justify-center min-h-[400px]">
+              <div className="text-center">
+                <div className="inline-block h-12 w-12 animate-spin rounded-full border-4 border-solid border-primary border-r-transparent mb-4"></div>
+                <p className="text-gray-600 dark:text-gray-400">강의 목록을 불러오는 중...</p>
+              </div>
+            </div>
+          ) : error ? (
+            <div className="flex items-center justify-center min-h-[400px]">
+              <div className="text-center">
+                <p className="text-red-600 dark:text-red-400 mb-4">{error}</p>
+                <button
+                  onClick={() => fetchCourses(selectedCategory, searchQuery)}
+                  className="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
+                >
+                  다시 시도
+                </button>
+              </div>
+            </div>
+          ) : allCourses.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8 mt-6">
               {allCourses.map((course) => (
                 <CourseCard key={course.id} {...course} />

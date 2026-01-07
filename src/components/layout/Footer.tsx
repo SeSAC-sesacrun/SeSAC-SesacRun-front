@@ -16,7 +16,7 @@ const Footer: React.FC = () => {
               </svg>
             </div>
             <h2 className="text-gray-900 dark:text-white text-xl font-bold tracking-tighter">
-              CourseHub
+              SeSAC Run
             </h2>
           </div>
           <div className="flex space-x-6">
@@ -41,7 +41,7 @@ const Footer: React.FC = () => {
           </div>
         </div>
         <p className="mt-8 text-center text-sm text-gray-400 dark:text-gray-500">
-          © 2024 CourseHub. All rights reserved.
+          © 2024 SeSAC Run. All rights reserved.
         </p>
       </div>
     </footer>

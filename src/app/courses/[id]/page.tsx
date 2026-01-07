@@ -8,7 +8,7 @@ import api from '@/lib/axios';
 export default function CourseDetailPage() {
     const params = useParams();
     const courseId = params.id;
-    const [activeTab, setActiveTab] = useState<'intro' | 'curriculum' | 'instructor' | 'reviews' | 'qna'>('intro');
+    const [activeTab, setActiveTab] = useState<'intro' | 'curriculum'>('intro');
     const [showPreviewModal, setShowPreviewModal] = useState(false);
     const [previewLecture, setPreviewLecture] = useState<any>(null);
     const [course, setCourse] = useState<any>(null);
@@ -63,7 +63,6 @@ export default function CourseDetailPage() {
                     instructor: {
                         name: '강사', // TODO: 백엔드에서 instructor 정보 가져오기
                         avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400',
-                        bio: '전문 강사입니다.',
                         students: 0,
                         courses: 0,
                         rating: 0,
@@ -160,7 +159,6 @@ export default function CourseDetailPage() {
         instructor: {
             name: '김철수',
             avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400',
-            bio: '10년차 풀스택 개발자이자 유튜버입니다. 5만명 이상의 수강생에게 웹 개발을 가르쳤습니다.',
             students: 52341,
             courses: 12,
             rating: 4.9,
@@ -315,17 +313,6 @@ export default function CourseDetailPage() {
                                 <h1 className="text-3xl md:text-4xl font-bold mb-4">{course.title}</h1>
                                 <p className="text-lg text-gray-300 mb-6">{course.description}</p>
                                 <div className="flex items-center gap-4 mb-6">
-                                    <div className="flex items-center gap-1">
-                                        <span className="text-yellow-400 font-bold">{course.rating}</span>
-                                        <div className="flex">
-                                            {[...Array(5)].map((_, i) => (
-                                                <span key={i} className="material-symbols-outlined text-yellow-400 text-sm">
-                                                    {i < Math.floor(course.rating) ? 'star' : 'star_border'}
-                                                </span>
-                                            ))}
-                                        </div>
-                                        <span className="text-sm text-gray-300">({course.reviewCount.toLocaleString()}개 평가)</span>
-                                    </div>
                                     <span className="text-sm text-gray-300">{course.studentCount.toLocaleString()}명 수강</span>
                                 </div>
                                 <div className="flex items-center gap-4">
@@ -336,7 +323,6 @@ export default function CourseDetailPage() {
                                     />
                                     <div>
                                         <p className="font-medium">강사: {course.instructor.name}</p>
-                                        <p className="text-sm text-gray-300">{course.instructor.bio}</p>
                                     </div>
                                 </div>
                             </div>
@@ -446,7 +432,7 @@ export default function CourseDetailPage() {
                             {/* Tabs */}
                             <div className="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800">
                                 <div className="flex border-b border-gray-200 dark:border-gray-700 overflow-x-auto">
-                                    {(['intro', 'curriculum', 'instructor', 'reviews', 'qna'] as const).map((tab) => (
+                                    {(['intro', 'curriculum'] as const).map((tab) => (
                                         <button
                                             key={tab}
                                             onClick={() => setActiveTab(tab)}
@@ -457,9 +443,6 @@ export default function CourseDetailPage() {
                                         >
                                             {tab === 'intro' && '강의 소개'}
                                             {tab === 'curriculum' && '커리큘럼'}
-                                            {tab === 'instructor' && '강사 정보'}
-                                            {tab === 'reviews' && '수강평'}
-                                            {tab === 'qna' && 'Q&A'}
                                         </button>
                                     ))}
                                 </div>
@@ -511,127 +494,7 @@ export default function CourseDetailPage() {
                                         </div>
                                     )}
 
-                                    {/* Instructor Tab */}
-                                    {activeTab === 'instructor' && (
-                                        <div>
-                                            <div className="flex items-start gap-6 mb-6">
-                                                <img
-                                                    src={course.instructor.avatar}
-                                                    alt={course.instructor.name}
-                                                    className="w-24 h-24 rounded-full"
-                                                />
-                                                <div>
-                                                    <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-                                                        {course.instructor.name}
-                                                    </h3>
-                                                    <p className="text-gray-600 dark:text-gray-400 mb-4">{course.instructor.bio}</p>
-                                                    <div className="flex gap-6 text-sm">
-                                                        <div>
-                                                            <span className="text-gray-600 dark:text-gray-400">평점: </span>
-                                                            <span className="font-bold text-gray-900 dark:text-white">{course.instructor.rating}</span>
-                                                        </div>
-                                                        <div>
-                                                            <span className="text-gray-600 dark:text-gray-400">수강생: </span>
-                                                            <span className="font-bold text-gray-900 dark:text-white">
-                                                                {course.instructor.students.toLocaleString()}명
-                                                            </span>
-                                                        </div>
-                                                        <div>
-                                                            <span className="text-gray-600 dark:text-gray-400">강의: </span>
-                                                            <span className="font-bold text-gray-900 dark:text-white">
-                                                                {course.instructor.courses}개
-                                                            </span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    )}
-
-                                    {/* Reviews Tab */}
-                                    {activeTab === 'reviews' && (
-                                        <div className="space-y-6">
-                                            <div className="flex items-center gap-8 pb-6 border-b border-gray-200 dark:border-gray-700">
-                                                <div className="text-center">
-                                                    <div className="text-5xl font-bold text-gray-900 dark:text-white mb-2">
-                                                        {course.rating}
-                                                    </div>
-                                                    <div className="flex justify-center mb-2">
-                                                        {[...Array(5)].map((_, i) => (
-                                                            <span key={i} className="material-symbols-outlined text-yellow-400">
-                                                                {i < Math.floor(course.rating) ? 'star' : 'star_border'}
-                                                            </span>
-                                                        ))}
-                                                    </div>
-                                                    <p className="text-sm text-gray-600 dark:text-gray-400">
-                                                        {course.reviewCount.toLocaleString()}개 평가
-                                                    </p>
-                                                </div>
-                                            </div>
-                                            <div className="space-y-6">
-                                                {course.reviews.map((review) => (
-                                                    <div key={review.reviewId} className="border-b border-gray-200 dark:border-gray-700 pb-6 last:border-0">
-                                                        <div className="flex items-start gap-4">
-                                                            <img
-                                                                src={review.user.avatar}
-                                                                alt={review.user.name}
-                                                                className="w-12 h-12 rounded-full"
-                                                            />
-                                                            <div className="flex-1">
-                                                                <div className="flex items-center gap-2 mb-2">
-                                                                    <span className="font-bold text-gray-900 dark:text-white">{review.user.name}</span>
-                                                                    <div className="flex">
-                                                                        {[...Array(5)].map((_, i) => (
-                                                                            <span key={i} className="material-symbols-outlined text-yellow-400 text-sm">
-                                                                                {i < review.rating ? 'star' : 'star_border'}
-                                                                            </span>
-                                                                        ))}
-                                                                    </div>
-                                                                </div>
-                                                                <p className="text-gray-700 dark:text-gray-300 mb-2">{review.comment}</p>
-                                                                <p className="text-sm text-gray-500 dark:text-gray-400">{review.createdAt}</p>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        </div>
-                                    )}
-
-                                    {/* Q&A Tab */}
-                                    {activeTab === 'qna' && (
-                                        <div className="space-y-6">
-                                            {course.qna.map((item) => (
-                                                <div key={item.questionId} className="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
-                                                    <div className="flex items-start gap-4 mb-4">
-                                                        <img
-                                                            src={item.user.avatar}
-                                                            alt={item.user.name}
-                                                            className="w-10 h-10 rounded-full"
-                                                        />
-                                                        <div className="flex-1">
-                                                            <div className="flex items-center gap-2 mb-2">
-                                                                <span className="font-bold text-gray-900 dark:text-white">{item.user.name}</span>
-                                                                <span className="text-sm text-gray-500 dark:text-gray-400">{item.createdAt}</span>
-                                                            </div>
-                                                            <p className="text-gray-900 dark:text-white">{item.question}</p>
-                                                        </div>
-                                                    </div>
-                                                    {item.answer && (
-                                                        <div className="ml-14 pl-4 border-l-2 border-primary">
-                                                            <div className="flex items-center gap-2 mb-2">
-                                                                <span className="text-sm font-bold text-primary">강사 답변</span>
-                                                                <span className="text-sm text-gray-500 dark:text-gray-400">
-                                                                    {item.answer.answeredAt}
-                                                                </span>
-                                                            </div>
-                                                            <p className="text-gray-700 dark:text-gray-300">{item.answer.content}</p>
-                                                        </div>
-                                                    )}
-                                                </div>
-                                            ))}
-                                        </div>
-                                    )}
+                                    {/* Instructor, Reviews, and Q&A tabs removed per user request */}
                                 </div>
                             </div>
                         </div>
