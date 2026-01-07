@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import CourseCard from '@/components/course/CourseCard';
+import PopularCoursesCarousel from '@/components/course/PopularCoursesCarousel';
 import axios from 'axios';
 
 interface Course {
@@ -14,7 +15,6 @@ interface Course {
 }
 
 export default function CoursesPage() {
-  const [popularCourses, setPopularCourses] = useState<Course[]>([]);
   const [allCourses, setAllCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -65,11 +65,6 @@ export default function CoursesPage() {
       // 백엔드 응답: { success: true, data: { content: [...], ... } }
       const courses = response.data.data.content;
 
-      // 인기 강의: 수강생 수가 많은 순으로 정렬하여 상위 3개
-      const sortedByStudents = [...courses].sort((a: Course, b: Course) => b.studentCount - a.studentCount);
-      setPopularCourses(sortedByStudents.slice(0, 3));
-
-      // 전체 강의
       setAllCourses(courses);
       setError(null);
     } catch (err: any) {
@@ -164,24 +159,12 @@ export default function CoursesPage() {
           </div>
         </div>
 
-        <section className="py-12 md:py-20">
-          <h2 className="text-gray-900 dark:text-white text-2xl md:text-3xl font-bold tracking-tight mb-6">
-            지금 가장 인기 있는 강의 🔥
-          </h2>
-          {popularCourses.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-              {popularCourses.map((course) => (
-                <CourseCard key={course.id} {...course} />
-              ))}
-            </div>
-          ) : (
-            <p className="text-gray-500 dark:text-gray-400 text-center py-10">
-              인기 강의가 없습니다.
-            </p>
-          )}
-        </section>
+        {/* 인기 강의 캐러셀 - 카테고리/검색 필터와 독립적 */}
+        <div className="mt-12">
+          <PopularCoursesCarousel />
+        </div>
 
-        <section>
+        <section className="mt-12">
           <h2 className="text-gray-900 dark:text-white text-2xl md:text-3xl font-bold tracking-tight">
             카테고리별로 찾아보기
           </h2>

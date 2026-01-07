@@ -23,6 +23,25 @@ export default function CourseDetailPage() {
         return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
     };
 
+    // CourseLevel enum을 한글로 변환
+    const getLevelKorean = (level: string): string => {
+        const levelMap: Record<string, string> = {
+            'BEGINNER': '초급',
+            'INTERMEDIATE': '중급',
+            'ADVANCED': '고급',
+        };
+        return levelMap[level] || level;
+    };
+
+    // CourseLanguage enum을 한글로 변환
+    const getLanguageKorean = (language: string): string => {
+        const languageMap: Record<string, string> = {
+            'KOREAN': '한국어',
+            'ENGLISH': '영어',
+        };
+        return languageMap[language] || language;
+    };
+
     useEffect(() => {
         const fetchCourseDetail = async () => {
             try {
@@ -58,9 +77,8 @@ export default function CourseDetailPage() {
                     reviewCount: 0, // TODO: 리뷰 시스템 연동 후 추가
                     studentCount: data.studentCount,
                     lastUpdated: new Date(data.updatedAt).toLocaleDateString('ko-KR'),
-                    language: '한국어',
-                    level: '초급',
-                    duration: '0시간', // TODO: 전체 duration 계산
+                    language: data.language,  // Enum 코드 그대로 저장
+                    level: data.level,        // Enum 코드 그대로 저장
                     features: data.features || [],
                     canWatch: data.canWatch || false, // 수강 가능 여부
                     curriculum: data.sections?.map((section: any) => ({
@@ -409,18 +427,14 @@ export default function CourseDetailPage() {
                             {/* Course Info */}
                             <div className="bg-white dark:bg-gray-900 rounded-lg p-6 mb-6 border border-gray-200 dark:border-gray-800">
                                 <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">강의 정보</h2>
-                                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                                     <div>
                                         <p className="text-sm text-gray-600 dark:text-gray-400">난이도</p>
-                                        <p className="font-bold text-gray-900 dark:text-white">{course.level}</p>
-                                    </div>
-                                    <div>
-                                        <p className="text-sm text-gray-600 dark:text-gray-400">총 시간</p>
-                                        <p className="font-bold text-gray-900 dark:text-white">{course.duration}</p>
+                                        <p className="font-bold text-gray-900 dark:text-white">{getLevelKorean(course.level)}</p>
                                     </div>
                                     <div>
                                         <p className="text-sm text-gray-600 dark:text-gray-400">언어</p>
-                                        <p className="font-bold text-gray-900 dark:text-white">{course.language}</p>
+                                        <p className="font-bold text-gray-900 dark:text-white">{getLanguageKorean(course.language)}</p>
                                     </div>
                                     <div>
                                         <p className="text-sm text-gray-600 dark:text-gray-400">최근 업데이트</p>
