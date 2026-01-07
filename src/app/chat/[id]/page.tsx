@@ -804,7 +804,7 @@ export default function ChatPage() {
                                         )}
                                         <div
                                             className={`p-3 rounded-lg shadow-sm ${msg.type === 'sent'
-                                                ? 'bg-primary text-white rounded-br-none'
+                                                ? 'bg-primary text-black dark:text-white rounded-br-none'
                                                 : 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-bl-none'
                                                 }`}
                                         >

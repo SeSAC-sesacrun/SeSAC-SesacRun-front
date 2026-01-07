@@ -4,7 +4,8 @@ import React, { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import api from "@/lib/axios";
 import { useAuth } from "@/contexts/AuthContext";
-import PurchaseDetail from "@/components/profile/PurchaseDetail"; // Import PurchaseDetail component
+import PurchaseDetail from "@/components/profile/PurchaseDetail";
+import Avatar from "@/components/common/Avatar";
 
 // --- Interfaces based on Backend DTOs ---
 
@@ -53,8 +54,8 @@ export default function MyPage() {
   const [activeTab, setActiveTab] = useState<
     "courses" | "posts" | "meetings" | "purchases" | "instructor"
   >("courses");
-  const [postsSubTab, setPostsSubTab] = useState<"qna" | "study" | "project">(
-    "qna"
+  const [postsSubTab, setPostsSubTab] = useState<"study" | "project">(
+    "study"
   );
   const [meetingsFilter, setMeetingsFilter] = useState<
     "all" | "organizer" | "participant"
@@ -322,16 +323,8 @@ export default function MyPage() {
           <aside className="w-full shrink-0 md:w-64">
             <div className="flex h-full flex-col gap-6 rounded-lg bg-white dark:bg-gray-900 p-6 border border-gray-200 dark:border-gray-800">
               {/* User Profile */}
-              <div className="flex flex-col items-center gap-4 pb-6 border-b border-gray-200 dark:border-gray-700">
-                <div
-                  className="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-20"
-                  style={{
-                    backgroundImage: `url('${
-                      profile.avatar ||
-                      "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400"
-                    }')`,
-                  }}
-                />
+              <div className="flex flex-col items-center gap-4 pb-6 border-b border-gray-200 dark:border-gray-700 w-full">
+                <Avatar src={profile.avatar} alt={profile.name} size="xl" />
                 <div className="text-center">
                   <h1 className="text-lg font-bold text-gray-900 dark:text-white">
                     {profile.name}
@@ -634,16 +627,6 @@ export default function MyPage() {
                 {/* Sub Tabs */}
                 <div className="flex gap-2 border-b border-gray-200 dark:border-gray-700">
                   <button
-                    onClick={() => setPostsSubTab("qna")}
-                    className={`px-4 py-2 text-sm transition-all border-b-2 ${
-                      postsSubTab === "qna"
-                        ? "border-primary text-primary font-bold"
-                        : "border-transparent text-gray-600 dark:text-gray-400 font-medium"
-                    }`}
-                  >
-                    Q&A
-                  </button>
-                  <button
                     onClick={() => setPostsSubTab("study")}
                     className={`px-4 py-2 text-sm transition-all border-b-2 ${
                       postsSubTab === "study"
@@ -668,7 +651,6 @@ export default function MyPage() {
                 {/* LIST - Filtered by subTab */}
                 <div className="space-y-4">
                   {posts.filter((post) => {
-                    if (postsSubTab === "qna") return post.category === "QNA"; // API 카테고리 확인 필요
                     if (postsSubTab === "study")
                       return post.category === "STUDY";
                     if (postsSubTab === "project")
@@ -681,8 +663,6 @@ export default function MyPage() {
                   ) : (
                     posts
                       .filter((post) => {
-                        if (postsSubTab === "qna")
-                          return post.category === "QNA";
                         if (postsSubTab === "study")
                           return post.category === "STUDY";
                         if (postsSubTab === "project")
@@ -707,12 +687,9 @@ export default function MyPage() {
                                 ? "모집중"
                                 : "모집완료"}
                             </span>
-                            {/* QnA가 아닌 경우에만 멤버 수 표시 */}
-                            {post.category !== "QNA" && (
                               <span className="text-xs text-gray-500 dark:text-gray-400">
                                 {post.currentMembers}/{post.totalMembers}명
                               </span>
-                            )}
                           </div>
                           <h3 className="font-bold text-gray-900 dark:text-white mb-2">
                             {post.title}
@@ -785,9 +762,10 @@ export default function MyPage() {
                             meeting.role === "PARTICIPANT")
                       )
                       .map((meeting) => (
-                        <div
+                        <Link
                           key={meeting.id}
-                          className="bg-white dark:bg-gray-900 rounded-lg p-4 border border-gray-200 dark:border-gray-800"
+                          href={`/community/${meeting.postId}`}
+                          className="block bg-white dark:bg-gray-900 rounded-lg p-4 border border-gray-200 dark:border-gray-800 hover:shadow-md transition-shadow cursor-pointer"
                         >
                           <div className="flex items-center gap-2 mb-2">
                             <span
@@ -810,7 +788,7 @@ export default function MyPage() {
                           <h3 className="font-bold text-gray-900 dark:text-white">
                             {meeting.title}
                           </h3>
-                        </div>
+                        </Link>
                       ))
                   )}
                 </div>
@@ -911,10 +889,8 @@ export default function MyPage() {
                                 const revenue = course.price * course.students;
                                 const statusText =
                                   course.status === "PUBLISHED"
-                                    ? "미작성"
-                                    : course.status === "DRAFT"
-                                    ? "작성중"
-                                    : "미작성";
+                                    ? "공개중"
+                                    : "작성중";
                                 const statusColor =
                                   course.status === "PUBLISHED"
                                     ? "bg-green-100 dark:bg-green-500/20 text-green-600 dark:text-green-400"
@@ -934,9 +910,12 @@ export default function MyPage() {
                                       />
                                     </td>
                                     <td className="px-4 py-4">
-                                      <p className="text-sm font-medium text-gray-900 dark:text-white line-clamp-2">
+                                      <Link
+                                        href={`/courses/${course.id}`}
+                                        className="text-sm font-medium text-gray-900 dark:text-white line-clamp-2 hover:text-primary hover:underline transition-colors"
+                                      >
                                         {course.title}
-                                      </p>
+                                      </Link>
                                     </td>
                                     <td className="px-4 py-4 text-center">
                                       <span className="text-sm text-gray-900 dark:text-white">
@@ -981,15 +960,6 @@ export default function MyPage() {
                                             강의 삭제
                                           </button>
                                         </div>
-                                        <Link
-                                          href={`/courses/${course.id}`}
-                                          className="p-1.5 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 rounded transition-colors"
-                                          title="미리보기"
-                                        >
-                                          <span className="material-symbols-outlined text-lg">
-                                            visibility
-                                          </span>
-                                        </Link>
                                       </div>
                                     </td>
                                   </tr>

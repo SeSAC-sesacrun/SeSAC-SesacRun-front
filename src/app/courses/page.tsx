@@ -130,7 +130,6 @@ export default function CoursesPage() {
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (
@@ -284,7 +283,7 @@ export default function CoursesPage() {
                         onClick={() => handlePageChange(page as number)}
                         className={`w-10 h-10 rounded-lg font-medium transition-colors ${
                           currentPage === page
-                            ? 'bg-primary text-white'
+                            ? 'bg-primary text-black dark:text-white'
                             : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 border border-gray-300 dark:border-gray-600'
                         }`}
                       >

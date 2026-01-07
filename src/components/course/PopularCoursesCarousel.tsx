@@ -61,14 +61,14 @@ export default function PopularCoursesCarousel() {
   if (loading || courses.length === 0) return null;
 
   return (
-    <section className="py-14 bg-white">
-      <div className="max-w-7xl mx-auto px-4 relative">
+    <section className="">
+      <div className="relative">
         {/* ===== 헤더 ===== */}
         <div className="mb-6">
-          <h2 className="text-3xl font-bold text-gray-900">
-            🔥 지금 가장 인기 있는 강의
+          <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
+            지금 가장 인기 있는 강의
           </h2>
-          <p className="text-gray-600 mt-1">
+          <p className="text-gray-600 dark:text-gray-400 mt-1">
             수강생이 가장 많이 선택한 베스트 강의
           </p>
         </div>
@@ -82,14 +82,14 @@ export default function PopularCoursesCarousel() {
               className="
                 absolute left-[-24px] top-1/2 -translate-y-1/2 z-10
                 w-16 h-16 rounded-full
-                bg-white hover:bg-gray-100
+                bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700
                 shadow-lg
                 flex items-center justify-center
                 transition
               "
               aria-label="이전"
             >
-              <span className="text-4xl text-gray-800">{"<"}</span>
+              <span className="text-4xl text-gray-800 dark:text-gray-200">{"<"}</span>
             </button>
           )}
 
@@ -126,14 +126,14 @@ export default function PopularCoursesCarousel() {
               className="
                 absolute right-[-24px] top-1/2 -translate-y-1/2 z-10
                 w-16 h-16 rounded-full
-                bg-white hover:bg-gray-100
+                bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700
                 shadow-lg
                 flex items-center justify-center
                 transition
               "
               aria-label="다음"
             >
-              <span className="text-4xl text-gray-800">{">"}</span>
+              <span className="text-4xl text-gray-800 dark:text-gray-200">{">"}</span>
             </button>
           )}
         </div>

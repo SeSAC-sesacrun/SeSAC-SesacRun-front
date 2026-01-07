@@ -35,6 +35,15 @@ export default function WatchPage() {
     const [currentLecture, setCurrentLecture] = useState<Lecture | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [openSections, setOpenSections] = useState<number[]>([]);
+
+    const toggleSection = (sectionId: number) => {
+        setOpenSections(prev =>
+            prev.includes(sectionId)
+                ? prev.filter(id => id !== sectionId)
+                : [...prev, sectionId]
+        );
+    };
 
     // 유튜브 URL에서 비디오 ID 추출
     const getYoutubeVideoId = (url: string): string | null => {
@@ -65,6 +74,11 @@ export default function WatchPage() {
 
                 const data: CourseData = response.data.data;
                 setCourse(data);
+                
+                // 초기값으로 모든 섹션 열기
+                if (data.sections) {
+                    setOpenSections(data.sections.map(s => s.id));
+                }
 
                 // URL 쿼리 파라미터에서 강의 ID 확인
                 const lectureIdParam = searchParams.get('lecture');
@@ -255,52 +269,60 @@ export default function WatchPage() {
                 <aside className="w-[380px] flex-shrink-0 bg-white dark:bg-gray-900 border-l border-gray-200 dark:border-gray-800 flex-col hidden lg:flex">
                     <div className="p-6 flex flex-col flex-1 overflow-y-auto">
                         <div className="flex flex-col gap-2 pr-2 flex-1">
-                            {course.sections?.map((section: Section) => (
-                                <div key={section.id} className="flex flex-col">
-                                    <button className="flex justify-between items-center w-full p-3 rounded-lg bg-gray-100 dark:bg-gray-700/50 text-left hover:bg-gray-200 dark:hover:bg-gray-700">
-                                        <span className="font-bold text-gray-800 dark:text-white">{section.title}</span>
-                                        <span className="material-symbols-outlined text-gray-600 dark:text-white">
-                                            expand_more
-                                        </span>
-                                    </button>
-                                    <ul className="flex flex-col mt-1 space-y-1">
-                                        {section.lectures?.map((lecture: Lecture) => (
-                                            <li
-                                                key={lecture.id}
-                                                onClick={() => handleLectureClick(lecture)}
-                                                className={`flex items-start gap-3 p-3 rounded-lg cursor-pointer transition-colors ${
-                                                    currentLecture?.id === lecture.id
-                                                        ? 'bg-primary/10 dark:bg-primary/20'
-                                                        : 'hover:bg-gray-100 dark:hover:bg-gray-700/50'
-                                                }`}
-                                            >
-                                                <span
-                                                    className={`material-symbols-outlined text-lg mt-0.5 ${
-                                                        currentLecture?.id === lecture.id ? 'text-primary' : 'text-gray-400 dark:text-gray-500'
-                                                    }`}
-                                                    style={currentLecture?.id === lecture.id ? { fontVariationSettings: "'FILL' 1" } : {}}
-                                                >
-                                                    play_circle
-                                                </span>
-                                                <div className="flex flex-col flex-1">
-                                                    <p
-                                                        className={`text-sm ${
+                            {course.sections?.map((section: Section) => {
+                                const isOpen = openSections.includes(section.id);
+                                return (
+                                    <div key={section.id} className="flex flex-col">
+                                        <button 
+                                            onClick={() => toggleSection(section.id)}
+                                            className="flex justify-between items-center w-full p-3 rounded-lg bg-gray-100 dark:bg-gray-700/50 text-left hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                                        >
+                                            <span className="font-bold text-gray-800 dark:text-white">{section.title}</span>
+                                            <span className={`material-symbols-outlined text-gray-600 dark:text-white transition-transform ${isOpen ? '' : '-rotate-90'}`}>
+                                                expand_more
+                                            </span>
+                                        </button>
+                                        {isOpen && (
+                                            <ul className="flex flex-col mt-1 space-y-1">
+                                                {section.lectures?.map((lecture: Lecture) => (
+                                                    <li
+                                                        key={lecture.id}
+                                                        onClick={() => handleLectureClick(lecture)}
+                                                        className={`flex items-start gap-3 p-3 rounded-lg cursor-pointer transition-colors ${
                                                             currentLecture?.id === lecture.id
-                                                                ? 'font-bold text-primary'
-                                                                : 'font-medium text-gray-700 dark:text-gray-200'
+                                                                ? 'bg-primary/10 dark:bg-primary/20'
+                                                                : 'hover:bg-gray-100 dark:hover:bg-gray-700/50'
                                                         }`}
                                                     >
-                                                        {lecture.title}
-                                                    </p>
-                                                    <p className="text-xs text-gray-500 dark:text-gray-400">
-                                                        {Math.floor(lecture.duration / 60)}:{String(lecture.duration % 60).padStart(2, '0')}
-                                                    </p>
-                                                </div>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </div>
-                            ))}
+                                                        <span
+                                                            className={`material-symbols-outlined text-lg mt-0.5 ${
+                                                                currentLecture?.id === lecture.id ? 'text-primary' : 'text-gray-400 dark:text-gray-500'
+                                                            }`}
+                                                            style={currentLecture?.id === lecture.id ? { fontVariationSettings: "'FILL' 1" } : {}}
+                                                        >
+                                                            play_circle
+                                                        </span>
+                                                        <div className="flex flex-col flex-1">
+                                                            <p
+                                                                className={`text-sm ${
+                                                                    currentLecture?.id === lecture.id
+                                                                        ? 'font-bold text-primary'
+                                                                        : 'font-medium text-gray-700 dark:text-gray-200'
+                                                                }`}
+                                                            >
+                                                                {lecture.title}
+                                                            </p>
+                                                            <p className="text-xs text-gray-500 dark:text-gray-400">
+                                                                {Math.floor(lecture.duration / 60)}:{String(lecture.duration % 60).padStart(2, '0')}
+                                                            </p>
+                                                        </div>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        )}
+                                    </div>
+                                );
+                            })}
                         </div>
                     </div>
                 </aside>
