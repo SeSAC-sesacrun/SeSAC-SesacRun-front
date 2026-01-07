@@ -166,7 +166,7 @@ export default function CommunityPage() {
           </div>
           <Link
             href="/community/create"
-            className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg font-bold hover:bg-primary/90 transition-colors"
+            className="flex items-center gap-2 px-4 py-2 bg-primary text-black dark:text-white rounded-lg font-bold hover:bg-primary/90 transition-colors"
           >
             <span className="material-symbols-outlined text-lg">add</span>
             <span>모집 글 작성</span>

@@ -19,26 +19,7 @@ const Footer: React.FC = () => {
               SeSAC Run
             </h2>
           </div>
-          <div className="flex space-x-6">
-            <Link
-              href="/terms"
-              className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
-            >
-              서비스 약관
-            </Link>
-            <Link
-              href="/privacy"
-              className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
-            >
-              개인정보처리방침
-            </Link>
-            <Link
-              href="/support"
-              className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
-            >
-              고객센터
-            </Link>
-          </div>
+    
         </div>
         <p className="mt-8 text-center text-sm text-gray-400 dark:text-gray-500">
           © 2024 SeSAC Run. All rights reserved.

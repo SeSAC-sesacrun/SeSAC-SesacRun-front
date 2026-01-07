@@ -322,7 +322,7 @@ export default function CourseDetailPage() {
                                         className="w-12 h-12 rounded-full"
                                     />
                                     <div>
-                                        <p className="font-medium">강사: {course.instructor.name}</p>
+                                        <p className="font-medium"> {course.instructor.name}</p>
                                     </div>
                                 </div>
                             </div>
