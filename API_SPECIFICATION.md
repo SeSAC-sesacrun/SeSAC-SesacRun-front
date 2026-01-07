@@ -1,4 +1,4 @@
-# CourseHub API 명세서 - v1
+# SeSAC Run API 명세서 - v1
 
 ## 목차
 
@@ -19,7 +19,7 @@
 
 ```
 개발: http://localhost:8080/api/v1
-운영: https://api.coursehub.com/api/v1
+운영: https://api.sesacrun.com/api/v1
 ```
 
 ### 1.2 공통 응답 형식

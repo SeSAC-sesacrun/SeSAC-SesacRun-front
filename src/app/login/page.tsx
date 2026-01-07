@@ -125,8 +125,8 @@ export default function LoginPage() {
               </div>
             </label>
 
-            {/* Keep Logged In & Forgot Password */}
-            <div className="flex min-h-14 items-center justify-between gap-4">
+            {/* Keep Logged In */}
+            <div className="flex min-h-14 items-center gap-4">
               <div className="flex items-center gap-2">
                 <input
                   className="h-4 w-4 rounded border-2 border-gray-300 dark:border-gray-600 bg-transparent text-primary focus:ring-0 focus:ring-offset-0 checked:border-primary checked:bg-primary dark:checked:bg-primary dark:focus:ring-offset-gray-800"
@@ -141,14 +141,6 @@ export default function LoginPage() {
                 >
                   로그인 상태 유지
                 </label>
-              </div>
-              <div className="shrink-0">
-                <Link
-                  href="/forgot-password"
-                  className="text-sm font-medium leading-normal text-primary hover:underline"
-                >
-                  비밀번호 찾기
-                </Link>
               </div>
             </div>
 
@@ -174,32 +166,6 @@ export default function LoginPage() {
             </div>
           </form>
 
-          {/* Divider */}
-          <div className="relative my-8 flex items-center justify-center">
-            <div className="absolute w-full border-t border-gray-300 dark:border-gray-700"></div>
-            <span className="relative bg-white px-3 text-sm text-gray-600 dark:bg-[#18202F] dark:text-gray-400">
-              또는
-            </span>
-          </div>
-
-          {/* Social Login Buttons */}
-          <div className="flex flex-col gap-4">
-            <button className="flex h-12 w-full items-center justify-center gap-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-6 text-base font-medium text-gray-900 dark:text-white shadow-sm transition-colors hover:bg-gray-50 dark:hover:bg-gray-700">
-              <div className="relative h-5 w-5">
-                <Image
-                  src="https://www.google.com/favicon.ico"
-                  alt="Google logo"
-                  fill
-                  className="object-contain"
-                />
-              </div>
-              <span>Google 계정으로 로그인</span>
-            </button>
-            <button className="flex h-12 w-full items-center justify-center gap-2 rounded-lg border border-[#FEE500] bg-[#FEE500] px-6 text-base font-medium text-[#000000] shadow-sm transition-colors hover:bg-[#FEE500]/90">
-              <span className="text-xl">💬</span>
-              <span>카카오 계정으로 로그인</span>
-            </button>
-          </div>
 
           {/* Footer Link */}
           <div className="mt-8 text-center">
