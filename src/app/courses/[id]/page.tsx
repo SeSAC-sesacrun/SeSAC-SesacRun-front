@@ -61,7 +61,7 @@ export default function CourseDetailPage() {
                     description: data.description,
                     detailedDescription: data.detailedDescription || '상세 설명이 없습니다.',
                     instructor: {
-                        name: '강사', // TODO: 백엔드에서 instructor 정보 가져오기
+                        name: data.instructorName || '강사',
                         avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400',
                         students: 0,
                         courses: 0,

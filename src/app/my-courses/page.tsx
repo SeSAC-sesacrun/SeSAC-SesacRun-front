@@ -228,18 +228,6 @@ export default function MyCoursesPage() {
                                                 <p className="text-base font-bold text-gray-900 dark:text-white">
                                                     {course.title}
                                                 </p>
-                                                <div className="flex flex-col gap-2">
-                                                    <div className="flex justify-between text-xs font-medium text-gray-500 dark:text-gray-400">
-                                                        <span>진행률</span>
-                                                        <span>{course.progress}%</span>
-                                                    </div>
-                                                    <div className="w-full bg-gray-200 rounded-full h-1.5 dark:bg-gray-700">
-                                                        <div
-                                                            className="bg-primary h-1.5 rounded-full"
-                                                            style={{ width: `${course.progress}%` }}
-                                                        />
-                                                    </div>
-                                                </div>
                                             </div>
                                         </Link>
                                     ))}
