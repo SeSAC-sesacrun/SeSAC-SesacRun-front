@@ -113,11 +113,34 @@ export default function CreateCoursePage() {
     const editCourseId = searchParams.get('id'); // URL에서 id 추출
     const isEditMode = !!editCourseId; // 수정 모드 판단
 
+    // 카테고리 매핑
+    const categoryMap: Record<string, string> = {
+        '프로그래밍': 'Development',
+        '웹 개발': 'Web',
+        '데이터 사이언스': 'Data Science',
+        '디자인': 'Design',
+        '마케팅': 'Marketing',
+        '비즈니스': 'Business',
+        '기타': 'Other',
+    };
+
+    const reverseCategoryMap: Record<string, string> = {
+        'Development': '프로그래밍',
+        'Web': '웹 개발',
+        'Data Science': '데이터 사이언스',
+        'Design': '디자인',
+        'Marketing': '마케팅',
+        'Business': '비즈니스',
+        'Other': '기타',
+    };
+
     const [courseId, setCourseId] = useState<number | null>(null);
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [detailedDescription, setDetailedDescription] = useState('');
     const [category, setCategory] = useState('');
+    const [level, setLevel] = useState('');
+    const [language, setLanguage] = useState('');
     const [price, setPrice] = useState('');
     const [thumbnail, setThumbnail] = useState('');
     const [features, setFeatures] = useState<string[]>([]);
@@ -155,7 +178,10 @@ export default function CreateCoursePage() {
                 setTitle(course.title || '');
                 setDescription(course.description || '');
                 setDetailedDescription(course.detailedDescription || '');
-                setCategory(course.category || '');
+                // 카테고리: 영어 → 한글 변환
+                setCategory(reverseCategoryMap[course.category] || course.category || '');
+                setLevel(course.level || '');
+                setLanguage(course.language || '');
                 setPrice(course.price?.toString() || '');
                 setThumbnail(course.thumbnail || '');
                 setFeatures(course.features || []);
@@ -227,6 +253,28 @@ export default function CreateCoursePage() {
     // Course 저장 함수
     const handleSaveCourse = async () => {
         try {
+            // 필수 필드 검증
+            if (!title.trim()) {
+                alert('강의 제목을 입력해주세요.');
+                return;
+            }
+            if (!description.trim()) {
+                alert('간단 소개를 입력해주세요.');
+                return;
+            }
+            if (!category) {
+                alert('카테고리를 선택해주세요.');
+                return;
+            }
+            if (!level) {
+                alert('난이도를 선택해주세요.');
+                return;
+            }
+            if (!language) {
+                alert('언어를 선택해주세요.');
+                return;
+            }
+
             // 한글 카테고리를 영어로 변환
             const englishCategory = categoryMap[category] || category;
 
@@ -236,11 +284,13 @@ export default function CreateCoursePage() {
                 detailedDescription,
                 thumbnail,
                 category: englishCategory,
+                level,
+                language,
                 price: parseInt(price) || 0,
-                features,
+                features: features || [],
             };
 
-            console.log('Sending request:', requestBody);
+            console.log('Sending request:', JSON.stringify(requestBody, null, 2));
 
             let response;
             if (courseId) {
@@ -563,6 +613,12 @@ export default function CreateCoursePage() {
         if (!category) {
             return { isValid: false, message: '카테고리를 선택해주세요.' };
         }
+        if (!level) {
+            return { isValid: false, message: '난이도를 선택해주세요.' };
+        }
+        if (!language) {
+            return { isValid: false, message: '언어를 선택해주세요.' };
+        }
         if (!price || parseInt(price) < 0) {
             return { isValid: false, message: '가격을 입력해주세요.' };
         }
@@ -623,17 +679,6 @@ export default function CreateCoursePage() {
     };
 
     const categories = ['프로그래밍', '웹 개발', '데이터 사이언스', '디자인', '마케팅', '비즈니스', '기타'];
-
-    // 한글 → 영어 카테고리 매핑
-    const categoryMap: Record<string, string> = {
-        '프로그래밍': 'Development',
-        '웹 개발': 'Web',
-        '데이터 사이언스': 'Data Science',
-        '디자인': 'Design',
-        '마케팅': 'Marketing',
-        '비즈니스': 'Business',
-        '기타': 'Other',
-    };
 
     return (
         <main className="flex-1">
@@ -741,6 +786,41 @@ export default function CreateCoursePage() {
                                         {cat}
                                     </option>
                                 ))}
+                            </select>
+                        </div>
+
+                        {/* Level */}
+                        <div className="mb-6">
+                            <label className="block text-sm font-bold text-gray-900 dark:text-white mb-3">
+                                난이도 <span className="text-red-500">*</span>
+                            </label>
+                            <select
+                                value={level}
+                                onChange={(e) => setLevel(e.target.value)}
+                                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-transparent"
+                                required
+                            >
+                                <option value="">난이도를 선택하세요</option>
+                                <option value="BEGINNER">초급</option>
+                                <option value="INTERMEDIATE">중급</option>
+                                <option value="ADVANCED">고급</option>
+                            </select>
+                        </div>
+
+                        {/* Language */}
+                        <div className="mb-6">
+                            <label className="block text-sm font-bold text-gray-900 dark:text-white mb-3">
+                                언어 <span className="text-red-500">*</span>
+                            </label>
+                            <select
+                                value={language}
+                                onChange={(e) => setLanguage(e.target.value)}
+                                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-transparent"
+                                required
+                            >
+                                <option value="">언어를 선택하세요</option>
+                                <option value="KOREAN">한국어</option>
+                                <option value="ENGLISH">영어</option>
                             </select>
                         </div>
 
