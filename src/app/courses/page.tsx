@@ -21,6 +21,8 @@ export default function CoursesPage() {
   const [searchQuery, setSearchQuery] = useState(''); // 실제 검색에 사용될 값
   const [inputValue, setInputValue] = useState(''); // 입력 필드 값
   const [selectedCategory, setSelectedCategory] = useState('전체');
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 12;
 
   const categories = ['전체', '프로그래밍', '웹 개발', '데이터 사이언스', '디자인', '마케팅', '비즈니스'];
 
@@ -39,6 +41,7 @@ export default function CoursesPage() {
   const handleSearch = () => {
     setSearchQuery(inputValue);
     setSelectedCategory('전체'); // 검색 시 카테고리 초기화
+    setCurrentPage(1); // 검색 시 페이지를 1로 리셋
   };
 
   const fetchCourses = async (category: string = '전체', keyword: string = '') => {
@@ -49,17 +52,17 @@ export default function CoursesPage() {
 
       // 검색어가 있으면 검색 API 호출
       if (keyword.trim()) {
-        response = await axios.get(`http://localhost:8080/api/courses/search?keyword=${encodeURIComponent(keyword)}`);
+        response = await axios.get(`http://localhost:8080/api/courses/search?keyword=${encodeURIComponent(keyword)}&size=1000`);
       }
       // 카테고리가 '전체'가 아니면 카테고리 API 호출
       else if (category !== '전체') {
         // 한글 카테고리를 영어로 변환
         const englishCategory = categoryMap[category] || category;
-        response = await axios.get(`http://localhost:8080/api/courses/category/${encodeURIComponent(englishCategory)}`);
+        response = await axios.get(`http://localhost:8080/api/courses/category/${encodeURIComponent(englishCategory)}?size=1000`);
       }
       // 그 외에는 전체 강의 조회
       else {
-        response = await axios.get('http://localhost:8080/api/courses');
+        response = await axios.get('http://localhost:8080/api/courses?size=1000');
       }
 
       // 백엔드 응답: { success: true, data: { content: [...], ... } }
@@ -80,6 +83,55 @@ export default function CoursesPage() {
     fetchCourses(selectedCategory, searchQuery);
   }, [selectedCategory, searchQuery]);
 
+  // 페이지네이션 계산
+  const totalPages = Math.ceil(allCourses.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentCourses = allCourses.slice(startIndex, endIndex);
+
+  // 페이지 번호 배열 생성
+  const getPageNumbers = () => {
+    const pages: (number | string)[] = [];
+    const maxPagesToShow = 5;
+
+    if (totalPages <= maxPagesToShow + 2) {
+      // 페이지가 적으면 모두 표시
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      // 첫 페이지는 항상 표시
+      pages.push(1);
+
+      if (currentPage > 3) {
+        pages.push('...');
+      }
+
+      // 현재 페이지 주변 표시
+      const start = Math.max(2, currentPage - 1);
+      const end = Math.min(totalPages - 1, currentPage + 1);
+
+      for (let i = start; i <= end; i++) {
+        pages.push(i);
+      }
+
+      if (currentPage < totalPages - 2) {
+        pages.push('...');
+      }
+
+      // 마지막 페이지는 항상 표시
+      if (totalPages > 1) {
+        pages.push(totalPages);
+      }
+    }
+
+    return pages;
+  };
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   return (
     <main className="flex-1">
@@ -144,6 +196,7 @@ export default function CoursesPage() {
                   setSearchQuery('');
                   setInputValue('');
                   setSelectedCategory('전체');
+                  setCurrentPage(1); // 전체 목록으로 돌아갈 때 페이지 리셋
                 }}
                 className="mt-2 text-primary hover:text-primary/80 text-sm font-medium transition-colors"
               >
@@ -163,6 +216,7 @@ export default function CoursesPage() {
                       setSelectedCategory(category);
                       setSearchQuery(''); // 카테고리 선택 시 검색어 초기화
                       setInputValue(''); // 입력 필드도 초기화
+                      setCurrentPage(1); // 카테고리 변경 시 페이지를 1로 리셋
                     }}
                     className={`flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full px-4 cursor-pointer transition-colors ${
                       selectedCategory === category
@@ -198,11 +252,62 @@ export default function CoursesPage() {
               </div>
             </div>
           ) : allCourses.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8 mt-6">
-              {allCourses.map((course) => (
-                <CourseCard key={course.id} {...course} />
-              ))}
-            </div>
+            <>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8 mt-6">
+                {currentCourses.map((course) => (
+                  <CourseCard key={course.id} {...course} />
+                ))}
+              </div>
+
+              {/* 페이지네이션 */}
+              <div className="flex items-center justify-center gap-2 mt-12">
+                {/* 이전 버튼 */}
+                <button
+                  onClick={() => handlePageChange(currentPage - 1)}
+                  disabled={currentPage === 1}
+                  className={`flex items-center justify-center w-10 h-10 rounded-lg transition-colors ${
+                    currentPage === 1
+                      ? 'bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-600 cursor-not-allowed'
+                      : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 border border-gray-300 dark:border-gray-600'
+                  }`}
+                >
+                  <span className="material-symbols-outlined text-lg">chevron_left</span>
+                </button>
+
+                {/* 페이지 번호들 */}
+                {getPageNumbers().map((page, index) => (
+                  <React.Fragment key={index}>
+                    {page === '...' ? (
+                      <span className="px-3 text-gray-500 dark:text-gray-400">...</span>
+                    ) : (
+                      <button
+                        onClick={() => handlePageChange(page as number)}
+                        className={`w-10 h-10 rounded-lg font-medium transition-colors ${
+                          currentPage === page
+                            ? 'bg-primary text-white'
+                            : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 border border-gray-300 dark:border-gray-600'
+                        }`}
+                      >
+                        {page}
+                      </button>
+                    )}
+                  </React.Fragment>
+                ))}
+
+                {/* 다음 버튼 */}
+                <button
+                  onClick={() => handlePageChange(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                  className={`flex items-center justify-center w-10 h-10 rounded-lg transition-colors ${
+                    currentPage === totalPages
+                      ? 'bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-600 cursor-not-allowed'
+                      : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 border border-gray-300 dark:border-gray-600'
+                  }`}
+                >
+                  <span className="material-symbols-outlined text-lg">chevron_right</span>
+                </button>
+              </div>
+            </>
           ) : (
             <p className="text-gray-500 dark:text-gray-400 text-center py-10 mt-6">
               강의가 없습니다.

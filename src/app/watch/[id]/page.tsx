@@ -31,9 +31,6 @@ export default function WatchPage() {
     const searchParams = useSearchParams();
     const courseId = params.id;
 
-    const [activeTab, setActiveTab] = useState<'curriculum' | 'qa'>('curriculum');
-    const [showQnAEditor, setShowQnAEditor] = useState(false);
-    const [newQuestion, setNewQuestion] = useState('');
     const [course, setCourse] = useState<CourseData | null>(null);
     const [currentLecture, setCurrentLecture] = useState<Lecture | null>(null);
     const [loading, setLoading] = useState(true);
@@ -154,32 +151,6 @@ export default function WatchPage() {
         }
     };
 
-    const qnaList = [
-        {
-            id: '1',
-            user: { name: '김학생', avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400' },
-            question: '디자인 툴은 어떤 것을 사용하나요?',
-            answer: {
-                content: 'Figma를 주로 사용합니다. 무료로 사용할 수 있고 협업에도 좋습니다.',
-                answeredAt: '2일 전',
-            },
-            createdAt: '3일 전',
-        },
-        {
-            id: '2',
-            user: { name: '이학생', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400' },
-            question: '강의 자료는 어디서 다운로드 받나요?',
-            createdAt: '1일 전',
-        },
-    ];
-
-    const handleSubmitQuestion = () => {
-        if (newQuestion.trim()) {
-            alert('질문이 등록되었습니다!');
-            setNewQuestion('');
-            setShowQnAEditor(false);
-        }
-    };
 
     if (loading) {
         return (
@@ -252,196 +223,85 @@ export default function WatchPage() {
                         </div>
                     </div>
 
-                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mt-6">
-                        <div className="flex gap-2">
-                            <button
-                                onClick={handlePrevLecture}
-                                disabled={!prevLecture}
-                                className={`flex cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 gap-2 text-sm font-medium leading-normal px-4 transition-colors ${
-                                    prevLecture
-                                        ? 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white hover:bg-gray-300 dark:hover:bg-gray-600'
-                                        : 'bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-600 cursor-not-allowed'
-                                }`}
-                            >
-                                <span className="material-symbols-outlined text-lg">chevron_left</span>
-                                <span>이전 강의</span>
-                            </button>
-                            <button
-                                onClick={handleNextLecture}
-                                disabled={!nextLecture}
-                                className={`flex cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 gap-2 text-sm font-bold leading-normal px-4 transition-colors ${
-                                    nextLecture
-                                        ? 'bg-blue-600 dark:bg-blue-500 text-white hover:bg-blue-700 dark:hover:bg-blue-600'
-                                        : 'bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-600 cursor-not-allowed'
-                                }`}
-                            >
-                                <span>다음 강의</span>
-                                <span className="material-symbols-outlined text-lg">chevron_right</span>
-                            </button>
-                        </div>
-                        <button className="flex items-center justify-center gap-2 rounded-lg h-10 px-4 bg-white dark:bg-gray-800 border-2 border-primary text-primary text-sm font-bold hover:bg-primary/10 dark:hover:bg-primary/20 transition-colors">
-                            <span className="material-symbols-outlined text-lg">rate_review</span>
-                            <span>수강평 작성</span>
+                    <div className="flex gap-2 mt-6">
+                        <button
+                            onClick={handlePrevLecture}
+                            disabled={!prevLecture}
+                            className={`flex cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 gap-2 text-sm font-medium leading-normal px-4 transition-colors ${
+                                prevLecture
+                                    ? 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white hover:bg-gray-300 dark:hover:bg-gray-600'
+                                    : 'bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-600 cursor-not-allowed'
+                            }`}
+                        >
+                            <span className="material-symbols-outlined text-lg">chevron_left</span>
+                            <span>이전 강의</span>
+                        </button>
+                        <button
+                            onClick={handleNextLecture}
+                            disabled={!nextLecture}
+                            className={`flex cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 gap-2 text-sm font-bold leading-normal px-4 transition-colors ${
+                                nextLecture
+                                    ? 'bg-blue-600 dark:bg-blue-500 text-white hover:bg-blue-700 dark:hover:bg-blue-600'
+                                    : 'bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-600 cursor-not-allowed'
+                            }`}
+                        >
+                            <span>다음 강의</span>
+                            <span className="material-symbols-outlined text-lg">chevron_right</span>
                         </button>
                     </div>
                 </main>
 
                 {/* Sidebar */}
                 <aside className="w-[380px] flex-shrink-0 bg-white dark:bg-gray-900 border-l border-gray-200 dark:border-gray-800 flex-col hidden lg:flex">
-                    <div className="flex border-b border-gray-200 dark:border-gray-800">
-                        <button
-                            onClick={() => setActiveTab('curriculum')}
-                            className={`flex-1 py-4 text-center text-sm font-bold border-b-2 ${activeTab === 'curriculum'
-                                    ? 'border-primary text-primary'
-                                    : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
-                                }`}
-                        >
-                            커리큘럼
-                        </button>
-                        <button
-                            onClick={() => setActiveTab('qa')}
-                            className={`flex-1 py-4 text-center text-sm font-bold border-b-2 ${activeTab === 'qa'
-                                    ? 'border-primary text-primary'
-                                    : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
-                                }`}
-                        >
-                            Q&A
-                        </button>
-                    </div>
-
                     <div className="p-6 flex flex-col flex-1 overflow-y-auto">
-                        {activeTab === 'curriculum' && (
-                            <>
-                                <div className="flex flex-col gap-2 mb-6">
-                                    <div className="flex gap-6 justify-between items-center">
-                                        <p className="text-sm font-medium leading-normal text-gray-900 dark:text-white">학습 진행률</p>
-                                        <p className="text-sm font-bold leading-normal text-primary">0% 완료</p>
-                                    </div>
-                                    <div className="rounded-full bg-gray-200 dark:bg-gray-700 h-2">
-                                        <div className="h-2 rounded-full bg-primary" style={{ width: '0%' }} />
-                                    </div>
-                                </div>
-
-                                <div className="flex flex-col gap-2 pr-2 flex-1">
-                                    {course.sections?.map((section: Section) => (
-                                        <div key={section.id} className="flex flex-col">
-                                            <button className="flex justify-between items-center w-full p-3 rounded-lg bg-gray-100 dark:bg-gray-700/50 text-left hover:bg-gray-200 dark:hover:bg-gray-700">
-                                                <span className="font-bold text-gray-800 dark:text-white">{section.title}</span>
-                                                <span className="material-symbols-outlined text-gray-600 dark:text-white">
-                                                    expand_more
+                        <div className="flex flex-col gap-2 pr-2 flex-1">
+                            {course.sections?.map((section: Section) => (
+                                <div key={section.id} className="flex flex-col">
+                                    <button className="flex justify-between items-center w-full p-3 rounded-lg bg-gray-100 dark:bg-gray-700/50 text-left hover:bg-gray-200 dark:hover:bg-gray-700">
+                                        <span className="font-bold text-gray-800 dark:text-white">{section.title}</span>
+                                        <span className="material-symbols-outlined text-gray-600 dark:text-white">
+                                            expand_more
+                                        </span>
+                                    </button>
+                                    <ul className="flex flex-col mt-1 space-y-1">
+                                        {section.lectures?.map((lecture: Lecture) => (
+                                            <li
+                                                key={lecture.id}
+                                                onClick={() => handleLectureClick(lecture)}
+                                                className={`flex items-start gap-3 p-3 rounded-lg cursor-pointer transition-colors ${
+                                                    currentLecture?.id === lecture.id
+                                                        ? 'bg-primary/10 dark:bg-primary/20'
+                                                        : 'hover:bg-gray-100 dark:hover:bg-gray-700/50'
+                                                }`}
+                                            >
+                                                <span
+                                                    className={`material-symbols-outlined text-lg mt-0.5 ${
+                                                        currentLecture?.id === lecture.id ? 'text-primary' : 'text-gray-400 dark:text-gray-500'
+                                                    }`}
+                                                    style={currentLecture?.id === lecture.id ? { fontVariationSettings: "'FILL' 1" } : {}}
+                                                >
+                                                    play_circle
                                                 </span>
-                                            </button>
-                                            <ul className="flex flex-col mt-1 space-y-1">
-                                                {section.lectures?.map((lecture: Lecture) => (
-                                                    <li
-                                                        key={lecture.id}
-                                                        onClick={() => handleLectureClick(lecture)}
-                                                        className={`flex items-start gap-3 p-3 rounded-lg cursor-pointer transition-colors ${
+                                                <div className="flex flex-col flex-1">
+                                                    <p
+                                                        className={`text-sm ${
                                                             currentLecture?.id === lecture.id
-                                                                ? 'bg-primary/10 dark:bg-primary/20'
-                                                                : 'hover:bg-gray-100 dark:hover:bg-gray-700/50'
+                                                                ? 'font-bold text-primary'
+                                                                : 'font-medium text-gray-700 dark:text-gray-200'
                                                         }`}
                                                     >
-                                                        <span
-                                                            className={`material-symbols-outlined text-lg mt-0.5 ${
-                                                                currentLecture?.id === lecture.id ? 'text-primary' : 'text-gray-400 dark:text-gray-500'
-                                                            }`}
-                                                            style={currentLecture?.id === lecture.id ? { fontVariationSettings: "'FILL' 1" } : {}}
-                                                        >
-                                                            play_circle
-                                                        </span>
-                                                        <div className="flex flex-col flex-1">
-                                                            <p
-                                                                className={`text-sm ${
-                                                                    currentLecture?.id === lecture.id
-                                                                        ? 'font-bold text-primary'
-                                                                        : 'font-medium text-gray-700 dark:text-gray-200'
-                                                                }`}
-                                                            >
-                                                                {lecture.title}
-                                                            </p>
-                                                            <p className="text-xs text-gray-500 dark:text-gray-400">
-                                                                {Math.floor(lecture.duration / 60)}:{String(lecture.duration % 60).padStart(2, '0')}
-                                                            </p>
-                                                        </div>
-                                                    </li>
-                                                ))}
-                                            </ul>
-                                        </div>
-                                    ))}
-                                </div>
-                            </>
-                        )}
-
-                        {activeTab === 'qa' && (
-                            <div className="flex flex-col gap-4 flex-1">
-                                <div className="flex items-center justify-between">
-                                    <p className="text-sm font-semibold text-gray-900 dark:text-white">
-                                        이 강의에 대한 질문
-                                    </p>
-                                    <button
-                                        onClick={() => setShowQnAEditor(!showQnAEditor)}
-                                        className="text-sm font-bold text-primary hover:underline"
-                                    >
-                                        {showQnAEditor ? '취소' : '질문하기'}
-                                    </button>
-                                </div>
-
-                                {showQnAEditor && (
-                                    <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg">
-                                        <textarea
-                                            value={newQuestion}
-                                            onChange={(e) => setNewQuestion(e.target.value)}
-                                            className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:ring-primary focus:border-primary resize-none"
-                                            placeholder="질문을 입력하세요..."
-                                            rows={4}
-                                        />
-                                        <button
-                                            onClick={handleSubmitQuestion}
-                                            className="mt-3 w-full bg-primary text-white font-bold py-2 px-4 rounded-lg hover:bg-primary/90 transition-colors"
-                                        >
-                                            질문 등록
-                                        </button>
-                                    </div>
-                                )}
-
-                                <div className="flex-1 overflow-y-auto space-y-4">
-                                    {qnaList.map((qna) => (
-                                        <div key={qna.id} className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg">
-                                            <div className="flex items-start gap-3 mb-3">
-                                                <img
-                                                    src={qna.user.avatar}
-                                                    alt={qna.user.name}
-                                                    className="w-8 h-8 rounded-full"
-                                                />
-                                                <div className="flex-1">
-                                                    <div className="flex items-center gap-2 mb-1">
-                                                        <span className="text-sm font-bold text-gray-900 dark:text-white">
-                                                            {qna.user.name}
-                                                        </span>
-                                                        <span className="text-xs text-gray-500 dark:text-gray-400">
-                                                            {qna.createdAt}
-                                                        </span>
-                                                    </div>
-                                                    <p className="text-sm text-gray-900 dark:text-white">{qna.question}</p>
+                                                        {lecture.title}
+                                                    </p>
+                                                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                                                        {Math.floor(lecture.duration / 60)}:{String(lecture.duration % 60).padStart(2, '0')}
+                                                    </p>
                                                 </div>
-                                            </div>
-                                            {qna.answer && (
-                                                <div className="ml-11 pl-3 border-l-2 border-primary">
-                                                    <div className="flex items-center gap-2 mb-1">
-                                                        <span className="text-xs font-bold text-primary">강사 답변</span>
-                                                        <span className="text-xs text-gray-500 dark:text-gray-400">
-                                                            {qna.answer.answeredAt}
-                                                        </span>
-                                                    </div>
-                                                    <p className="text-sm text-gray-700 dark:text-gray-300">{qna.answer.content}</p>
-                                                </div>
-                                            )}
-                                        </div>
-                                    ))}
+                                            </li>
+                                        ))}
+                                    </ul>
                                 </div>
-                            </div>
-                        )}
+                            ))}
+                        </div>
                     </div>
                 </aside>
             </div>
