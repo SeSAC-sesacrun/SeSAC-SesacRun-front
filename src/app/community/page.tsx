@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
 
 interface Post {
@@ -51,54 +51,88 @@ export default function CommunityPage() {
   const [filter, setFilter] = useState<'all' | 'recruiting' | 'completed'>('all');
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(0);
+  const [isLast, setIsLast] = useState(false);
+  const observerTarget = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const fetchPosts = async () => {
-      setLoading(true);
-      try {
-        // category를 백엔드 형식에 맞게 변환 (STUDY, PROJECT)
-        const categoryParam = category.toUpperCase();
+  const fetchPosts = useCallback(async (currentPage: number, isReset: boolean) => {
+    if (currentPage === 0) setLoading(true);
+    try {
+      // category를 백엔드 형식에 맞게 변환 (STUDY, PROJECT)
+      const categoryParam = category.toUpperCase();
 
-        // filter를 백엔드 형식에 맞게 변환 (RECRUITING, COMPLETED)
-        const statusParam = filter === 'all' ? '' : filter.toUpperCase();
+      // filter를 백엔드 형식에 맞게 변환 (RECRUITING, COMPLETED)
+      const statusParam = filter === 'all' ? '' : filter.toUpperCase();
 
-        // URL 생성
-        const url = new URL('http://localhost:8080/api/recruitments/posts');
-        url.searchParams.append('category', categoryParam);
-        if (statusParam) {
-          url.searchParams.append('status', statusParam);
-        }
+      // URL 생성
+      const url = new URL('http://localhost:8080/api/recruitments/posts');
+      url.searchParams.append('category', categoryParam);
+      if (statusParam) {
+        url.searchParams.append('status', statusParam);
+      }
+      url.searchParams.append('page', currentPage.toString());
+      url.searchParams.append('size', '10');
 
-        // 헤더 구성 (토큰이 있으면 포함)
-        const headers: HeadersInit = {};
-        const accessToken = localStorage.getItem('accessToken');
-        if (accessToken) {
-          headers['Authorization'] = `Bearer ${accessToken}`;
-        }
+      // 헤더 구성 (토큰이 있으면 포함)
+      const headers: HeadersInit = {};
+      const accessToken = localStorage.getItem('accessToken');
+      if (accessToken) {
+        headers['Authorization'] = `Bearer ${accessToken}`;
+      }
 
-        const response = await fetch(url.toString(), { headers });
+      const response = await fetch(url.toString(), { headers });
 
-        if (!response.ok) {
-          throw new Error('Failed to fetch posts');
-        }
+      if (!response.ok) {
+        throw new Error('Failed to fetch posts');
+      }
 
-        const result: ApiResponse = await response.json();
+      const result: ApiResponse = await response.json();
 
-        if (result.success && result.data.content) {
+      if (result.success && result.data.content) {
+        if (isReset) {
           setPosts(result.data.content);
         } else {
-          setPosts([]);
+          setPosts((prev) => [...prev, ...result.data.content]);
         }
-      } catch (error) {
-        console.error('Error fetching posts:', error);
-        setPosts([]);
-      } finally {
-        setLoading(false);
+        setIsLast(result.data.last);
+        setPage(currentPage);
+      } else {
+        if (isReset) setPosts([]);
       }
-    };
-
-    fetchPosts();
+    } catch (error) {
+      console.error('Error fetching posts:', error);
+      if (isReset) setPosts([]);
+    } finally {
+      if (currentPage === 0) setLoading(false);
+    }
   }, [category, filter]);
+
+  // 카테고리나 필터가 변경되면 초기화 및 첫 페이지 조회
+  useEffect(() => {
+    setPosts([]);
+    setPage(0);
+    setIsLast(false);
+    fetchPosts(0, true);
+  }, [category, filter, fetchPosts]);
+
+  // 무한 스크롤 Observer
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && !isLast && !loading) {
+          // 로딩 상태를 별도로 관리하지 않고, 바로 요청
+          fetchPosts(page + 1, false);
+        }
+      },
+      { threshold: 1.0 }
+    );
+
+    if (observerTarget.current) {
+      observer.observe(observerTarget.current);
+    }
+
+    return () => observer.disconnect();
+  }, [isLast, loading, page, fetchPosts]);
 
   return (
     <main className="flex-1">
@@ -175,58 +209,67 @@ export default function CommunityPage() {
 
         {/* Posts List */}
         <div className="space-y-4">
-          {loading ? (
+          {posts.length > 0 ? (
+            <>
+              {posts.map((post) => {
+                // 백엔드에서 받은 status 사용
+                const isRecruiting = post.status === 'RECRUITING';
+
+                return (
+                  <Link
+                    key={post.postId}
+                    href={`/community/${post.postId}`}
+                    className="block bg-white dark:bg-gray-900 rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow border border-gray-200 dark:border-gray-800"
+                  >
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-2">
+                          <span
+                            className={`inline-block px-3 py-1 rounded-full text-xs font-bold ${isRecruiting
+                              ? 'bg-green-100 dark:bg-green-500/20 text-green-600 dark:text-green-400'
+                              : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400'
+                              }`}
+                          >
+                            {isRecruiting ? '모집중' : '모집완료'}
+                          </span>
+                          <span className="text-xs text-gray-500 dark:text-gray-400">
+                            {post.currentMembers}/{post.totalMembers}명
+                          </span>
+                        </div>
+                        <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">{post.title}</h3>
+                        <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2 mb-3">
+                          {post.content}
+                        </p>
+                        <div className="flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400">
+                          <span className="flex items-center gap-1">
+                            <span className="material-symbols-outlined text-sm">person</span>
+                            {post.authorName}
+                          </span>
+                          <span className="flex items-center gap-1">
+                            <span className="material-symbols-outlined text-sm">schedule</span>
+                            {new Date(post.createdAt).toLocaleDateString('ko-KR')}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </Link>
+                );
+              })}
+              {/* Sentinel for Infinite Scroll */}
+              <div ref={observerTarget} className="h-4" />
+            </>
+          ) : loading ? (
             <div className="text-center py-12">
               <p className="text-gray-500 dark:text-gray-400">로딩 중...</p>
             </div>
-          ) : posts.length > 0 ? (
-            posts.map((post) => {
-              // 백엔드에서 받은 status 사용
-              const isRecruiting = post.status === 'RECRUITING';
-
-              return (
-                <Link
-                  key={post.postId}
-                  href={`/community/${post.postId}`}
-                  className="block bg-white dark:bg-gray-900 rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow border border-gray-200 dark:border-gray-800"
-                >
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-2">
-                        <span
-                          className={`inline-block px-3 py-1 rounded-full text-xs font-bold ${isRecruiting
-                            ? 'bg-green-100 dark:bg-green-500/20 text-green-600 dark:text-green-400'
-                            : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400'
-                            }`}
-                        >
-                          {isRecruiting ? '모집중' : '모집완료'}
-                        </span>
-                        <span className="text-xs text-gray-500 dark:text-gray-400">
-                          {post.currentMembers}/{post.totalMembers}명
-                        </span>
-                      </div>
-                      <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">{post.title}</h3>
-                      <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2 mb-3">
-                        {post.content}
-                      </p>
-                      <div className="flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400">
-                        <span className="flex items-center gap-1">
-                          <span className="material-symbols-outlined text-sm">person</span>
-                          {post.authorName}
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <span className="material-symbols-outlined text-sm">schedule</span>
-                          {new Date(post.createdAt).toLocaleDateString('ko-KR')}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </Link>
-              );
-            })
           ) : (
             <div className="text-center py-12">
               <p className="text-gray-500 dark:text-gray-400">해당하는 모집 글이 없습니다.</p>
+            </div>
+          )}
+          {loading && posts.length > 0 && (
+            <div className="text-center py-4">
+              <p className="text-gray-500 dark:text-gray-400">추가 글 로딩 중...</p>
             </div>
           )}
         </div>
