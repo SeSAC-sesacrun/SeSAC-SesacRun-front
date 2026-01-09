@@ -606,9 +606,6 @@ export default function ChatPage() {
                 <aside className="w-[360px] flex-shrink-0 border-r border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 flex flex-col">
                     <div className="p-4 border-b border-gray-200 dark:border-gray-700">
                         <h1 className="text-xl font-bold text-gray-900 dark:text-white">채팅</h1>
-                        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                            {isConnected ? '연결됨' : '연결 중...'}
-                        </p>
                     </div>
                     <div className="flex-1 overflow-y-auto">
                         <div className="flex flex-col">
@@ -638,9 +635,6 @@ export default function ChatPage() {
                                                             person
                                                         </span>
                                                     </div>
-                                                    {isActive && isConnected && (
-                                                        <div className="absolute bottom-0 right-0 size-3 bg-green-500 rounded-full border-2 border-white dark:border-gray-800" />
-                                                    )}
                                                 </div>
                                                 <div className="flex flex-col justify-center overflow-hidden">
                                                     <p className="text-gray-900 dark:text-white text-base font-bold leading-normal truncate">
@@ -687,20 +681,7 @@ export default function ChatPage() {
                                 </span>
                             </div>
                             <div className="flex flex-col">
-                                <div className="flex items-center gap-2">
-                                    <h2 className="text-lg font-bold text-gray-900 dark:text-white">{opponentName}</h2>
-                                    {isConnected ? (
-                                        <div className="flex items-center gap-1">
-                                            <div className="size-2 bg-green-500 rounded-full" />
-                                            <span className="text-xs text-green-600 dark:text-green-400">연결됨</span>
-                                        </div>
-                                    ) : (
-                                        <div className="flex items-center gap-1">
-                                            <div className="size-2 bg-gray-400 rounded-full" />
-                                            <span className="text-xs text-gray-500">연결 중...</span>
-                                        </div>
-                                    )}
-                                </div>
+                                <h2 className="text-lg font-bold text-gray-900 dark:text-white">{opponentName}</h2>
                                 {postId && (
                                     <Link
                                         href={`/community/${postId}`}
