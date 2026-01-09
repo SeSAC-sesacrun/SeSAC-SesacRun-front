@@ -701,12 +701,12 @@ export default function ChatPage() {
                                         </div>
                                     )}
                                 </div>
-                                {postId && !isPostAuthor && (
+                                {postId && (
                                     <Link
                                         href={`/community/${postId}`}
                                         className="text-sm text-primary hover:underline"
                                     >
-                                        모집 글 보기
+                                        {isPostAuthor ? '내 모집글 보기' : '모집 글 보기'}
                                     </Link>
                                 )}
                             </div>
