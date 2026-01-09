@@ -12,7 +12,7 @@ export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [keepLoggedIn, setKeepLoggedIn] = useState(false);
+
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -125,24 +125,6 @@ export default function LoginPage() {
               </div>
             </label>
 
-            {/* Keep Logged In */}
-            <div className="flex min-h-14 items-center gap-4">
-              <div className="flex items-center gap-2">
-                <input
-                  className="h-4 w-4 rounded border-2 border-gray-300 dark:border-gray-600 bg-transparent text-primary focus:ring-0 focus:ring-offset-0 checked:border-primary checked:bg-primary dark:checked:bg-primary dark:focus:ring-offset-gray-800"
-                  id="keep-logged-in"
-                  type="checkbox"
-                  checked={keepLoggedIn}
-                  onChange={(e) => setKeepLoggedIn(e.target.checked)}
-                />
-                <label
-                  className="text-sm font-normal leading-normal text-gray-900 dark:text-gray-300"
-                  htmlFor="keep-logged-in"
-                >
-                  로그인 상태 유지
-                </label>
-              </div>
-            </div>
 
             {/* Login Button */}
             <div className="mt-2">
