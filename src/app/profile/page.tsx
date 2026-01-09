@@ -804,7 +804,7 @@ export default function MyPage() {
                   </h2>
                   <Link
                     href="/instructor/create-course"
-                    className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg font-bold hover:bg-primary/90"
+                    className="flex items-center gap-2 px-4 py-2 bg-primary text-black dark:text-white rounded-lg font-bold hover:bg-primary/90"
                   >
                     <span className="material-symbols-outlined text-lg">
                       add

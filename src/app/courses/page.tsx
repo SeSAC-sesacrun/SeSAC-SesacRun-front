@@ -146,7 +146,7 @@ export default function CoursesPage() {
             <h1 className="text-white text-4xl md:text-5xl font-black tracking-tighter">
               성장의 기회를 발견하세요
             </h1>
-            <h2 className="text-white/80 text-base md:text-lg font-normal max-w-2xl mx-auto">
+            <h2 className="text-white/80 text-base md:text-lg font-normal">
               최고의 전문가들이 만든 다양한 강의를 통해 새로운 기술을 배우고 커리어를 발전시켜 보세요.
             </h2>
           </div>
